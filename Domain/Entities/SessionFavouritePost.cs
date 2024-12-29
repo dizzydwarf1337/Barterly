@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class PostOpinion : Opinion
+    public class SessionFavouritePost : FavouritePostBase
     {
-        public Guid PostId { get; set; }
-        
-        [ForeignKey("PostId")]
-        public virtual Post Post { get; set; }
+        [Column(Order=1)]
+        public Guid SessionId { get; set; }
+        public virtual Session Session { get; set; }
     }
 }

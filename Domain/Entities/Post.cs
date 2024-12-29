@@ -12,20 +12,37 @@ namespace Domain.Entities
     public class Post
     {
         [Key]
-        public Guid PostId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        
+        public Guid SubCategoryId { get; set; }
+
+        public Guid OwnerId { get; set; }
+
+        public Guid PromotionId { get; set; }
 
         [Required]
+        [MaxLength(50)]
         public string Title { get; set; }
-
+        
         [Required]
+        [MaxLength(100)]
+        public string City { get; set; }
+        
+        [Required]
+        [MaxLength(100)]
+        public string Region { get; set; }
+        
+        [Required]
+        [MaxLength(500)]
         public string FullDescription { get; set; }
+
+        [MaxLength(150)]
+        public string? ShortDescription { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Price { get; set; }
 
         public PostPriceType PriceType { get; set; } = PostPriceType.OnetimePayment;
-
-        public string? ShortDescription { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -35,23 +52,16 @@ namespace Domain.Entities
 
         public string? MainImageUrl { get; set; }
         
-        public Guid SubCategoryId { get; set; }
-        
         [ForeignKey("SubCategoryId")]
         public virtual SubCategory SubCategory { get; set; }
-        
-        public Guid OwnerId { get; set; }
-        
         [ForeignKey("OwnerId")]
         public virtual User Owner { get; set; }
-
-        public Guid PromotionId { get; set; }
 
         [ForeignKey("PromotionId")]
         public virtual Promotion Promotion { get; set; }
         
         public virtual ICollection<PostImage>? PostImages { get; set; }
-        public virtual ICollection<PostOpinion>? PostOpinsions { get; set; }
+        public virtual ICollection<PostOpinion>? PostOpinions { get; set; }
         public virtual ICollection<ReportPost>? PostReports { get; set; }
     }
 }

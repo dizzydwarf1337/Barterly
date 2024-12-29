@@ -8,5 +8,6 @@ namespace Domain.Entities
 {
     public class Chat
     {
+        public Guid Id { get; set; }
     }
 }

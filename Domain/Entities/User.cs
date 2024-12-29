@@ -14,33 +14,45 @@ namespace Domain.Entities
     {
         [Required]
         public string FirstName { get; set; }
+        
         [Required]
         public string LastName { get; set; }
+        
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
+        
         public string? Bio { get; set; }
+        
         [Required]
         public string Country { get; set; }
+        
         [Required]
         public string City { get; set; }
+        
         [Required]
         public string Street { get; set; }
+        
         [Required]
         public string HouseNumber { get; set; }
+        
         [Required]
         public string PostalCode { get; set; }
+        
         public string? ProfilePicturePath { get; set; }
+        
         public DateTime CreatedAt { get; set; } = new DateTime();
+        
         public DateTime LastSeen { get; set; } = new DateTime();
+        
         public Guid UserSettingId { get; set; }
+        
         [ForeignKey("UserSettingId")]
         public virtual UserSetting Setting { get; set; }
 
-
-
         public virtual ICollection<UserChat>? UserChats { get; set; }
-        public virtual ICollection<FavouritePost>? FavoritePosts { get; set; }
+        public virtual ICollection<UserFavouritePost>? FavouritePosts { get; set; }
+        public virtual ICollection<FavouriteCategory>? FavouriteCategories { get; set; }
         public virtual ICollection<VisitedPost>? VisitedPosts { get; set; }
         public virtual ICollection<Notification>? Notifications { get; set; }
         public virtual ICollection<Opinion>? CreatedOpinions { get; set; }

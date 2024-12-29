@@ -8,18 +8,15 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class SubCategory
+    public class FavouriteCategory
     {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
-        
-        [Required]
-        [MaxLength(20)]
-        public string Title { get; set; }
-        
+        [Column(Order = 0)]
+        public Guid UserId { get; set; }
+
+        [Column(Order = 1)]
         public Guid CategoryId { get; set; }
         
-        [ForeignKey("CategoryId")]
-        public virtual Category Categoty { get; set; }
+        public virtual User User { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

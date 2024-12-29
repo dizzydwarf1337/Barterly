@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class PostImage
+    public class FavouritePostBase
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        [Column(Order=0)]
         public Guid PostId { get; set; }
         
-        [Required]
-        public string ImageUrl { get; set; }
-
-        [ForeignKey("PostId")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
         public virtual Post Post { get; set; }
     }
 }

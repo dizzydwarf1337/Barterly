@@ -8,24 +8,23 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class UserSetting
+    public class UserActivitySummary
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-
         public Guid UserId { get; set; }
+       
+        public int TotalPostsVisited { get; set; }
+        
+        public int TotalOpinion { get; set; }
+        
+        public string MostViewedCategory { get; set; }
+        
+        public string MostViewedCity { get; set; }
 
-        public bool IsHidden { get; set; } = false; 
-        
-        public bool IsBanned { get; set; } = false;
-        
-        public bool IsPostRestricted { get; set; } = false;
-        
-        public bool IsOpinionRestricted { get; set; } = false;
-        
-        public bool IsChatRestricted { get; set; } = false;
-        public virtual User user { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
     }
 }
