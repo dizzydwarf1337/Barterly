@@ -23,6 +23,7 @@ namespace Domain.Entities
         public string MostViewedCity { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = null;
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }

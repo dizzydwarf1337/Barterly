@@ -25,8 +25,8 @@ namespace Persistence.Database
         public DbSet<Category> Categories { get; set; }
         public DbSet<DeletedPost> DeletedPosts { get; set; }
         public DbSet<DeletedUser> DeletedUsers { get; set; }
-        public DbSet<FavouriteCategory> FavoriteCategories { get; set; }
-        public DbSet<SessionFavouritePost> SessionFavoritePosts { get; set; }
+        public DbSet<FavouriteCategory> FavouriteCategories { get; set; }
+        public DbSet<SessionFavouritePost> SessionFavouritePosts { get; set; }
         public DbSet<UserFavouritePost> UserFavorites { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<MainAnnounsment> MainAnnounsments { get; set; }
@@ -46,5 +46,6 @@ namespace Persistence.Database
         public DbSet<UserOpinion> UserOpinions { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
         public DbSet<VisitedPost> VisitedPosts { get; set; }
+        public DbSet<GlobalNotification> GlobalNotifications { get; set; }
     }
 }
