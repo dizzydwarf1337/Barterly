@@ -18,10 +18,6 @@ namespace Domain.Entities
         [Required]
         public string LastName { get; set; }
         
-        [Required]
-        [Phone]
-        public string PhoneNumber { get; set; }
-        
         public string? Bio { get; set; }
         
         [Required]

@@ -13,5 +13,9 @@ namespace Domain.Interfaces.Commands.General
         Task CreateLogAsync(Log log);
         Task ChangeLogType(Guid id, LogType logType);
         Task DeleteLogAsync(Guid id);
+        Task DeleteLogRangeAsync(ICollection<Log> logs);
+        Task DeleteUsersLogs(Guid userId);
+        Task DeletePostsLogs(Guid postId);
+
     }
 }

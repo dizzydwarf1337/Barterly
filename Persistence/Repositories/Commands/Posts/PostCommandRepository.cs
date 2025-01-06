@@ -1,0 +1,43 @@
+﻿using Domain.Interfaces.Commands.Post;
+using Persistence.Database;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Persistence.Repositories.Commands.Post
+{
+    public class PostCommandRepository : BaseCommandRepository<BarterlyDbContext>, IPostCommandRepository
+    {
+        public PostCommandRepository(BarterlyDbContext context) : base(context)
+        {
+        }
+
+        public async Task CreatePostAsync(Domain.Entities.Post post)
+        {
+            await _context.AddAsync(post);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePostAsync(Guid postId)
+        {
+            var post = await _context.Posts.FindAsync(postId) ?? throw new Exception("Post with this id doesn't exists");
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SetHidePostAsync(Guid postId, bool IsHidden)
+        {
+            var post = await _context.Posts.FindAsync(postId) ?? throw new Exception("Post with this id doesn't exists");
+            post.IsHidden = IsHidden;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePostAsync(Domain.Entities.Post post)
+        {
+            _context.Posts.Update(post);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

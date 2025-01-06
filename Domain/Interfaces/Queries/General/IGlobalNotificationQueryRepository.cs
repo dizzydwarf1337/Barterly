@@ -11,5 +11,6 @@ namespace Domain.Interfaces.Queries.General
     {
         Task<ICollection<GlobalNotification>> GetGlobalNotificationsAsync();
         Task<GlobalNotification> GetGlobalNotificationByIdAsync(Guid id);
+        Task<ICollection<GlobalNotification>> GetPaginatedGlobalNotifications(int PageSize, int PageNumber);
     }
 }

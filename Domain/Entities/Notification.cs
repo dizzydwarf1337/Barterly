@@ -17,7 +17,8 @@ namespace Domain.Entities
         
         [MaxLength(100)]
         public string Message { get; set; }
-        
+        public string Title { get; set; }
+
         public bool IsRead { get; set; } = false;
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
