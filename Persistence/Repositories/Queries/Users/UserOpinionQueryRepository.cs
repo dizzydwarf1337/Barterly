@@ -37,9 +37,9 @@ namespace Persistence.Repositories.Queries.Users
             return await _context.UserOpinions.Where(x => x.UserId == userId).ToListAsync();
         }
 
-        public async Task<ICollection<UserOpinion>> GetUserOpinionsPaginated(int page, int pageSize)
+        public async Task<ICollection<UserOpinion>> GetUserOpinionsPaginated(Guid userId, int page, int pageSize)
         {
-            return await _context.UserOpinions.Skip(page * pageSize).Take(pageSize).ToListAsync();
+            return await _context.UserOpinions.Skip((page-1) * pageSize).Take(pageSize).Where(x=>x.UserId==userId).ToListAsync();
         }
     }
 }

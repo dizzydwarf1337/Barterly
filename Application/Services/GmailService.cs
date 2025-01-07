@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    internal class GmailService : IMailService
+    public class GmailService : IMailService
     {
         public Task SendConfiramationMail(string UserEmail)
         {

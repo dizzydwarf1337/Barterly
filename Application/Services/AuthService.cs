@@ -1,5 +1,8 @@
 ﻿using Application.DTOs;
 using Application.ServiceInterfaces;
+using Domain.Entities;
+using Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +13,31 @@ namespace Application.Services
 {
     public class AuthService : IAuthService
     {
-        public Task Login(LoginDto loginDto)
+        private readonly UserManager<User> _userManager;
+        private readonly ITokenService _tokenService;
+        private readonly ILogService _logService;
+
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, ILogService logService) 
         {
-            throw new NotImplementedException();
+            _userManager = userManager;
+            _tokenService = tokenService;
+            _logService = logService;
+        }
+
+        public async Task<string> Login(LoginDto loginDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (!result)
+            {
+                throw new Exception("Invalid password");
+            }
+            await _logService.CreateLogAsync("User logged in", LogType.Information,null, null, user.Id);
+            return await _tokenService.GenerateAuthToken(user.Id);
         }
 
         public Task LoginWithFaceBook()
@@ -24,10 +49,10 @@ namespace Application.Services
         {
             throw new NotImplementedException();
         }
-
-        public Task LogOut()
+        public async Task LogOut(Guid userId)
         {
-            throw new NotImplementedException();
+            await _tokenService.DeleteTokenByUserId(userId, "auth");
+            await _logService.CreateLogAsync("User logged out", LogType.Information, null, null, userId);
         }
     }
 }

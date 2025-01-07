@@ -8,5 +8,7 @@ namespace Application.DTOs
 {
     public class SessionDto
     {
+        public Guid Id { get; set; }
+        public DateTime Started { get; set; }
     }
 }

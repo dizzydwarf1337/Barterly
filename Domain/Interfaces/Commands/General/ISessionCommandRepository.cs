@@ -11,6 +11,7 @@ namespace Domain.Interfaces.Commands.General
     {
         Task AddSessionAsync(Session session);
         Task UpdateSessionAsync(Session session);
+        Task ExtendSession (Guid sessionId);
         Task DeleteSessionAsync(Guid sessionId);
     }
 }

@@ -91,8 +91,19 @@ public class JwtTokenService : ITokenService
         };
 
         var token = CreateJwtToken(userId, claims);
-        await _tokenCommandRepository.AddToken(userId, token, "Bearer", "emailConfirmation");
+        await _tokenCommandRepository.AddToken(userId, token, "Bearer", "email");
         await _logService.CreateLogAsync("Generated email confirmation token", LogType.Information,null, Guid.Empty, userId); 
         return token;
+    }
+
+    public async Task<bool> CheckUserToken(Guid userId, string tokenType, string token)
+    {
+        if (await _tokenQueryRepository.GetTokenByUserIdAsync(userId, tokenType) != null)
+        {
+            await _logService.CreateLogAsync("Token confirmed successfully", LogType.Warning, null, Guid.Empty, userId);
+            return true;
+        }
+        await _logService.CreateLogAsync("Token is invalid", LogType.Warning, null, Guid.Empty, userId);
+        return false;
     }
 }

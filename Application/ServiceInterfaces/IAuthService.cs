@@ -9,9 +9,9 @@ namespace Application.ServiceInterfaces
 {
     public interface IAuthService
     {
-        Task Login(LoginDto loginDto);
+        Task<string> Login(LoginDto loginDto);
         Task LoginWithGmail();
         Task LoginWithFaceBook();
-        Task LogOut();
+        Task LogOut(Guid userId);
     }
 }

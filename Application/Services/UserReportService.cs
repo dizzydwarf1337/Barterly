@@ -21,7 +21,7 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ReportDto>> GetAllReports()
+        public Task<ICollection<ReportDto>> GetAllReports()
         {
             throw new NotImplementedException();
         }

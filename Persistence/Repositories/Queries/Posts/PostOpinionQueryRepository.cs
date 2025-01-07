@@ -31,14 +31,14 @@ namespace Persistence.Repositories.Queries.Post
             return await _context.PostOpinions.Where(x => x.AuthorId == userId).ToListAsync();
         }
 
-        public Task<ICollection<PostOpinion>> GetPostOpinionsByPostIdAsync(Guid postId)
+        public async Task<ICollection<PostOpinion>> GetPostOpinionsByPostIdAsync(Guid postId)
         {
-            throw new NotImplementedException();
+            return await _context.PostOpinions.Where(x => x.PostId == postId).ToListAsync();
         }
 
-        public async Task<ICollection<PostOpinion>> GetPostOpinionsPaginatedAsync(int page, int pageSize)
+        public async Task<ICollection<PostOpinion>> GetPostOpinionsPaginatedAsync(Guid postId, int page, int pageSize)
         {
-            return await _context.PostOpinions.Skip(page * pageSize).Take(pageSize).ToListAsync();
+            return await _context.PostOpinions.Skip((page-1) * pageSize).Take(pageSize).Where(x=>x.PostId==postId).ToListAsync();
         }
 
     }

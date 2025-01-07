@@ -14,7 +14,7 @@ namespace Domain.Entities
         
         public DateTime Started { get; set; } = DateTime.UtcNow;
         
-        public DateTime Expired { get; set; } = DateTime.UtcNow + TimeSpan.FromDays(3);
+        public DateTime Expired { get; set; } = DateTime.UtcNow + TimeSpan.FromDays(1);
         
         public bool IsExpired { get; set; } = false;
         

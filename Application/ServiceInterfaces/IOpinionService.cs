@@ -13,10 +13,12 @@ namespace Application.ServiceInterfaces
         Task DeleteOpinion(Guid opinionId);
         Task UpdateOpinion(OpinionDto opinion);
 
+        Task SetOpinionIsHidden(Guid opinionId, bool isHidden);
 
-        Task<IEnumerable<OpinionDto>> GetOpinions();
+        Task<ICollection<OpinionDto>> GetOpinions();
         Task<OpinionDto> GetOpinionById(Guid opinionId);
-        Task<ICollection<OpinionDto>> GetOpinionsByUserId(Guid userId);
-        Task<ICollection<OpinionDto>> GetOpinionsByPostId(Guid postId);
+        Task<ICollection<OpinionDto>> GetOpinionsByAuthorId(Guid userId);
+        Task<ICollection<OpinionDto>> GetOpinionsBySubjectId(Guid subjectId);
+        Task<ICollection<OpinionDto>> GetOpinionsPaginated(Guid subjectId,int page, int pageSize);
     }
 }

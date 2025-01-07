@@ -11,5 +11,6 @@ namespace Application.ServiceInterfaces
         Task<string> GenerateAuthToken(Guid userId);
         Task<string> GenerateEmailConfirmationToken(Guid userId);
         Task DeleteTokenByUserId(Guid userId, string tokenType);
+        Task<bool> CheckUserToken(Guid userId, string tokenType, string token);
     }
 }

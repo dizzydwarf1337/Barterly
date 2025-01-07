@@ -10,7 +10,7 @@ namespace Application.ServiceInterfaces
     public interface ISessionService
     {
         Task<SessionDto> StartSession();
-        Task EndSession();
+        Task DeleteSession(Guid sessionId);
         Task ExtendSession(Guid sessionId);
 
     }

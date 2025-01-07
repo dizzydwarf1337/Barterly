@@ -1,5 +1,10 @@
 ﻿using Application.DTOs;
 using Application.ServiceInterfaces;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Enums;
+using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,39 +15,68 @@ namespace Application.Services
 {
     public class PostOpinionService : IOpinionService
     {
-        public Task AddOpinion(OpinionDto opinion)
+
+        private readonly IPostOpinionCommandRepository _postOpinionCommandRepository;
+        private readonly IPostOpinionQueryRepository _postOpinionQueryRepository;
+        private readonly ILogService _logService;
+        private readonly IMapper _mapper;
+        public PostOpinionService(IPostOpinionCommandRepository postOpinionCommandRepository, IPostOpinionQueryRepository postOpinionQueryRepository, ILogService logService, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _postOpinionCommandRepository = postOpinionCommandRepository;
+            _postOpinionQueryRepository = postOpinionQueryRepository;
+            _logService = logService;
+            _mapper = mapper;
         }
 
-        public Task DeleteOpinion(Guid opinionId)
+        public async Task AddOpinion(OpinionDto opinionDto)
         {
-            throw new NotImplementedException();
+            var opinion = _mapper.Map<PostOpinion>(opinionDto);
+            await _postOpinionCommandRepository.CreatePostOpinionAsync(opinion);
+            await _logService.CreateLogAsync($"Opinion created with id {opinion.Id} ",LogType.Information,null,opinion.PostId,opinion.AuthorId);
         }
 
-        public Task<OpinionDto> GetOpinionById(Guid opinionId)
+        public async Task DeleteOpinion(Guid opinionId)
         {
-            throw new NotImplementedException();
+            await _postOpinionCommandRepository.DeletePostOpinionAsync(opinionId);
+            await _logService.CreateLogAsync($"Opinion deleted with id {opinionId} ", LogType.Information, null, null, null);
         }
 
-        public Task<IEnumerable<OpinionDto>> GetOpinions()
+        public async Task<OpinionDto> GetOpinionById(Guid opinionId)
         {
-            throw new NotImplementedException();
+            var opinion = await _postOpinionQueryRepository.GetPostOpinionByIdAsync(opinionId);
+            return _mapper.Map<OpinionDto>(opinion);
         }
 
-        public Task<ICollection<OpinionDto>> GetOpinionsByPostId(Guid postId)
+        public async Task<ICollection<OpinionDto>> GetOpinions()
         {
-            throw new NotImplementedException();
+            return _mapper.Map<ICollection<OpinionDto>>(await _postOpinionQueryRepository.GetPostOpinionsAsync());
         }
 
-        public Task<ICollection<OpinionDto>> GetOpinionsByUserId(Guid userId)
+        public async Task<ICollection<OpinionDto>> GetOpinionsBySubjectId(Guid subjectId)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<ICollection<OpinionDto>>(await _postOpinionQueryRepository.GetPostOpinionsByPostIdAsync(subjectId));
         }
 
-        public Task UpdateOpinion(OpinionDto opinion)
+        public async Task<ICollection<OpinionDto>> GetOpinionsByAuthorId(Guid userId)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<ICollection<OpinionDto>>(await _postOpinionQueryRepository.GetPostOpinionsByAuthorIdAsync(userId));
+        }
+
+        public async Task SetOpinionIsHidden(Guid opinionId, bool isHidden)
+        {
+            await _postOpinionCommandRepository.SetHiddenPostOpinionAsync(opinionId, isHidden);
+        }
+
+        public async Task UpdateOpinion(OpinionDto opinionDto)
+        {
+            var opinion = _mapper.Map<PostOpinion>(opinionDto);
+            await _postOpinionCommandRepository.UpdatePostOpinionAsync(opinion);
+            await _logService.CreateLogAsync($"Opinion updated with id {opinion.Id} ", LogType.Information, null, opinion.PostId, opinion.AuthorId);
+        }
+
+        public async Task<ICollection<OpinionDto>> GetOpinionsPaginated(Guid subjectId, int page, int pageSize)
+        {
+            return _mapper.Map<ICollection<OpinionDto>>(await _postOpinionQueryRepository.GetPostOpinionsPaginatedAsync(subjectId, page, pageSize));
         }
     }
 }

@@ -26,6 +26,12 @@ namespace Persistence.Repositories.Commands.General
             await _context.SaveChangesAsync();
         }
 
+        public async Task ExtendSession(Guid sessionId)
+        {
+            var session = await _context.Sessions.FindAsync(sessionId) ?? throw new Exception("Session not found");
+            session.Expired = session.Expired.AddDays(1);
+        }
+
         public async Task UpdateSessionAsync(Session session)
         {
             _context.Sessions.Update(session);
