@@ -6,15 +6,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\" />
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <Folder Include="Features\Category\Events\" />
+    <Folder Include="Features\Posts\Events\Hanlders\" />
+    <Folder Include="Features\Posts\Queries\" />
+    <Folder Include="Features\Posts\Commands\" />
+    <Folder Include="Features\Reports\Events\Handlers\" />
+    <Folder Include="Features\Reports\Commands\" />
+    <Folder Include="Features\Reports\Queries\" />
+    <Folder Include="Features\Users\Queries\" />
   </ItemGroup>
 
   <PropertyGroup>

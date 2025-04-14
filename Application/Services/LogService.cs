@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.ServiceInterfaces;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -27,7 +27,7 @@ namespace Application.Services
             await _logCommandRepository.CreateLogAsync(log);
         }
 
-        public async Task CreateLogAsync(string message, LogType? logType, string? stackTrace, Guid? postId, Guid? userId)
+        public async Task CreateLogAsync(string message, LogType? logType = LogType.None, string? stackTrace = "", Guid? postId = null, Guid? userId = null)
         {
             var log = new Log
             {

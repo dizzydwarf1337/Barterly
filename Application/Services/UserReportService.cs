@@ -1,6 +1,10 @@
 ﻿using Application.DTOs;
-using Application.ServiceInterfaces;
+using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
 using Domain.Enums;
+using Domain.Interfaces.Commands.User;
+using Domain.Interfaces.Queries.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,34 +15,49 @@ namespace Application.Services
 {
     public class UserReportService : IReportService
     {
-        public Task ChangeReportStatus(Guid reportId, ReportStatusType reportStatusType)
+        private readonly IMapper _mapper;
+        private readonly IReportUserCommandRepository _reportUserCommandRepository;
+        private readonly IReportUserQueryRepository _reportUserQueryRepository;
+
+        public UserReportService(IReportUserCommandRepository reportUserCommandRepository, IReportUserQueryRepository reportUserQueryRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _reportUserCommandRepository = reportUserCommandRepository;
+            _reportUserQueryRepository = reportUserQueryRepository;
+            _mapper = mapper;
         }
 
-        public Task DeleteReport(Guid reportId)
+        public async Task ChangeReportStatus(Guid reportId, ReportStatusType reportStatusType)
         {
-            throw new NotImplementedException();
+            await _reportUserCommandRepository.ChangeReportStatus(reportId, reportStatusType);
         }
 
-        public Task<ICollection<ReportDto>> GetAllReports()
+        public async Task DeleteReport(Guid reportId)
         {
-            throw new NotImplementedException();
+            await _reportUserCommandRepository.DeleteReport(reportId);
         }
 
-        public Task<ICollection<ReportDto>> GetReportsByAuthorId(Guid authorId)
+        public async Task<ICollection<ReportDto>> GetAllReports()
         {
-            throw new NotImplementedException();
+            var reportDtos = _mapper.Map<ICollection<ReportDto>>(await _reportUserQueryRepository.GetAllUsersReportsAsync());
+            return reportDtos;
         }
 
-        public Task<ICollection<ReportDto>> GetReportsByRepotedSubjectId(Guid repotedSubjectId)
+        public async Task<ICollection<ReportDto>> GetReportsByAuthorId(Guid authorId)
         {
-            throw new NotImplementedException();
+            var reportsDtos = _mapper.Map<ICollection<ReportDto>>(await _reportUserQueryRepository.GetReportUsersByAuthorIdAsync(authorId));
+            return reportsDtos;
         }
 
-        public Task SendReport(ReportDto reportDto)
+        public  async Task<ICollection<ReportDto>> GetReportsByRepotedSubjectId(Guid repotedSubjectId)
         {
-            throw new NotImplementedException();
+            var reportsDtos = _mapper.Map<ICollection<ReportDto>>(await _reportUserQueryRepository.GetReportsUserByUserIdAsync(repotedSubjectId));
+            return reportsDtos;
+        }
+
+        public async Task SendReport(ReportDto reportDto)
+        {
+            var report = _mapper.Map<ReportUser>(reportDto);
+            await _reportUserCommandRepository.CreateReport(report);
         }
     }
 }

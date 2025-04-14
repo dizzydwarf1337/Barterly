@@ -1,4 +1,4 @@
-﻿using Application.ServiceInterfaces;
+﻿using Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System;

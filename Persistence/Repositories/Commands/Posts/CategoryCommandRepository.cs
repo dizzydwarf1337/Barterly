@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Commands.Post;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,12 @@ namespace Persistence.Repositories.Commands.Post
         {
         }
 
+        public async Task AddSubCategoryAsync(SubCategory subCategory)
+        {
+            await _context.SubCategories.AddAsync(subCategory);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task CreateCategoryAsync(Category category)
         {
             await _context.Categories.AddAsync(category);
@@ -25,6 +32,12 @@ namespace Persistence.Repositories.Commands.Post
         {
             var category = await _context.Categories.FindAsync(id) ?? throw new Exception("Category not found");
             _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteSubCategoryAsync(Guid id)
+        {
+            await _context.SubCategories.Where(x=>x.Id==id).ExecuteDeleteAsync();
             await _context.SaveChangesAsync();
         }
 

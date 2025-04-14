@@ -7,4 +7,9 @@
     <CleanCommand>
     </CleanCommand>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="public\googleIcons\" />
+    <Folder Include="public\facebookIcons\" />
+    <Folder Include="src\app\API\" />
+  </ItemGroup>
 </Project>

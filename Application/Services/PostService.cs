@@ -1,5 +1,9 @@
 ﻿using Application.DTOs;
-using Application.ServiceInterfaces;
+using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,39 +12,48 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    internal class PostService : IPostService
+    public class PostService : IPostService
     {
-        public Task ChangePostHiddenStatus(Guid postId, bool value)
+        private readonly IPostCommandRepository _postCommandRepository;
+        private readonly IPostQueryRepository _postQueryRepository;
+        private readonly IMapper _mapper;
+        public PostService(IPostCommandRepository postCommandRepository, IPostQueryRepository postQueryRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _postCommandRepository = postCommandRepository;
+            _postQueryRepository = postQueryRepository;
+            _mapper = mapper;
         }
 
-        public Task CreatePost(PostDto post)
+        public async Task ChangePostHiddenStatus(Guid postId, bool value)
         {
-            throw new NotImplementedException();
+            await _postCommandRepository.SetHidePostAsync(postId, value);
         }
 
-        public Task DeletePost(Guid postId)
+        public async Task CreatePost(PostDto post)
         {
-            throw new NotImplementedException();
+            var postToAdd = _mapper.Map<Post>(post);
+            await _postCommandRepository.CreatePostAsync(postToAdd);
         }
 
-        public Task<ICollection<PostDto>> GetAllPostsAsync()
+        public async Task DeletePost(Guid postId)
         {
-            throw new NotImplementedException();
+            await _postCommandRepository.DeletePostAsync(postId);
         }
 
-        public Task<ICollection<PostDto>> GetFavouritePostsBySessionId(Guid sessionId)
+        public async Task<ICollection<PostDto>> GetAllPostsAsync()
         {
-            throw new NotImplementedException();
+            var posts = await _postQueryRepository.GetAllPostsAsync();
+            return _mapper.Map<ICollection<PostDto>>(posts);
         }
 
-        public Task<ICollection<PostDto>> GetFavouritePostsByUserId(Guid categoryId)
+
+        public async Task<ICollection<PostDto>> GetUserFavouritePosts(Guid userId)
         {
-            throw new NotImplementedException();
+            var posts = await _postQueryRepository.GetUserFavouritePosts(userId);
+            return _mapper.Map<ICollection<PostDto>>(posts);
         }
 
-        public Task<ICollection<PostDto>> GetPaginatedPosts(int PageSize, int PageNumber)
+        public async Task<ICollection<PostDto>> GetPaginatedPosts(int PageSize, int PageNumber)
         {
             throw new NotImplementedException();
         }
@@ -60,24 +73,28 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<PostDto> GetPostById(Guid postId)
+        public async Task<PostDto> GetPostById(Guid postId)
         {
-            throw new NotImplementedException();
+            var post = await _postQueryRepository.GetPostByIdAsync(postId);
+            return _mapper.Map<PostDto>(post);
         }
 
-        public Task<ICollection<PostDto>> GetPostsBySubCategoryId(Guid subCategoryId)
+        public async Task<ICollection<PostDto>> GetPostsBySubCategoryId(Guid subCategoryId)
         {
-            throw new NotImplementedException();
+            var posts = await _postQueryRepository.GetFiltredPostsAsync(1,10,subCategoryId:subCategoryId);
+            return _mapper.Map<ICollection<PostDto>>(posts);
         }
 
-        public Task<ICollection<PostDto>> GetPostsByUserId(Guid userId)
+        public async Task<ICollection<PostDto>> GetPostsByUserId(Guid userId)
         {
-            throw new NotImplementedException();
+            var posts = await _postQueryRepository.GetPostsByOwnerIdAsync(userId);
+            return _mapper.Map<ICollection<PostDto>>(posts);
         }
 
-        public Task UpdatePost(PostDto post)
+        public async Task UpdatePost(PostDto post)
         {
-            throw new NotImplementedException();
+            var postUp = _mapper.Map<Post>(post);
+            await _postCommandRepository.UpdatePostAsync(postUp);
         }
     }
 }

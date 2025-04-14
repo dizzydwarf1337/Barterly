@@ -15,11 +15,15 @@ namespace Domain.Entities
         
         [Required]
         [MaxLength(20)]
-        public string Title { get; set; }
-        
+        public string TitleEN { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string TitlePL { get; set; }
+
         public Guid CategoryId { get; set; }
         
         [ForeignKey("CategoryId")]
-        public virtual Category Categoty { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

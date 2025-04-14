@@ -14,7 +14,10 @@ namespace Domain.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Name { get; set; }
+        public string NamePL { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string NameEN { get; set; }
         
         [MaxLength(50)]
         public string? Description { get; set; }

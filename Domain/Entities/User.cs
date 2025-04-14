@@ -20,36 +20,32 @@ namespace Domain.Entities
         
         public string? Bio { get; set; }
         
-        [Required]
-        public string Country { get; set; }
+        public string? Country { get; set; }
         
-        [Required]
-        public string City { get; set; }
+        public string? City { get; set; }
         
-        [Required]
-        public string Street { get; set; }
+        public string? Street { get; set; }
+      
+        public string? HouseNumber { get; set; }
         
-        [Required]
-        public string HouseNumber { get; set; }
-        
-        [Required]
-        public string PostalCode { get; set; }
+        public string? PostalCode { get; set; }
         
         public string? ProfilePicturePath { get; set; }
         
-        public DateTime CreatedAt { get; set; } = new DateTime();
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         
-        public DateTime LastSeen { get; set; } = new DateTime();
+        public DateTime LastSeen { get; set; } = DateTime.Now;
         
-        public Guid UserSettingId { get; set; }
+        public Guid? UserSettingId { get; set; }
         
         [ForeignKey("UserSettingId")]
-        public virtual UserSetting Setting { get; set; }
+        public virtual UserSettings? Setting { get; set; }
 
         public virtual ICollection<UserChat>? UserChats { get; set; }
         public virtual ICollection<UserFavouritePost>? FavouritePosts { get; set; }
         public virtual ICollection<FavouriteCategory>? FavouriteCategories { get; set; }
         public virtual ICollection<VisitedPost>? VisitedPosts { get; set; }
+        public virtual UserActivitySummary? UserActivitySummary { get; set; }
         public virtual ICollection<Notification>? Notifications { get; set; }
         public virtual ICollection<Opinion>? CreatedOpinions { get; set; }
         public virtual ICollection<UserOpinion>? UserOpinions { get; set; }

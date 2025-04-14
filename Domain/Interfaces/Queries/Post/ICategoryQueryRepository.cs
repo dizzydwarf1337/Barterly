@@ -11,6 +11,7 @@ namespace Domain.Interfaces.Queries.Post
     {
         Task<Category> GetCategoryByIdAsync(Guid id);
         Task<ICollection<Category>> GetCategoriesAsync();
-
+        Task<ICollection<SubCategory>> GetSubCategoriesByCategory(Guid id);
+        Task<SubCategory> GetSubCategoryByIdAsync(Guid id);
     }
 }

@@ -17,7 +17,7 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -32,7 +32,12 @@ namespace Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameEN")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("NamePL")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -40,101 +45,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DeletedPost", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("PriceType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("PromotionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ShortDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SubCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeletedPosts");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DeletedUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HouseNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeletedUsers");
                 });
 
             modelBuilder.Entity("Domain.Entities.FavouriteCategory", b =>
@@ -151,7 +61,29 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("FavoriteCategories");
+                    b.ToTable("FavouriteCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GlobalNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalNotifications");
                 });
 
             modelBuilder.Entity("Domain.Entities.Log", b =>
@@ -223,6 +155,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -310,6 +246,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -469,49 +408,6 @@ namespace Persistence.Migrations
                     b.ToTable("SearchHistories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Session", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Expired")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsExpired")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Started")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sessions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.SessionFavouritePost", b =>
-                {
-                    b.Property<Guid>("SessionId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnOrder(1);
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnOrder(0);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("SessionId", "PostId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("SessionFavoritePosts");
-                });
-
             modelBuilder.Entity("Domain.Entities.SubCategory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -521,7 +417,12 @@ namespace Persistence.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("TitleEN")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TitlePL")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -562,7 +463,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -570,7 +470,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -588,7 +487,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HouseNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -616,14 +514,12 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfilePicturePath")
@@ -633,7 +529,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -643,7 +538,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserSettingId")
+                    b.Property<Guid?>("UserSettingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -655,9 +550,6 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserSettingId")
-                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -671,26 +563,27 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MostViewedCategory")
+                    b.Property<string>("MostViewedCategories")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MostViewedCity")
+                    b.Property<string>("MostViewedCities")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TotalOpinion")
-                        .HasColumnType("int");
 
                     b.Property<int>("TotalPostsVisited")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserActivities");
                 });
@@ -731,7 +624,7 @@ namespace Persistence.Migrations
                     b.ToTable("UserFavouritePost");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserSetting", b =>
+            modelBuilder.Entity("Domain.Entities.UserSettings", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -741,6 +634,9 @@ namespace Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsChatRestricted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsHidden")
@@ -756,6 +652,9 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserSettings");
                 });
@@ -1083,34 +982,15 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SessionFavouritePost", b =>
-                {
-                    b.HasOne("Domain.Entities.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Session", "Session")
-                        .WithMany("Favourites")
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("Session");
-                });
-
             modelBuilder.Entity("Domain.Entities.SubCategory", b =>
                 {
-                    b.HasOne("Domain.Entities.Category", "Categoty")
+                    b.HasOne("Domain.Entities.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categoty");
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
@@ -1120,22 +1000,11 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.HasOne("Domain.Entities.UserSetting", "Setting")
-                        .WithOne("user")
-                        .HasForeignKey("Domain.Entities.User", "UserSettingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Setting");
-                });
-
             modelBuilder.Entity("Domain.Entities.UserActivitySummary", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("UserActivitySummary")
+                        .HasForeignKey("Domain.Entities.UserActivitySummary", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1168,10 +1037,21 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserSettings", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithOne("Setting")
+                        .HasForeignKey("Domain.Entities.UserSettings", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.VisitedPost", b =>
                 {
                     b.HasOne("Domain.Entities.Post", "Post")
-                        .WithMany()
+                        .WithMany("VisitedPosts")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1294,17 +1174,14 @@ namespace Persistence.Migrations
                     b.Navigation("PostOpinions");
 
                     b.Navigation("PostReports");
+
+                    b.Navigation("VisitedPosts");
                 });
 
             modelBuilder.Entity("Domain.Entities.Promotion", b =>
                 {
                     b.Navigation("Post")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Session", b =>
-                {
-                    b.Navigation("Favourites");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -1323,7 +1200,11 @@ namespace Persistence.Migrations
 
                     b.Navigation("SearchHistory");
 
+                    b.Navigation("Setting");
+
                     b.Navigation("Transactions");
+
+                    b.Navigation("UserActivitySummary");
 
                     b.Navigation("UserChats");
 
@@ -1332,12 +1213,6 @@ namespace Persistence.Migrations
                     b.Navigation("UserPosts");
 
                     b.Navigation("VisitedPosts");
-                });
-
-            modelBuilder.Entity("Domain.Entities.UserSetting", b =>
-                {
-                    b.Navigation("user")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

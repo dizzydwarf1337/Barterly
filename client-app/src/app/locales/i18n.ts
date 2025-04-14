@@ -1,0 +1,97 @@
+﻿import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+        resources: {
+            en: {
+                translation: {
+                    addPost: "Add Post",
+                    category: "Category",
+                    categories: "Categories",
+                    profile: "Profile",
+                    changeLanguage: "Zmień na PL",
+                    notLogin: "Login",
+                    login: "Login",
+                    loginSuccess: "You have logged in out successfully",
+                    loginFailed: "Login failed",
+                    logout:"Logout",
+                    logoutSuccess: "You have logged out successfully",
+                    logoutFailed: "Logout failed",
+                    orLogin: "Or login with",
+                    orRegister: "Or sign in",
+                    signIn: "Sign in",
+                    password: "Password",
+                    passwordConfirm:"Confirm Password",
+                    firstName: "First Name",
+                    lastName: "Last Name",
+                    country: "Country",
+                    city: "City",
+                    street: "Street",
+                    houseNumber: "House number",
+                    postalCode: "Postal code",
+                    passwordConfirmFailed: "Password field mismatch",
+                    signInSuccess: "You have signed in successfully",
+                    signInFailed: "Sign in has failed",                    
+                    settings: "Settings",
+                    thankForSignIn: "Thank you for sign in!",
+                    emailConfirmation: "To complete your registration, please confirm your email address by clicking the link in the email we sent you. If you didn't receive the email, please check your spam folder or click below to resend the email.",
+                    resendEmailConfirmation: "Resend email",
+                    confirmationMailSent: "New confirmation mail has been sent",
+                    confirmationMailSuccess: "Email has confirmed successfully",
+                    confirmationMailFailed: "Email confirmation failed",
+                    confirmationMailError: "Error while sending mail",
+                    sendAgain: "Send again in",
+                    hello:"Hello",
+                }
+            },
+            pl: {
+                translation: {
+                    addPost: "Dodaj Ogłoszenie",
+                    category: "Kategoria",
+                    categories: "Kategorie",
+                    profile: "Profil użytkownika",
+                    changeLanguage: "Change to EN",
+                    notLogin: "Logowanie",
+                    login: "Zaloguj się",
+                    loginSuccess: "Zalogowałeś się pomyślnie",
+                    loginFailed: "Nieudana próba logowania",
+                    logoutSuccess: "Zostałeś pomyślnie wylogowany.",
+                    logoutFailded: "Niedudana próba wylogowania",
+                    orLogin: "Lub zaloguj się za pomocą",
+                    orRegister: "Lub zarejestruj się",
+                    signIn: "Zarejestruj się",
+                    password: "Hasło",
+                    passwordConfirm:"Potwierdź hasło",
+                    firstName: "Imię",
+                    lastName: "Nazwisko",
+                    country: "Państwo",
+                    city: "Miasto",
+                    street: "Ulica",
+                    houseNumber: "Numer budynku",
+                    postalCode: "Kod pocztowy",
+                    passwordConfirmFailed: "Hasło się nie zgadza",
+                    signInSuccess: "Rejestracja zakończona pomyślnie",
+                    signInFailed: "Nieudana próba rejestracji",
+                    settings: "Ustawienia",
+                    thankForSignIn:"Dziękujemy za rejestrację!",
+                    emailConfirmation: "Aby zakończyć rejestrację, prosimy o potwierdzenie swojego adresu e-mail, klikając link w wiadomości, którą wysłaliśmy. Jeśli nie otrzymałeś wiadomości, sprawdź folder ze spamem lub kliknij poniżej, aby wysłać wiadomość ponownie.",
+                    resendEmailConfirmation: "Wyślij ponownie",
+                    confirmationMailSent: "Nowa wiadomość potwierdzająca została wysłana",
+                    confirmationMailSuccess: "Adres email został podtwierdzony",
+                    confirmationMailFailed: "Nieudana próba podtwierdzenia adresu email",
+                    confirmationMailError: "Nieudana próba wysłania",
+                    sendAgain: "Wyslij ponownie za",
+                    hello:"Witaj"
+                }
+            }
+        },
+        lng: localStorage.getItem('brt_lng') || 'en', 
+        fallbackLng: 'en',
+        interpolation: { escapeValue: false }
+    });
+
+export default i18n;

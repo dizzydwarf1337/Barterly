@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class UserFavouritePost : FavouritePostBase
+    public class UserFavouritePost 
     {
+        [Column(Order = 0)]
+        public Guid PostId { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public virtual Post Post { get; set; }
         [Key]
         [Column(Order = 1)]
         public Guid UserId { get; set; } 

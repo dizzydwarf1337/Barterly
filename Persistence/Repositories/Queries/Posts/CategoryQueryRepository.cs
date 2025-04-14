@@ -18,12 +18,22 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<ICollection<Category>> GetCategoriesAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Include(x=>x.SubCategories).ToListAsync();
         }
 
         public async Task<Category> GetCategoryByIdAsync(Guid id)
         {
             return await _context.Categories.FindAsync(id) ?? throw new Exception("Category not found");
+        }
+
+        public async Task<ICollection<SubCategory>> GetSubCategoriesByCategory(Guid id)
+        {
+            return await _context.SubCategories.Where(x=>x.CategoryId==id).ToListAsync();
+        }
+
+        public async Task<SubCategory> GetSubCategoryByIdAsync(Guid id)
+        {
+            return await _context.SubCategories.FindAsync(id);
         }
     }
 }

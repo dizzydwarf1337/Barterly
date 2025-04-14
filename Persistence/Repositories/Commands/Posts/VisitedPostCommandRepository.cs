@@ -27,19 +27,10 @@ namespace Persistence.Repositories.Commands.Post
             _context.VisitedPosts.Remove(visitedPost);
             await _context.SaveChangesAsync();
         }
-
-        public async Task IncreaseVisitedCount(Guid id)
+        public async Task UpdateVisitedPost(VisitedPost post)
         {
-            var visitedPost = await _context.VisitedPosts.FindAsync(id) ?? throw new Exception("VisitedPost not found");
-            visitedPost.VisitedCount++;
-        }
-
-        public async Task UpdateLastVisited(Guid id, DateTime date)
-        {
-            var visitedPost = await _context.VisitedPosts.FindAsync(id) ?? throw new Exception("VisitedPost not found");
-            visitedPost.LastVisitedAt = date;
+            _context.VisitedPosts.Update(post);
             await _context.SaveChangesAsync();
-
         }
     }
 }

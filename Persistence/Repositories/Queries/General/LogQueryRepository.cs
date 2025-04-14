@@ -23,7 +23,7 @@ namespace Persistence.Repositories.Queries.General
 
         public async Task<ICollection<Log>> GetLogsPaginatedAsync(int PageSize,int PageNum)
         {
-            return await _context.Logs.Skip(PageSize*PageNum).Take(PageSize).ToListAsync() ?? throw new Exception("No logs found.");
+            return await _context.Logs.OrderByDescending(x=>x.CreatedAt).Skip(PageSize*(PageNum-1)).Take(PageSize).ToListAsync() ?? throw new Exception("No logs found.");
         }
 
         public async Task<ICollection<Log>> GetLogsByPostIdAsync(Guid postId)

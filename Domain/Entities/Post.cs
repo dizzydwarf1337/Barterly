@@ -50,6 +50,8 @@ namespace Domain.Entities
 
         public bool IsHidden { get; set; } = false;
 
+        public bool IsDeleted { get; set; } = false;
+
         public string? MainImageUrl { get; set; }
         
         [ForeignKey("SubCategoryId")]
@@ -63,5 +65,6 @@ namespace Domain.Entities
         public virtual ICollection<PostImage>? PostImages { get; set; }
         public virtual ICollection<PostOpinion>? PostOpinions { get; set; }
         public virtual ICollection<ReportPost>? PostReports { get; set; }
+        public virtual ICollection<VisitedPost>? VisitedPosts { get; set; }
     }
 }

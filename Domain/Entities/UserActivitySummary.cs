@@ -15,12 +15,10 @@ namespace Domain.Entities
         public Guid UserId { get; set; }
        
         public int TotalPostsVisited { get; set; }
+
+        public string MostViewedCategories { get; set; } = String.Empty;
         
-        public int TotalOpinion { get; set; }
-        
-        public string MostViewedCategory { get; set; }
-        
-        public string MostViewedCity { get; set; }
+        public string MostViewedCities { get; set; } = String.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = null;

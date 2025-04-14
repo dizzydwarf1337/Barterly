@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,8 @@ namespace Domain.Interfaces.Commands.User
 {
     public interface ITokenCommandRepository
     {
-        Task AddToken(Guid userId, string token, string LoginProvider, string type);
-        Task DeleteToken(Guid userId, string type);
+        Task AddToken(Guid userId, string token, string LoginProvider, TokenType tokenType);
+        Task DeleteToken(string token);
+        Task DeleteToken(Guid userId, TokenType tokenType);
     }
 }

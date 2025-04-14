@@ -9,8 +9,7 @@ namespace Domain.Interfaces.Queries.User
 {
     public interface IUserSettingQueryRepository
     {
-        Task<ICollection<UserSetting>> GetUserSettingsAsync();
-        Task<UserSetting> GetUserSettingByIdAsync(Guid id);
-        Task<UserSetting> GetUserSettingByUserIdAsync(Guid userId);
+        Task<UserSettings> GetUserSettingByIdAsync(Guid id);
+        Task<UserSettings> GetUserSettingByUserIdAsync(Guid userId);
     }
 }

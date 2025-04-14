@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.Commands.User;
+﻿using Domain.Entities;
+using Domain.Interfaces.Commands.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 using System;
@@ -14,6 +15,23 @@ namespace Persistence.Repositories.Commands.Users
     {
         public UserSettingCommandRepository(BarterlyDbContext context) : base(context)
         {
+        }
+
+        public async Task CreateUserSettings(UserSettings settings)
+        {
+            await _context.UserSettings.AddAsync(settings);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserSettings(Guid settingsId)
+        {
+            var userSettings = await _context.UserSettings.FindAsync(settingsId);
+            if (userSettings != null)
+            {
+                throw new ArgumentNullException(nameof(userSettings.Id));
+            }
+             _context.UserSettings.Remove(userSettings);
+            await _context.SaveChangesAsync();
         }
 
         public async Task SetBanStatusAsync(Guid userId, bool isBanned)

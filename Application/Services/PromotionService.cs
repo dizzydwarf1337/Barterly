@@ -1,4 +1,4 @@
-﻿using Application.ServiceInterfaces;
+﻿using Application.Interfaces;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;

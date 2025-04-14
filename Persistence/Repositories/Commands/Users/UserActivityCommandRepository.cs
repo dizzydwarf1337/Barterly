@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Commands.User;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,9 @@ namespace Persistence.Repositories.Commands.Users
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteUserActivitySummary(Guid SummaryId)
+        public async Task DeleteUserActivitySummary(Guid userId)
         {
-            var userActivity = await _context.UserActivities.FindAsync(SummaryId) ?? throw new Exception("User Activity not found");
+            var userActivity = await _context.UserActivities.FirstOrDefaultAsync(x=>x.UserId==userId) ?? throw new Exception("User Activity not found");
             _context.UserActivities.Remove(userActivity);
             await _context.SaveChangesAsync();
         }

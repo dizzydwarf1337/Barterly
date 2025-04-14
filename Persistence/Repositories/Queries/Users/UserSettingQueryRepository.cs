@@ -17,20 +17,16 @@ namespace Persistence.Repositories.Queries.Users
         }
 
 
-        public async Task<UserSetting> GetUserSettingByIdAsync(Guid id)
+        public async Task<UserSettings> GetUserSettingByIdAsync(Guid id)
         {
             return await _context.UserSettings.FindAsync(id) ?? throw new Exception("User setting not found");
         }
 
-        public async Task<UserSetting> GetUserSettingByUserIdAsync(Guid userId)
+        public async Task<UserSettings> GetUserSettingByUserIdAsync(Guid userId)
         {
             return await _context.UserSettings.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new Exception("User setting not found");
         }
 
-        public async Task<ICollection<UserSetting>> GetUserSettingsAsync()
-        {
-            return await _context.UserSettings.ToListAsync();
-        }
 
     }
 }

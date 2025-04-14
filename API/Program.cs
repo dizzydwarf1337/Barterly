@@ -1,10 +1,12 @@
-using API;
+using API.Core.ServicesConfiguration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Database;
+using Persistence.Seed;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +22,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
     {
-        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+        policy.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:3000");
     });
 });
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -32,16 +34,18 @@ builder.Services.AddAuthorization(opt =>
     opt.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
     opt.AddPolicy("User", policy => policy.RequireRole("User"));
     opt.AddPolicy("Moderator", policy => policy.RequireRole("Moderator"));
+    opt.AddPolicy("All", policy => policy.RequireRole("Moderator","User","Admin"));
 });
 
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = jwtSettings["Key"];
-
+var googleSettings = builder.Configuration.GetSection("GoogleAPI");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  
 })
 .AddJwtBearer(options =>
 {
@@ -53,15 +57,68 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.FromMinutes(5),
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
+        RefreshBeforeValidation = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+
     };
-});
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine($"Challenge issued with error: {context.Error}, description: {context.ErrorDescription}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            var token = context.SecurityToken as JwtSecurityToken;
+            if (token != null)
+            {
+                Console.WriteLine($"Token validated: {token.RawData}");
+                Console.WriteLine($"Claims: {string.Join(", ", token.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
+                Console.WriteLine($"Valid To (UTC): {token.ValidTo}");
+            }
+            else
+            {
+                Console.WriteLine("Token validation failed: SecurityToken is null");
+            }
+
+            return Task.CompletedTask;
+        }
+    };
+})
+.AddGoogle(options =>
+{ 
+    options.ClientId = googleSettings["ClientId"];
+    options.ClientSecret = googleSettings["Key"];
+    options.CallbackPath = "/signedin-google";
+}); ;
 
 ServiceConfig.ConfigureServices(builder.Services);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+    string[] roleNames = { "Admin", "User","Moderator" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+        }
+    }
+    await Seed.SeedDb(scope.ServiceProvider);
+}
 
 app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();

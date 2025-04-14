@@ -10,8 +10,7 @@ namespace Domain.Interfaces.Commands.Post
     public interface IVisitedPostCommandRepository
     {
         Task CreateVisitedPostAsync(VisitedPost visitedPost);
-        Task UpdateLastVisited(Guid id, DateTime date);
-        Task IncreaseVisitedCount(Guid id);
+        Task UpdateVisitedPost(VisitedPost post);
         Task DeleteVisitedPostAsync(Guid id);
     }
 }

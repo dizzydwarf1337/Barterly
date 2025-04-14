@@ -19,12 +19,16 @@ namespace Application.Core.Mapper
             CreateMap<GlobalNotification, NotificationDto>();
             CreateMap<Notification, NotificationDto>();
             CreateMap<Log, LogDto>();
+            CreateMap<LogDto, Log>();
             CreateMap<Post, PostDto>();
             CreateMap<ReportUser, ReportDto>().ForMember(x => x.RepotedSubjectId, opt => opt.MapFrom(x => x.ReportedUserId));
             CreateMap<ReportPost, ReportDto>().ForMember(x=>x.RepotedSubjectId,opt=>opt.MapFrom(x=>x.ReportedPostId));
-            CreateMap<Session, SessionDto>();
+            CreateMap<Category, CategoryDto>().ForMember(x=>x.SubCateogries,opt=> opt.MapFrom(x=>x.SubCategories));
             CreateMap<SubCategory, SubCategoryDto>();
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.token, opt => opt.Ignore());
+            CreateMap<UserSettings,UserSettingsDto>();
+            CreateMap<RegisterDto, User>();
             CreateMap<UserOpinion,OpinionDto>().ForMember(x=>x.SubjectId, opt => opt.MapFrom(x => x.UserId));
             CreateMap<PostOpinion, OpinionDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.PostId));
         }
