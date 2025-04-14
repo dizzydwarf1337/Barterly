@@ -44,7 +44,7 @@ export default observer(function RegistrationForm() {
     }
 
     return (
-        <Box display="flex" flexDirection="column" gap="10px" sx={{ backgroundColor: "background.paper", p: "50px", borderRadius: "20px", boxShadow: "5px 5px 3px 2px #22333B" }}>
+        <Box display="flex" flexDirection="column" gap="10px" sx={{ backgroundColor: "background.paper", p: "50px", borderRadius: "20px", boxShadow: "5px 5px 1px 0px #22333B" }}>
             <form onSubmit={hanldeSubmit}>
                 <Box display="flex" flexDirection="column" gap="20px" >
                     <Box display="flex" flexDirection="row" width="100%" gap={uiStore.isMobile ? "10px" : "60px"}>
