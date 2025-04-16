@@ -1,11 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Commands.Logout
 {
@@ -22,7 +17,7 @@ namespace Application.Features.Users.Commands.Logout
             try
             {
                 await _authService.LogOut(request.token);
-                
+
                 return ApiResponse<Unit>.Success(Unit.Value);
             }
             catch (Exception ex)

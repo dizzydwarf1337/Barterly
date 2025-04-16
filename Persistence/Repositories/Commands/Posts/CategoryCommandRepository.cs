@@ -2,11 +2,6 @@
 using Domain.Interfaces.Commands.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Commands.Post
 {
@@ -37,7 +32,7 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task DeleteSubCategoryAsync(Guid id)
         {
-            await _context.SubCategories.Where(x=>x.Id==id).ExecuteDeleteAsync();
+            await _context.SubCategories.Where(x => x.Id == id).ExecuteDeleteAsync();
             await _context.SaveChangesAsync();
         }
 

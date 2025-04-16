@@ -1,11 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Commands.ResetPassword
 {
@@ -25,7 +20,7 @@ namespace Application.Features.Users.Commands.ResetPassword
                 await _userService.ResetPassword(request.Email, request.Token, request.Password);
                 return ApiResponse<Unit>.Success(Unit.Value);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return ApiResponse<Unit>.Failure($"Error while resetting password, {ex}");
             }

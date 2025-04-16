@@ -1,10 +1,7 @@
 ﻿using Application.DTOs.User;
 using Application.Features.Users.Commands.ConfirmEmail;
 using Application.Features.Users.Commands.ResetPassword;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
-using System.Web;
 
 namespace API.Controllers
 {

@@ -3,11 +3,6 @@ using Application.Interfaces;
 using Domain.Entities.Users;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -31,9 +26,9 @@ namespace Application.Services
             {
                 throw new Exception($"User with email {email} not found.");
             }
-            
+
             var result = await _tokenService.CheckUserToken(email, Domain.Enums.TokenType.EmailConfirmation, token);
-            
+
             if (!result)
             {
                 throw new Exception("Email token is invalid or expired");
@@ -44,7 +39,7 @@ namespace Application.Services
             {
                 throw new Exception("Email confirmation failed");
             }
-             await _tokenService.DeleteTokenByUserMail(user.Email, Domain.Enums.TokenType.EmailConfirmation);
+            await _tokenService.DeleteTokenByUserMail(user.Email, Domain.Enums.TokenType.EmailConfirmation);
         }
 
         public Task DeleteUser(Guid userId)
@@ -67,7 +62,7 @@ namespace Application.Services
             var IsCorrect = await _tokenService.CheckUserToken(email, TokenType.PasswordReset, token);
             if (!IsCorrect)
             {
-                throw new Exception("Reset password token is invalid");    
+                throw new Exception("Reset password token is invalid");
             }
             try
             {

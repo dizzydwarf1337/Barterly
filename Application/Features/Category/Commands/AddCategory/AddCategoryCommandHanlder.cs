@@ -1,12 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Features.Category.Commands.AddCategory
 {
@@ -26,7 +20,8 @@ namespace Application.Features.Category.Commands.AddCategory
                 await _categoryService.AddCategory(request.category);
                 return ApiResponse<Unit>.Success(Unit.Value);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return ApiResponse<Unit>.Failure(ex.Message);
             }
         }

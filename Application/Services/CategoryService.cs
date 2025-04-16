@@ -4,11 +4,6 @@ using AutoMapper;
 using Domain.Entities.Categories;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -49,7 +44,7 @@ namespace Application.Services
 
         public async Task<ICollection<CategoryDto>> GetAllCategories()
         {
-            var categories =  await _categoryQueryRepository.GetCategoriesAsync();
+            var categories = await _categoryQueryRepository.GetCategoriesAsync();
             return _mapper.Map<ICollection<CategoryDto>>(categories);
         }
 
@@ -62,9 +57,9 @@ namespace Application.Services
         public async Task<Category?> GetCategoryByName(string name)
         {
             var categories = await _categoryQueryRepository.GetCategoriesAsync();
-           
-            return  categories.FirstOrDefault(x => String.Equals(x.NameEN.ToLower(),name.ToLower()) || String.Equals(x.NamePL.ToLower(),name.ToLower()));
-            
+
+            return categories.FirstOrDefault(x => String.Equals(x.NameEN.ToLower(), name.ToLower()) || String.Equals(x.NamePL.ToLower(), name.ToLower()));
+
         }
 
         public async Task<ICollection<SubCategoryDto>> GetSubCategoriesByCategoryId(Guid categoryId)

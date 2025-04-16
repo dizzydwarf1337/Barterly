@@ -2,11 +2,6 @@
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Queries.Post
 {
@@ -38,7 +33,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<ICollection<PostOpinion>> GetPostOpinionsPaginatedAsync(Guid postId, int page, int pageSize)
         {
-            return await _context.PostOpinions.Skip((page-1) * pageSize).Take(pageSize).Where(x=>x.PostId==postId).ToListAsync();
+            return await _context.PostOpinions.Skip((page - 1) * pageSize).Take(pageSize).Where(x => x.PostId == postId).ToListAsync();
         }
 
     }

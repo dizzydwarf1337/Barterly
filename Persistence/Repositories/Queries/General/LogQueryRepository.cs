@@ -2,11 +2,6 @@
 using Domain.Interfaces.Queries.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Queries.General
 {
@@ -21,9 +16,9 @@ namespace Persistence.Repositories.Queries.General
             return await _context.Logs.FindAsync(id) ?? throw new Exception($"Log with id {id} not found.");
         }
 
-        public async Task<ICollection<Log>> GetLogsPaginatedAsync(int PageSize,int PageNum)
+        public async Task<ICollection<Log>> GetLogsPaginatedAsync(int PageSize, int PageNum)
         {
-            return await _context.Logs.OrderByDescending(x=>x.CreatedAt).Skip(PageSize*(PageNum-1)).Take(PageSize).ToListAsync() ?? throw new Exception("No logs found.");
+            return await _context.Logs.OrderByDescending(x => x.CreatedAt).Skip(PageSize * (PageNum - 1)).Take(PageSize).ToListAsync() ?? throw new Exception("No logs found.");
         }
 
         public async Task<ICollection<Log>> GetLogsByPostIdAsync(Guid postId)

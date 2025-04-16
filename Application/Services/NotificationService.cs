@@ -8,13 +8,6 @@ using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.General;
 using Domain.Interfaces.Queries.User;
-using MediatR;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -33,7 +26,7 @@ namespace Application.Services
             INotificationQueryRepository notificationQueryRepository,
             ILogService logService,
             IMapper mapper
-            
+
         )
         {
             _globalNotificationCommandRepository = globalNotificationCommandRepository;
@@ -47,13 +40,13 @@ namespace Application.Services
         public async Task DeleteGlobalNotification(Guid notificationId)
         {
             await _globalNotificationCommandRepository.DeleteGlobalNotificationAsync(notificationId);
-            await _logService.CreateLogAsync($"Global notification deleted with id: {notificationId}", LogType.Information,null, null, null);
+            await _logService.CreateLogAsync($"Global notification deleted with id: {notificationId}", LogType.Information, null, null, null);
         }
 
         public async Task DeleteNotification(Guid notificationId)
         {
             await _notificationCommandRepository.DeleteNotificationAsync(notificationId);
-            await _logService.CreateLogAsync($"Notification deleted with id: {notificationId}", LogType.Information,null, null, null);
+            await _logService.CreateLogAsync($"Notification deleted with id: {notificationId}", LogType.Information, null, null, null);
         }
 
         public async Task<NotificationDto> GetGlobalNotification(Guid notificationId)
@@ -64,7 +57,7 @@ namespace Application.Services
 
         public async Task<NotificationDto> GetNotification(Guid notificationId)
         {
-            var notification =  await _notificationQueryRepository.GetNotificationAsync(notificationId);
+            var notification = await _notificationQueryRepository.GetNotificationAsync(notificationId);
             return _mapper.Map<NotificationDto>(notification);
         }
 
@@ -80,7 +73,7 @@ namespace Application.Services
 
         public async Task ReadNotification(Guid notificationId)
         {
-            await _notificationCommandRepository.SetReadNotificationAsync(notificationId, true);   
+            await _notificationCommandRepository.SetReadNotificationAsync(notificationId, true);
         }
 
         public async Task SendGlobalNotification(NotificationDto globalNotification)

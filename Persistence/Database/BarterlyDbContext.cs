@@ -5,11 +5,6 @@ using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Database
 {
@@ -21,7 +16,7 @@ namespace Persistence.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FavouriteCategory>().HasKey(fc => new { fc.UserId, fc.CategoryId });
-            modelBuilder.Entity<UserFavouritePost>().HasKey(ufp => new { ufp.UserId, ufp.PostId }); 
+            modelBuilder.Entity<UserFavouritePost>().HasKey(ufp => new { ufp.UserId, ufp.PostId });
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Setting)
                 .WithOne(us => us.User)
@@ -46,7 +41,7 @@ namespace Persistence.Database
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<ReportPost> ReportPosts { get; set; }
         public DbSet<ReportUser> ReportUsers { get; set; }
-        public DbSet<SearchHistory> SearchHistories { get; set; } 
+        public DbSet<SearchHistory> SearchHistories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<UserActivitySummary> UserActivities { get; set; }
         public DbSet<UserFavouritePost> UserFavouritePosts { get; set; }

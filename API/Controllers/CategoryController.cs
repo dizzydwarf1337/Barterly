@@ -14,16 +14,17 @@ namespace API.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
 
-            return  HandleResponse(await Mediator.Send(new GetAllCategoriesQuery { }));
+            return HandleResponse(await Mediator.Send(new GetAllCategoriesQuery { }));
         }
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPost("createCategory")]
-        public async Task<IActionResult> AddCategory(CategoryDto category) { 
+        public async Task<IActionResult> AddCategory(CategoryDto category)
+        {
 
             return HandleResponse(await Mediator.Send(new AddCategoryCommand { category = category }));
         }
 
-        [Authorize(Roles ="Admin,Moderator")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(string id)
         {

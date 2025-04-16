@@ -1,13 +1,6 @@
 ﻿using Application.Interfaces;
 using BarterlyIntegrationTests.Core;
-using Microsoft.AspNetCore.Identity;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BarterlyIntegrationTests.ServiceTests.General
 {

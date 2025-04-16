@@ -2,12 +2,6 @@
 using Domain.Entities.Users;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -45,7 +39,7 @@ namespace Application.Services
 
         public async Task SetBanStatusAsync(Guid userId, bool isBanned)
         {
-             await _userSettingCommandRepository.SetBanStatusAsync(userId, isBanned);
+            await _userSettingCommandRepository.SetBanStatusAsync(userId, isBanned);
         }
 
         public async Task SetChatRestrictionAsync(Guid userId, bool isRestricted)

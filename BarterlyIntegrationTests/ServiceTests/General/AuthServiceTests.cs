@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BarterlyIntegrationTests.ServiceTests.General
+﻿namespace BarterlyIntegrationTests.ServiceTests.General
 {
     internal class AuthServiceTests
     {

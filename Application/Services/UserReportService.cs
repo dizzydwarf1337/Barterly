@@ -5,11 +5,6 @@ using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -48,7 +43,7 @@ namespace Application.Services
             return reportsDtos;
         }
 
-        public  async Task<ICollection<ReportDto>> GetReportsByRepotedSubjectId(Guid repotedSubjectId)
+        public async Task<ICollection<ReportDto>> GetReportsByRepotedSubjectId(Guid repotedSubjectId)
         {
             var reportsDtos = _mapper.Map<ICollection<ReportDto>>(await _reportUserQueryRepository.GetReportsUserByUserIdAsync(repotedSubjectId));
             return reportsDtos;

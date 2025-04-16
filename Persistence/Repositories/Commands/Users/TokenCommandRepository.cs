@@ -1,14 +1,7 @@
-﻿using Domain.Entities;
-using Domain.Enums;
+﻿using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Commands.Users
 {
@@ -18,12 +11,12 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task AddToken(Guid userId, string token, string LoginProvider, TokenType tokenType)
         {
-            await _context.UserTokens.AddAsync(new Microsoft.AspNetCore.Identity.IdentityUserToken<Guid> { UserId = userId, LoginProvider = LoginProvider, Value = token, Name=tokenType.ToString().ToLower()});
+            await _context.UserTokens.AddAsync(new Microsoft.AspNetCore.Identity.IdentityUserToken<Guid> { UserId = userId, LoginProvider = LoginProvider, Value = token, Name = tokenType.ToString().ToLower() });
             await _context.SaveChangesAsync();
         }
         public async Task DeleteToken(string token)
         {
-            var Otoken = await _context.UserTokens.FirstOrDefaultAsync(x=>x.Value.ToString()==token);
+            var Otoken = await _context.UserTokens.FirstOrDefaultAsync(x => x.Value.ToString() == token);
             if (Otoken == null)
             {
                 throw new ArgumentNullException(nameof(Otoken));

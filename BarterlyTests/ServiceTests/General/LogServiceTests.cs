@@ -1,19 +1,11 @@
-using Moq;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Services;
+using AutoMapper;
+using Domain.Entities.Common;
 using Domain.Enums;
 using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Queries.General;
-using Persistence.Repositories.Commands.General;
-using Persistence.Repositories.Queries.General;
-using Xunit;
-using Persistence.Database;
-using AutoMapper;
-using Application.Interfaces;
-using Application.DTOs;
-using Domain.Entities.Common;
+using Moq;
 
 namespace BarterlyUnitTests.ServiceTests.General
 {

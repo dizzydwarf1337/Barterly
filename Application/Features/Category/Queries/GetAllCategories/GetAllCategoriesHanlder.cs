@@ -2,12 +2,6 @@
 using Application.DTOs.Categories;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Category.Queries.GetAllCategories
 {
@@ -28,7 +22,7 @@ namespace Application.Features.Category.Queries.GetAllCategories
             }
             catch
             {
-                return ApiResponse< ICollection<CategoryDto>>.Failure("Error while loading categories");
+                return ApiResponse<ICollection<CategoryDto>>.Failure("Error while loading categories");
             }
         }
     }

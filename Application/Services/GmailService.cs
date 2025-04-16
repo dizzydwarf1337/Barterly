@@ -1,10 +1,8 @@
 ﻿using Application.Interfaces;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {

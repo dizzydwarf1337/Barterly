@@ -3,11 +3,6 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Interfaces.Queries.Post;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -16,8 +11,8 @@ namespace Application.Services
         private readonly IUserActivityService _userActivityService;
         private readonly IPostQueryRepository _postQueryRepository;
         private readonly IMapper _mapper;
-        
-        public RecommendationService(IUserActivityService userActivityService,IPostQueryRepository postQueryRepository, IMapper mapper)
+
+        public RecommendationService(IUserActivityService userActivityService, IPostQueryRepository postQueryRepository, IMapper mapper)
         {
             _userActivityService = userActivityService;
             _postQueryRepository = postQueryRepository;
@@ -26,10 +21,10 @@ namespace Application.Services
 
         public async Task<ICollection<PostDto>> GetFeed(int page, Guid? userId = null)
         {
-            
+
             ICollection<PostDto> posts = new List<PostDto>();
             ICollection<PostDto> promotedPosts = new List<PostDto>();
-            if (userId==null)
+            if (userId == null)
             {
                 posts = await GetPopularPosts(7, page);
                 promotedPosts = await GetPromotedPosts(3);
@@ -40,7 +35,7 @@ namespace Application.Services
                 posts = _mapper.Map<ICollection<PostDto>>(await _postQueryRepository.GetFeed(userActivity.MostViewedCategories, userActivity.MostViewedCities, 7, page));
                 promotedPosts = await GetPromotedPosts(3, userActivity.MostViewedCategories, userActivity.MostViewedCities);
             }
-            return ShufflePosts(posts,promotedPosts);
+            return ShufflePosts(posts, promotedPosts);
         }
 
         public Task<ICollection<PostDto>> GetPopularPosts(int pageCount, int Page)

@@ -1,9 +1,5 @@
 ﻿using Application.Interfaces;
-using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -28,7 +24,7 @@ namespace Application.Services
                 await file.CopyToAsync(stream);
             }
 
-            return fileName; 
+            return fileName;
         }
 
         public Task DeleteFile(string filePath)
