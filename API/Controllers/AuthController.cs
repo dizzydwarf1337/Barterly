@@ -1,15 +1,12 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Auth;
-using Application.Features.Users.Commands.ConfirmEmail;
 using Application.Features.Users.Commands.CreateUser;
 using Application.Features.Users.Commands.Login;
 using Application.Features.Users.Commands.LoginWithGoogle;
 using Application.Features.Users.Commands.Logout;
 using Application.Features.Users.Commands.ResendEmailConfirm;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 
 namespace API.Controllers
 {
@@ -47,7 +44,7 @@ namespace API.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            return HandleResponse(await Mediator.Send(new LogoutCommand { token=token}));
+            return HandleResponse(await Mediator.Send(new LogoutCommand { token = token }));
         }
 
         [HttpPost("resendEmailConfirm")]

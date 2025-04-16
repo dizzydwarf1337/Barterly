@@ -2,12 +2,6 @@
 using Domain.Interfaces.Commands.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Commands.Users
 {
@@ -30,13 +24,13 @@ namespace Persistence.Repositories.Commands.Users
             {
                 throw new ArgumentNullException(nameof(userSettings.Id));
             }
-             _context.UserSettings.Remove(userSettings);
+            _context.UserSettings.Remove(userSettings);
             await _context.SaveChangesAsync();
         }
 
         public async Task SetBanStatusAsync(Guid userId, bool isBanned)
         {
-            var userSettings = await _context.UserSettings.FirstOrDefaultAsync(x=>x.UserId == userId) ?? throw new Exception("User Settings not found") ;
+            var userSettings = await _context.UserSettings.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new Exception("User Settings not found");
             userSettings.IsBanned = isBanned;
             await _context.SaveChangesAsync();
         }

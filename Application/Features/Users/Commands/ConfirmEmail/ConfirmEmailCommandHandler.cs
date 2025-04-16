@@ -1,11 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Commands.ConfirmEmail
 {
@@ -27,8 +22,9 @@ namespace Application.Features.Users.Commands.ConfirmEmail
 
                 return ApiResponse<Unit>.Success(Unit.Value);
             }
-            catch (Exception ex) {
-                return ApiResponse<Unit>.Failure(ex.Message+ex.StackTrace);
+            catch (Exception ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message + ex.StackTrace);
             }
         }
     }

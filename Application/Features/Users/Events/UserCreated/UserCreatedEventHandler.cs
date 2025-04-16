@@ -1,14 +1,6 @@
 ﻿using Application.Interfaces;
-using Application.Services;
-using Domain.Entities;
 using Domain.Entities.Users;
 using MediatR;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Events.UserCreated
 {
@@ -32,7 +24,7 @@ namespace Application.Features.Users.Events.UserCreated
             try
             {
                 await _mailService.SendConfiramationMail(notification.Email);
-                var userSettings = new UserSettings { UserId=notification.UserId };
+                var userSettings = new UserSettings { UserId = notification.UserId };
                 await _userSettingService.CreateUserSettings(userSettings);
                 await _userActivityService.CreateUserActivity(notification.UserId);
                 var userNotification = new Notification

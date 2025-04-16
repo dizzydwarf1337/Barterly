@@ -21,7 +21,7 @@ namespace BarterlyIntegrationTests.Core
         public IAuthService authService { get; private set; }
         public ITokenService tokenService { get; private set; }
         public IConfiguration _configuration { get; private set; }
-        public UserManager<User> userManager { get; private set; } 
+        public UserManager<User> userManager { get; private set; }
         public DatabaseFixture()
         {
             var options = new DbContextOptionsBuilder<BarterlyDbContext>()
@@ -39,7 +39,7 @@ namespace BarterlyIntegrationTests.Core
             var mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiler>()).CreateMapper();
 
             logService = new LogService(logCommandRepo, logQueryRepo, mapper);
-            tokenService = new JwtTokenService(logService, userManager,_configuration,tokenQueryRepo,tokenCommandRepo);
+            tokenService = new JwtTokenService(logService, userManager, _configuration, tokenQueryRepo, tokenCommandRepo);
             authService = new AuthService(userManager, tokenService, logService);
         }
 

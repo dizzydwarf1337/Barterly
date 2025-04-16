@@ -5,22 +5,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Users;
 using Domain.Enums;
-using Domain.Interfaces.Commands.User;
 using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2.Responses;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -86,8 +76,9 @@ namespace Application.Services
                     throw new Exception("Failed to retrieve access token from Google.");
                 }
             }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message +ex.StackTrace);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + ex.StackTrace);
             }
 
 
@@ -98,7 +89,7 @@ namespace Application.Services
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken, settings);
             var user = await _userManager.FindByEmailAsync(payload.Email);
-            if(user == null)
+            if (user == null)
             {
                 user = new User
                 {
@@ -107,7 +98,7 @@ namespace Application.Services
                     FirstName = payload.GivenName,
                     LastName = payload.FamilyName,
                     ProfilePicturePath = payload.Picture,
-                    UserName=payload.Email,
+                    UserName = payload.Email,
                     EmailConfirmed = true,
                 };
                 var result = await _userManager.CreateAsync(user, "TemporaryPassword123!");
@@ -148,15 +139,16 @@ namespace Application.Services
                     throw new Exception(errors);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception($"Error while saving user: {ex.InnerException?.Message ?? ex.Message}");
             }
             await _userManager.AddToRoleAsync(user, "User");
 
-            var userCreatedEvent = new UserCreatedEvent(user.Email, user.FirstName, user.LastName,user.Id);
+            var userCreatedEvent = new UserCreatedEvent(user.Email, user.FirstName, user.LastName, user.Id);
             await _mediator.Publish(userCreatedEvent);
 
-            await _logService.CreateLogAsync($"User created successfully: {user.Email}",LogType.Information,userId: user.Id);
+            await _logService.CreateLogAsync($"User created successfully: {user.Email}", LogType.Information, userId: user.Id);
         }
 
         private async Task<TokenResponse> GetGoogleAccessTokenAsync(string code)
@@ -165,9 +157,9 @@ namespace Application.Services
             var parameters = new Dictionary<string, string>
             {
                 { "code", code },
-                { "client_id", _config["GoogleAPI:ClientId"] },          
-                { "client_secret", _config["GoogleAPI:Key"] },  
-                { "redirect_uri", _config["GoogleAPI:RedirectUri"] },    
+                { "client_id", _config["GoogleAPI:ClientId"] },
+                { "client_secret", _config["GoogleAPI:Key"] },
+                { "redirect_uri", _config["GoogleAPI:RedirectUri"] },
                 { "grant_type", "authorization_code" }
             };
 
@@ -182,7 +174,7 @@ namespace Application.Services
                 return tokenResponse;
             }
 
-            return null; 
+            return null;
         }
     }
 }

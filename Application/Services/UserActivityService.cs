@@ -1,14 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities.Users;
-using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Commands.User;
-using Domain.Interfaces.Queries.Post;
 using Domain.Interfaces.Queries.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -20,7 +13,7 @@ namespace Application.Services
 
         public UserActivityService(
             IUserActivityCommandRepository userActivityCommandRepository,
-            IUserActivityQueryRepository userActivityQueryRepository, 
+            IUserActivityQueryRepository userActivityQueryRepository,
             IVisitingPostService visitingPostService
             )
         {
@@ -30,19 +23,19 @@ namespace Application.Services
         }
         public async Task DeleteUserActivity(Guid userId)
         {
-             await _userActivityCommandRepository.DeleteUserActivitySummary(userId);
+            await _userActivityCommandRepository.DeleteUserActivitySummary(userId);
         }
 
         public async Task<UserActivitySummary> GetUserActivityByUserId(Guid userId)
         {
-            return await _userActivityQueryRepository.GetUserActivityByUserIdAsync(userId);   
+            return await _userActivityQueryRepository.GetUserActivityByUserIdAsync(userId);
         }
 
         public async Task<UserActivitySummary> SummarizeUserActivity(Guid userId)
         {
             var userActivity = await GetUserActivityByUserId(userId);
-            userActivity.MostViewedCities = String.Join(",",await GetMostViewedCitiesAsync(userId));
-            userActivity.MostViewedCategories = String.Join(",",await GetMostViewedCategoriesAsync(userId));
+            userActivity.MostViewedCities = String.Join(",", await GetMostViewedCitiesAsync(userId));
+            userActivity.MostViewedCategories = String.Join(",", await GetMostViewedCategoriesAsync(userId));
             await _userActivityCommandRepository.UpdateUserActivitySummary(userActivity);
             return userActivity;
         }
@@ -50,14 +43,15 @@ namespace Application.Services
         public async Task<UserActivitySummary> CreateUserActivity(Guid userId)
         {
             UserActivitySummary? userActivity;
-            try {
+            try
+            {
                 userActivity = await _userActivityQueryRepository.GetUserActivityByUserIdAsync(userId);
             }
             catch
             {
                 userActivity = null;
             }
-            if (userActivity!= null)
+            if (userActivity != null)
             {
                 return await SummarizeUserActivity(userId);
             }
@@ -87,7 +81,7 @@ namespace Application.Services
         {
             var posts = await _visitingPostService.GetVisitedPostsByUserIdAsync(userId);
             var cities = posts
-                .GroupBy(p=>p.Post.City)
+                .GroupBy(p => p.Post.City)
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key?.ToString())
                 .ToList();

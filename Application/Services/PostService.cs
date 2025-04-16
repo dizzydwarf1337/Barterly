@@ -4,11 +4,6 @@ using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -81,7 +76,7 @@ namespace Application.Services
 
         public async Task<ICollection<PostDto>> GetPostsBySubCategoryId(Guid subCategoryId)
         {
-            var posts = await _postQueryRepository.GetFiltredPostsAsync(1,10,subCategoryId:subCategoryId);
+            var posts = await _postQueryRepository.GetFiltredPostsAsync(1, 10, subCategoryId: subCategoryId);
             return _mapper.Map<ICollection<PostDto>>(posts);
         }
 

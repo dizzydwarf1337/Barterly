@@ -4,7 +4,6 @@ using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 using Persistence.Repositories.Queries;
-using System.Security.Cryptography.X509Certificates;
 
 public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPostQueryRepository
 {
@@ -45,8 +44,8 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
             .Where(p => !subCategoryId.HasValue || p.SubCategoryId == subCategoryId.Value)
             .Where(p => string.IsNullOrEmpty(city) || p.City.Contains(city))
             .Where(p => string.IsNullOrEmpty(region) || p.Region.Contains(region))
-            .Skip((page ?? 1 - 1) * (pageCount ?? 10)) 
-            .Take(pageCount ?? 10); 
+            .Skip((page ?? 1 - 1) * (pageCount ?? 10))
+            .Take(pageCount ?? 10);
         return await postsQuery.ToListAsync();
     }
     public async Task<ICollection<Post>> GetUserFavouritePosts(Guid userId)
@@ -68,9 +67,9 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
     public async Task<ICollection<Post>> GetFeed(string categories, string cities, int pageCount, int page)
     {
         return await _context.Posts
-            .Where(x => categories.Contains(x.SubCategory.Category.NamePL )||categories.Contains(x.SubCategory.Category.NameEN))  
-            .Where(x => cities.Contains(x.City))  
-            .Skip((page - 1) * pageCount)  
+            .Where(x => categories.Contains(x.SubCategory.Category.NamePL) || categories.Contains(x.SubCategory.Category.NameEN))
+            .Where(x => cities.Contains(x.City))
+            .Skip((page - 1) * pageCount)
             .Take(pageCount)
             .ToListAsync();
     }

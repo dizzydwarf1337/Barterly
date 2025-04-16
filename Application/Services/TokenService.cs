@@ -1,15 +1,12 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -65,7 +62,7 @@ public class TokenService : ITokenService
     {
         var userId = (await _userManager.FindByEmailAsync(userMail) ?? throw new Exception("Cannot find user by email, while checking token")).Id;
         await _tokenCommandRepository.DeleteToken(userId, tokenType);
-        await _logService.CreateLogAsync( $"Token with provided type {tokenType} was deleted or expired", LogType.Information,userId: userId);
+        await _logService.CreateLogAsync($"Token with provided type {tokenType} was deleted or expired", LogType.Information, userId: userId);
     }
     public async Task DeleteToken(string token)
     {
@@ -85,7 +82,7 @@ public class TokenService : ITokenService
 
         var token = CreateJwtToken(userId, claims);
         await _tokenCommandRepository.AddToken(userId, token, "Bearer", TokenType.Auth);
-        await _logService.CreateLogAsync("Generated auth token", LogType.Information,null,Guid.Empty, userId);
+        await _logService.CreateLogAsync("Generated auth token", LogType.Information, null, Guid.Empty, userId);
         return token;
     }
 
@@ -95,7 +92,7 @@ public class TokenService : ITokenService
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         await _tokenCommandRepository.AddToken(user.Id, token, "user manager", TokenType.EmailConfirmation);
-        await _logService.CreateLogAsync("Generated email confirmation token", LogType.Information,null, Guid.Empty, user.Id); 
+        await _logService.CreateLogAsync("Generated email confirmation token", LogType.Information, null, Guid.Empty, user.Id);
         return token;
     }
 
@@ -111,7 +108,7 @@ public class TokenService : ITokenService
     {
         var userId = (await _userManager.FindByEmailAsync(userMail) ?? throw new Exception("Cannot find user by email, while checking token")).Id;
         var dbToken = await _tokenQueryRepository.GetTokenByUserIdAsync(userId, tokenType);
-        if ( dbToken != null && dbToken.Value ==token)
+        if (dbToken != null && dbToken.Value == token)
         {
             await _logService.CreateLogAsync("Token confirmed successfully", LogType.Information, null, Guid.Empty, userId);
             return true;
@@ -128,7 +125,7 @@ public class TokenService : ITokenService
             token = (await _tokenQueryRepository.GetTokenByUserIdAsync(userId, TokenType.Auth)).Value;
         }
         catch (Exception)
-        { 
+        {
             token = await GenerateAuthToken(userId);
         }
         return token;

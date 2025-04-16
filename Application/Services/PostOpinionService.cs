@@ -27,7 +27,7 @@ namespace Application.Services
         {
             var opinion = _mapper.Map<PostOpinion>(opinionDto);
             await _postOpinionCommandRepository.CreatePostOpinionAsync(opinion);
-            await _logService.CreateLogAsync($"Opinion created with id {opinion.Id} ",LogType.Information,null,opinion.PostId,opinion.AuthorId);
+            await _logService.CreateLogAsync($"Opinion created with id {opinion.Id} ", LogType.Information, null, opinion.PostId, opinion.AuthorId);
         }
 
         public async Task DeleteOpinion(Guid opinionId)

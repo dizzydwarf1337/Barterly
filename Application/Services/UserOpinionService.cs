@@ -5,11 +5,6 @@ using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {

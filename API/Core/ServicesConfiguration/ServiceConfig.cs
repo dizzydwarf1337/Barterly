@@ -8,7 +8,6 @@ using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.General;
 using Domain.Interfaces.Queries.Post;
 using Domain.Interfaces.Queries.User;
-using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repositories.Commands.General;
 using Persistence.Repositories.Commands.Post;
 using Persistence.Repositories.Commands.Posts;
@@ -17,7 +16,6 @@ using Persistence.Repositories.Queries.General;
 using Persistence.Repositories.Queries.Post;
 using Persistence.Repositories.Queries.Posts;
 using Persistence.Repositories.Queries.Users;
-using System.Reflection;
 
 namespace API.Core.ServicesConfiguration
 {

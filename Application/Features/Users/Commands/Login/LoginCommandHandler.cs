@@ -2,11 +2,6 @@
 using Application.DTOs.User;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Commands.Login
 {
@@ -27,7 +22,7 @@ namespace Application.Features.Users.Commands.Login
             }
             catch (Exception ex)
             {
-                return ApiResponse<UserDto>.Failure(ex.Message+ex.StackTrace);
+                return ApiResponse<UserDto>.Failure(ex.Message + ex.StackTrace);
             }
         }
     }

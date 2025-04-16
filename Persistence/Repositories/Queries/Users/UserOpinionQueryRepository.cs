@@ -1,13 +1,7 @@
 ﻿using Domain.Entities.Users;
-using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Queries.Users
 {
@@ -39,7 +33,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<ICollection<UserOpinion>> GetUserOpinionsPaginated(Guid userId, int page, int pageSize)
         {
-            return await _context.UserOpinions.Skip((page-1) * pageSize).Take(pageSize).Where(x=>x.UserId==userId).ToListAsync();
+            return await _context.UserOpinions.Skip((page - 1) * pageSize).Take(pageSize).Where(x => x.UserId == userId).ToListAsync();
         }
     }
 }

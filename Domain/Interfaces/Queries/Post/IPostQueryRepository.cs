@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Domain.Interfaces.Queries.Post
+﻿namespace Domain.Interfaces.Queries.Post
 {
     public interface IPostQueryRepository
     {

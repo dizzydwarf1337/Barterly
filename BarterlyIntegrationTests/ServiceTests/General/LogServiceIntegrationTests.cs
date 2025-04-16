@@ -3,11 +3,8 @@ using Application.Interfaces;
 using BarterlyIntegrationTests.Core;
 using Domain.Entities.Common;
 using Domain.Enums;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using SixLabors.ImageSharp.Processing;
 
 namespace BarterlyIntegrationTests.ServiceTests.General
 {
@@ -63,7 +60,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
             Assert.Equal(message, savedLog!.Message);
             Assert.Equal(logType, savedLog.LogType);
             Assert.Equal(stackTrace, savedLog.StackTrace);
-            Assert.Equal(postId,savedLog.PostId);
+            Assert.Equal(postId, savedLog.PostId);
             Assert.Equal(userId, savedLog.UserId);
         }
 
@@ -74,7 +71,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
             LogDto log = new LogDto
             {
                 Id = Guid.NewGuid(),
-                Message="delete",
+                Message = "delete",
                 LogType = LogType.None,
             };
             // Act
@@ -113,7 +110,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
 
             //Assert
             Assert.Empty(logs);
-            Assert.False(logs.Any());  
+            Assert.False(logs.Any());
 
         }
         [Fact]
@@ -147,7 +144,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
             //Assert
 
             Assert.Empty(logs);
-            
+
 
         }
         [Fact]
@@ -157,7 +154,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
             var log1 = new LogDto
             {
                 Id = Guid.NewGuid(),
-                Message="log1",
+                Message = "log1",
                 LogType = LogType.None,
                 CreatedAt = DateTime.UtcNow,
             };
@@ -183,9 +180,9 @@ namespace BarterlyIntegrationTests.ServiceTests.General
                 CreatedAt = DateTime.UtcNow,
 
             };
-            
+
             // Act
-            
+
             await _logService.CreateLogAsync(log1);
             await _logService.CreateLogAsync(log2);
             await _logService.CreateLogAsync(log3);
@@ -255,7 +252,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
             Assert.Equal(logsPage1[1].Message, log3.Message);
             Assert.Equal(logsPage1[2].Message, log2.Message);
             Assert.Equal(logsPage2[0].Message, log1.Message);
-            
+
         }
         [Fact]
         public async Task GetPostLogsAsync_ShouldReturnLogsWithPostIdProvided()
@@ -267,7 +264,7 @@ namespace BarterlyIntegrationTests.ServiceTests.General
                 Id = Guid.NewGuid(),
                 Message = "log1",
                 LogType = LogType.None,
-                PostId=postId,
+                PostId = postId,
             };
             var log2 = new LogDto
             {

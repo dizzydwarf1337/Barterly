@@ -1,11 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Category.Commands.DeleteCategory
 {
@@ -25,7 +20,8 @@ namespace Application.Features.Category.Commands.DeleteCategory
                 await _categoryService.DeleteCategory(Guid.Parse(request.CategoryId));
                 return ApiResponse<Unit>.Success(Unit.Value);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return ApiResponse<Unit>.Failure(ex.Message);
             }
         }

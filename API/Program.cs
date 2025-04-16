@@ -34,7 +34,7 @@ builder.Services.AddAuthorization(opt =>
     opt.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
     opt.AddPolicy("User", policy => policy.RequireRole("User"));
     opt.AddPolicy("Moderator", policy => policy.RequireRole("Moderator"));
-    opt.AddPolicy("All", policy => policy.RequireRole("Moderator","User","Admin"));
+    opt.AddPolicy("All", policy => policy.RequireRole("Moderator", "User", "Admin"));
 });
 
 
@@ -45,7 +45,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-  
+
 })
 .AddJwtBearer(options =>
 {
@@ -95,7 +95,7 @@ builder.Services.AddAuthentication(options =>
     };
 })
 .AddGoogle(options =>
-{ 
+{
     options.ClientId = googleSettings["ClientId"];
     options.ClientSecret = googleSettings["Key"];
     options.CallbackPath = "/signedin-google";
@@ -109,7 +109,7 @@ using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-    string[] roleNames = { "Admin", "User","Moderator" };
+    string[] roleNames = { "Admin", "User", "Moderator" };
     foreach (var roleName in roleNames)
     {
         if (!await roleManager.RoleExistsAsync(roleName))

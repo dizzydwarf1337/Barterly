@@ -2,11 +2,6 @@
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Queries.Posts
 {
@@ -33,7 +28,7 @@ namespace Persistence.Repositories.Queries.Posts
 
         public async Task<ICollection<VisitedPost>> GetVisitedPostsByUserIdAsync(Guid userId)
         {
-            return await _context.VisitedPosts.Where(x => x.UserId == userId).Include(x=>x.Post).ToListAsync();
+            return await _context.VisitedPosts.Where(x => x.UserId == userId).Include(x => x.Post).ToListAsync();
         }
         public async Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId)
         {

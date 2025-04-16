@@ -3,15 +3,8 @@ using Application.DTOs.Categories;
 using Application.Features.Category.Commands.AddCategory;
 using Application.Features.Category.Queries.GetAllCategories;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace BarterlyUnitTests.ControllerTests.CategoryControllerTests
 {
     public class CategoryControllerTests

@@ -1,14 +1,8 @@
 ﻿using API.Core.ApiResponse;
 using Application.DTOs.User;
 using Application.Interfaces;
-using Domain.Entities;
 using Domain.Entities.Users;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Users.Commands.LoginWithGoogle
 {
@@ -19,7 +13,7 @@ namespace Application.Features.Users.Commands.LoginWithGoogle
         private readonly IMailService _mailService;
         private readonly IUserActivityService _userActivityService;
 
-        public LoginWithGoogleCommandHandler(IAuthService authService, IUserSettingsService userSettingsService, IMailService mailService,IUserActivityService userActivityService)
+        public LoginWithGoogleCommandHandler(IAuthService authService, IUserSettingsService userSettingsService, IMailService mailService, IUserActivityService userActivityService)
         {
             _authService = authService;
             _userSettingsService = userSettingsService;
@@ -34,7 +28,7 @@ namespace Application.Features.Users.Commands.LoginWithGoogle
                 var userDto = await _authService.LoginWithGmail(request.googleLoginDto.token);
                 var userId = Guid.Parse(userDto.Id);
                 var userSettings = await _userSettingsService.GetUserSettingByUserIdAsync(userId).ContinueWith(x => x.IsFaulted ? null : x.Result);
-                var userActivity = await _userActivityService.GetUserActivityByUserId(userId).ContinueWith(x=>x.IsFaulted ? null : x.Result);  
+                var userActivity = await _userActivityService.GetUserActivityByUserId(userId).ContinueWith(x => x.IsFaulted ? null : x.Result);
 
                 if (userSettings == null)
                 {

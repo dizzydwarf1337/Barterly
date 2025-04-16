@@ -2,11 +2,6 @@
 using Domain.Entities.Users;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories.Commands.Users
 {
