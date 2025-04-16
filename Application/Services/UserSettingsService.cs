@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
 using System;

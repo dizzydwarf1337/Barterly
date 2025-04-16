@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Auth;
 using Application.Features.Users.Commands.ConfirmEmail;
 using Application.Features.Users.Commands.CreateUser;
 using Application.Features.Users.Commands.Login;

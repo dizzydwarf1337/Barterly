@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 using Application.Services;
-using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Queries.General;
@@ -14,6 +13,7 @@ using Persistence.Database;
 using AutoMapper;
 using Application.Interfaces;
 using Application.DTOs;
+using Domain.Entities.Common;
 
 namespace BarterlyUnitTests.ServiceTests.General
 {

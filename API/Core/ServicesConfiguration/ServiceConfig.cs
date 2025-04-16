@@ -11,6 +11,7 @@ using Domain.Interfaces.Queries.User;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repositories.Commands.General;
 using Persistence.Repositories.Commands.Post;
+using Persistence.Repositories.Commands.Posts;
 using Persistence.Repositories.Commands.Users;
 using Persistence.Repositories.Queries.General;
 using Persistence.Repositories.Queries.Post;

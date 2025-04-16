@@ -1,6 +1,6 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.User;
 using Application.Interfaces;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using System;

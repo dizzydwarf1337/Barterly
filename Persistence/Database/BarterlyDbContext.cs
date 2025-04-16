@@ -1,4 +1,7 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Categories;
+using Domain.Entities.Common;
+using Domain.Entities.Posts;
+using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

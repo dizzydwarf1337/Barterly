@@ -8,10 +8,10 @@ namespace Domain.Interfaces.Queries.User
 {
     public interface IUserQueryRepository
     {
-        Task<Domain.Entities.User> GetUserAsync(Guid id);
-        Task<ICollection<Domain.Entities.User>> GetUsersAsync();
-        Task<ICollection<Domain.Entities.User>> GetUsersByCityAsync(string city);
-        Task<ICollection<Domain.Entities.User>> GetUsersByCountryAsync(string country);
-        Task<ICollection<Domain.Entities.User>> GetNewUsersAsync(DateTime date);
+        Task<Entities.Users.User> GetUserAsync(Guid id);
+        Task<ICollection<Entities.Users.User>> GetUsersAsync();
+        Task<ICollection<Entities.Users.User>> GetUsersByCityAsync(string city);
+        Task<ICollection<Entities.Users.User>> GetUsersByCountryAsync(string country);
+        Task<ICollection<Entities.Users.User>> GetNewUsersAsync(DateTime date);
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Common;
+using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Commands.User;

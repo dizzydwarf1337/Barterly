@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Common;
 using Domain.Enums;
 using Domain.Interfaces.Commands.General;
 using Persistence.Database;

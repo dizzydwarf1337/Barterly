@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Posts;
 using Domain.Enums;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;

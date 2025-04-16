@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Domain.Entities;
+﻿using Application.DTOs.Categories;
+using Domain.Entities.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

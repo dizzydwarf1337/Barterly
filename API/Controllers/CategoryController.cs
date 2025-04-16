@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Categories;
 using Application.Features.Category.Commands.AddCategory;
 using Application.Features.Category.Commands.DeleteCategory;
 using Application.Features.Category.Queries.GetAllCategories;

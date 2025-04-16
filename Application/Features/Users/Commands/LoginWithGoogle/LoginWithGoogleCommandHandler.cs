@@ -1,7 +1,8 @@
 ﻿using API.Core.ApiResponse;
-using Application.DTOs;
+using Application.DTOs.User;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.Entities.Users;
 using MediatR;
 using System;
 using System.Collections.Generic;

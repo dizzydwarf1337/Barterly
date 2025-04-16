@@ -1,5 +1,5 @@
 using API.Core.ServicesConfiguration;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

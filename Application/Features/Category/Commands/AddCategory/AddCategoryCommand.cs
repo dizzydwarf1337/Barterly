@@ -1,5 +1,5 @@
 ﻿using API.Core.ApiResponse;
-using Application.DTOs;
+using Application.DTOs.Categories;
 using Application.Interfaces;
 using MediatR;
 using System;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Application.Features.Category.Commands.AddCategory
 {
 
-        public class AddCategoryCommand : IRequest<ApiResponse<Unit>>
+    public class AddCategoryCommand : IRequest<ApiResponse<Unit>>
         {
             public CategoryDto category;
         }

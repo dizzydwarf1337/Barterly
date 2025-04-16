@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Posts;
 using Domain.Interfaces.Queries.Post;
 using System;
 using System.Collections.Generic;

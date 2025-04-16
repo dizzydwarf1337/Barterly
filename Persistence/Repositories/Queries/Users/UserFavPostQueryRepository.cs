@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿
+using Domain.Entities.Users;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;

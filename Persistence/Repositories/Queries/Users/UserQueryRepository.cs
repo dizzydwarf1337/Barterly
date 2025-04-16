@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿
+using Domain.Entities.Users;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -16,27 +17,27 @@ namespace Persistence.Repositories.Queries.Users
         {
         }
 
-        public async Task<ICollection<Domain.Entities.User>> GetNewUsersAsync(DateTime date)
+        public async Task<ICollection<User>> GetNewUsersAsync(DateTime date)
         {
             return await _context.Users.Where(x => DateTime.Compare(x.CreatedAt, date) >= 0).ToListAsync();
         }
 
-        public async Task<Domain.Entities.User> GetUserAsync(Guid id)
+        public async Task<User> GetUserAsync(Guid id)
         {
             return await _context.Users.FindAsync(id) ?? throw new Exception("User not found");
         }
 
-        public async Task<ICollection<Domain.Entities.User>> GetUsersAsync()
+        public async Task<ICollection<User>> GetUsersAsync()
         {
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<ICollection<Domain.Entities.User>> GetUsersByCityAsync(string city)
+        public async Task<ICollection<User>> GetUsersByCityAsync(string city)
         {
             return await _context.Users.Where(x => x.City.Equals(city, StringComparison.OrdinalIgnoreCase)).ToListAsync();
         }
 
-        public async Task<ICollection<Domain.Entities.User>> GetUsersByCountryAsync(string country)
+        public async Task<ICollection<User>> GetUsersByCountryAsync(string country)
         {
             return await _context.Users.Where(x => x.Country.Equals(country, StringComparison.OrdinalIgnoreCase)).ToListAsync();
         }

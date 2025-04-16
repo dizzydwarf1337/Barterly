@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System;

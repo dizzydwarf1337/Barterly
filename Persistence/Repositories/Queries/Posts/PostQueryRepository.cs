@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Posts;
 using Domain.Enums;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +10,12 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
 {
     public PostQueryRepository(BarterlyDbContext context) : base(context) { }
 
-    public async Task<ICollection<Domain.Entities.Post>> GetAllPostsAsync()
+    public async Task<ICollection<Post>> GetAllPostsAsync()
     {
         return await _context.Posts.ToListAsync();
     }
 
-    public async Task<Domain.Entities.Post> GetPostByIdAsync(Guid postId)
+    public async Task<Post> GetPostByIdAsync(Guid postId)
     {
         var post = await _context.Posts.FindAsync(postId);
         if (post == null)
@@ -24,14 +24,14 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
     }
 
 
-    public async Task<ICollection<Domain.Entities.Post>> GetPostsByCreatedAtAsync(DateTime createdAt)
+    public async Task<ICollection<Post>> GetPostsByCreatedAtAsync(DateTime createdAt)
     {
         return await _context.Posts
             .Where(x => x.CreatedAt > createdAt)
             .ToListAsync();
     }
 
-    public async Task<ICollection<Domain.Entities.Post>> GetPostsByOwnerIdAsync(Guid ownerId)
+    public async Task<ICollection<Post>> GetPostsByOwnerIdAsync(Guid ownerId)
     {
         return await _context.Posts
         .Where(x => x.OwnerId == ownerId)
@@ -49,7 +49,7 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
             .Take(pageCount ?? 10); 
         return await postsQuery.ToListAsync();
     }
-    public async Task<ICollection<Domain.Entities.Post>> GetUserFavouritePosts(Guid userId)
+    public async Task<ICollection<Post>> GetUserFavouritePosts(Guid userId)
     {
         return await _context.UserFavouritePosts
             .Where(x => x.UserId == userId)
@@ -58,7 +58,7 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
     }
 
 
-    public async Task<ICollection<Domain.Entities.Post>> GetUserPromotedPostsAsync(Guid userId)
+    public async Task<ICollection<Post>> GetUserPromotedPostsAsync(Guid userId)
     {
         return await _context.Posts
             .Include(x => x.Promotion)

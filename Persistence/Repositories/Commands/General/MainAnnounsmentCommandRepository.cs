@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Common;
 using Domain.Interfaces.Commands.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
