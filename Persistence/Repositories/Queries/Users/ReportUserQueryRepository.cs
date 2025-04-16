@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,5 @@
 ﻿using API.Controllers;
-using Application.DTOs;
+using Application.DTOs.Categories;
 using Application.Features.Category.Commands.AddCategory;
 using Application.Features.Category.Queries.GetAllCategories;
 using MediatR;

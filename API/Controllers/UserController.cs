@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.User;
 using Application.Features.Users.Commands.ConfirmEmail;
 using Application.Features.Users.Commands.ResetPassword;
 using Microsoft.AspNetCore.Identity.Data;

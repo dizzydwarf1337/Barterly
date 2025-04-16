@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿
+using Domain.Entities.Users;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 using System;

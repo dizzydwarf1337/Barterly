@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Persistence.Repositories.Commands.Post
+namespace Persistence.Repositories.Commands.Posts
 {
     public class PostCommandRepository : BaseCommandRepository<BarterlyDbContext>, IPostCommandRepository
     {
@@ -14,7 +14,7 @@ namespace Persistence.Repositories.Commands.Post
         {
         }
 
-        public async Task CreatePostAsync(Domain.Entities.Post post)
+        public async Task CreatePostAsync(Domain.Entities.Posts.Post post)
         {
             await _context.AddAsync(post);
             await _context.SaveChangesAsync();
@@ -34,7 +34,7 @@ namespace Persistence.Repositories.Commands.Post
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdatePostAsync(Domain.Entities.Post post)
+        public async Task UpdatePostAsync(Domain.Entities.Posts.Post post)
         {
             _context.Posts.Update(post);
             await _context.SaveChangesAsync();

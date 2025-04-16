@@ -1,15 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Posts;
 using Domain.Enums;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {

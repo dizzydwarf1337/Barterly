@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

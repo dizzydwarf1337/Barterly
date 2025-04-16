@@ -2,7 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

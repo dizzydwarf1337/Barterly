@@ -1,5 +1,5 @@
 ﻿using API.Core.ApiResponse;
-using Application.DTOs;
+using Application.DTOs.User;
 using Application.Interfaces;
 using MediatR;
 using System;

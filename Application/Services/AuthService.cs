@@ -1,8 +1,9 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Auth;
+using Application.DTOs.User;
 using Application.Features.Users.Events.UserCreated;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Google.Apis.Auth;

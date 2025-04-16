@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Domain.Entities;
+using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;

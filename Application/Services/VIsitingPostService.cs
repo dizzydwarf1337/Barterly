@@ -1,16 +1,16 @@
-﻿    using Application.Interfaces;
-    using Domain.Entities;
-    using Domain.Interfaces.Commands.Post;
-    using Domain.Interfaces.Queries.Post;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿using Application.Interfaces;
+using Domain.Entities.Users;
+using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    namespace Application.Services
-    {
-        public class VisitingPostService : IVisitingPostService
+namespace Application.Services
+{
+    public class VisitingPostService : IVisitingPostService
         {
             private readonly IVisitedPostCommandRepository _visitedPostCommandRepository;
             private readonly IVisitedPostQueryRepository _visitedPostQueryRepository;

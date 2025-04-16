@@ -1,7 +1,13 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Auth;
+using Application.DTOs.Categories;
+using Application.DTOs.User;
 using Application.Services;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Categories;
+using Domain.Entities.Common;
+using Domain.Entities.Posts;
+using Domain.Entities.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;

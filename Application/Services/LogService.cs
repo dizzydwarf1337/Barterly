@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Common;
 using Domain.Enums;
 using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Queries.General;
