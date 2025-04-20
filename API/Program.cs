@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Database;
 using Persistence.Seed;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -22,7 +23,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
     {
-        policy.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:3000");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
     });
 });
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -49,7 +50,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
 
@@ -79,6 +79,7 @@ builder.Services.AddAuthentication(options =>
         OnTokenValidated = context =>
         {
             var token = context.SecurityToken as JwtSecurityToken;
+            Console.WriteLine(token);
             if (token != null)
             {
                 Console.WriteLine($"Token validated: {token.RawData}");

@@ -14,5 +14,6 @@ namespace Application.Interfaces
         Task<SubCategoryDto> GetSubCategory(Guid subCategoryId);
         Task<ICollection<SubCategoryDto>> GetSubCategoriesByCategoryId(Guid categoryId);
         Task<Category?> GetCategoryByName(string name);
+        Task EditCategory(CategoryDto category);
     }
 }

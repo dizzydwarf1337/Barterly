@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities.Common;
@@ -7,14 +8,14 @@ using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Queries.General;
 using Moq;
 
-namespace BarterlyUnitTests.ServiceTests.General
+namespace BarterlyUnitTests.ApplicationTests.Services.General
 {
     public class LogServiceTests
     {
         private readonly Mock<ILogCommandRepository> _logCommandRepoMock;
         private readonly Mock<ILogQueryRepository> _logQueryRepoMock;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly LogService _logService;
+        private readonly ILogService _logService;
 
         public LogServiceTests()
         {

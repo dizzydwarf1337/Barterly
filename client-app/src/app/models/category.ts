@@ -6,5 +6,5 @@ export default interface Category {
     namePL: string,
     nameEN:string,
     description: string,
-    subCategories?: SubCategory[],
+    subCategories: SubCategory[],
 }

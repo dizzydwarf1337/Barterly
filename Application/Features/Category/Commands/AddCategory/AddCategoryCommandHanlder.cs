@@ -13,7 +13,7 @@ namespace Application.Features.Category.Commands.AddCategory
             _categoryService = categoryService;
         }
 
-        async Task<ApiResponse<Unit>> IRequestHandler<AddCategoryCommand, ApiResponse<Unit>>.Handle(AddCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<Unit>> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {

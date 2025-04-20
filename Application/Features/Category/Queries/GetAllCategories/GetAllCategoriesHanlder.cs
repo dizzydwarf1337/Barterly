@@ -5,11 +5,11 @@ using MediatR;
 
 namespace Application.Features.Category.Queries.GetAllCategories
 {
-    public class Handler : IRequestHandler<GetAllCategoriesQuery, ApiResponse<ICollection<CategoryDto>>>
+    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, ApiResponse<ICollection<CategoryDto>>>
     {
         private readonly ICategoryService _categoryService;
 
-        public Handler(ICategoryService categoryService)
+        public GetAllCategoriesHandler(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

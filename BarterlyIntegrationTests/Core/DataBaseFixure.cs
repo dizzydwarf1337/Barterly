@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities.Users;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ namespace BarterlyIntegrationTests.Core
         public IAuthService authService { get; private set; }
         public ITokenService tokenService { get; private set; }
         public IConfiguration _configuration { get; private set; }
+        public IMediator mediator { get; private set; }
         public UserManager<User> userManager { get; private set; }
         public DatabaseFixture()
         {
@@ -39,8 +41,8 @@ namespace BarterlyIntegrationTests.Core
             var mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiler>()).CreateMapper();
 
             logService = new LogService(logCommandRepo, logQueryRepo, mapper);
-            tokenService = new JwtTokenService(logService, userManager, _configuration, tokenQueryRepo, tokenCommandRepo);
-            authService = new AuthService(userManager, tokenService, logService);
+            tokenService = new TokenService(logService, userManager, _configuration, tokenQueryRepo, tokenCommandRepo);
+            authService = new AuthService(userManager, tokenService, logService, mapper, mediator, _configuration);
         }
 
         public void Dispose()

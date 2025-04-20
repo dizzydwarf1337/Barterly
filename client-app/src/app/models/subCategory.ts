@@ -2,6 +2,7 @@
 
 export default interface SubCategory {
     id: string,
-    title: string,
+    titleEN: string,
+    titlePL:string,
     categoryId: string,
 }

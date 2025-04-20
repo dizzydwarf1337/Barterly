@@ -9,6 +9,7 @@ import Category from "../models/category";
 import Email from "../models/Email";
 import ConfirmEmail from "../models/confirmEmail";
 import ResetPassword from "../models/ResetPassword";
+import SubCategory from "../models/subCategory";
 
 
 
@@ -18,11 +19,13 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
     if (config.headers && !config.headers['NoAuth']) {
         const token = store.userStore.user!.token;
+        
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         } else {
             console.error("Token not found or is invalid.");
         }
+        console.log(config);
     }
     return config;
 });
@@ -37,7 +40,9 @@ const requests = {
     put: <T>(url: string, body: {}, noAuth = false) =>
         axios.put(url, body, { headers: { NoAuth: noAuth } }).then(responseBody),
     delete: <T>(url:string, noAuth = false) =>
-        axios.delete(url, { headers: {NoAuth:noAuth} }).then(responseBody),
+        axios.delete(url, { headers: { NoAuth: noAuth } }).then(responseBody),
+    patch: <T>(url: string, body: {}, noAuth = false) =>
+        axios.patch(url, { headers: { NoAuth: noAuth } }).then(responseBody)
 }
 
 const Auth = {
@@ -54,9 +59,12 @@ const User = {
 }
 const Categories = {
     GetCategories: (noAuth = true) => requests.get<ApiResponse<Category[]>>("category", noAuth),
-    AddCategory: (category: Category, noAuth = false) => requests.post<ApiResponse<void>>("/category/createCategory", category, noAuth),
-    DeleteCategory: (id: string, noAuth = false) => requests.delete<ApiResponse<void>>(`/category/${id}`, noAuth),
-}
+    AddCategory: (category: Category, noAuth = false) => requests.post<ApiResponse<void>>("category/createCategory", category, noAuth),
+    DeleteCategory: (id: string, noAuth = false) => requests.delete<ApiResponse<void>>(`category/delete/${id}`, noAuth),
+    EditCategory: (category: Category, noAuth = false) => requests.put<ApiResponse<void>>(`category/update`, category, noAuth),
+    AddSubCategory: (subCategory: SubCategory, noAuth = false) => requests.patch<ApiResponse<void>>(`category/addSubCategory`, subCategory, noAuth),
+    DeleteSubCategory:(id:string,noAuth=false) => requests.delete<ApiResponse<void>>(`category/deleteSubCategory/${id}`,noAuth),
+} 
 
 const agent = {
     Auth,

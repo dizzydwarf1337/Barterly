@@ -5,6 +5,9 @@ import ApiResponse from "../models/apiResponse";
 
 
 export default class CategoryStore {
+    static setCategories(arg0: any[]) {
+        throw new Error("Method not implemented.");
+    }
 
     constructor() {
         makeAutoObservable(this);
@@ -32,24 +35,6 @@ export default class CategoryStore {
         }
         finally {
             this.setCategoryLoading(false);
-        }
-    }
-
-    deleteCategory = async (id:string) => {
-        this.setCategoryLoading(true);
-        try {
-            const res: ApiResponse<void> = await agent.Categories.DeleteCategory(id)
-            if (res.isSuccess)
-                runInAction(() => {
-                    this.setCategories([...this.categories!.filter(x => x.id === id)])
-                })
-        }
-        catch {
-            console.error("Error while deleting category");
-            throw new Error("Error while deleting category");
-        }
-        finally {
-            this.setCategoryLoading(false)
         }
     }
 
