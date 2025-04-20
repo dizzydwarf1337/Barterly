@@ -21,8 +21,10 @@ namespace Application.Core.Mapper
             CreateMap<Post, PostDto>();
             CreateMap<ReportUser, ReportDto>().ForMember(x => x.RepotedSubjectId, opt => opt.MapFrom(x => x.ReportedUserId));
             CreateMap<ReportPost, ReportDto>().ForMember(x => x.RepotedSubjectId, opt => opt.MapFrom(x => x.ReportedPostId));
-            CreateMap<Category, CategoryDto>().ForMember(x => x.SubCateogries, opt => opt.MapFrom(x => x.SubCategories));
+            CreateMap<Category, CategoryDto>().ForMember(x => x.SubCategories, opt => opt.MapFrom(x => x.SubCategories));
+            CreateMap<CategoryDto, Category>();
             CreateMap<SubCategory, SubCategoryDto>();
+            CreateMap<SubCategoryDto, SubCategory>();
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.token, opt => opt.Ignore());
             CreateMap<UserSettings, UserSettingsDto>();

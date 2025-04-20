@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material"
 import { observer } from "mobx-react-lite"
-import CategoryList from "./categoryList";
-import { t } from "i18next";
 
+import { t } from "i18next";
+import CategoryList from "./categoryList";
 
 export default observer(function CategoriesDashboard() {
 
@@ -15,7 +15,7 @@ export default observer(function CategoriesDashboard() {
                 </Typography>
             </Box>
             <Box p="20px" sx={{ backgroundColor: "background.paper", borderRadius: "20px" }}>
-                <CategoryList/>
+                <CategoryList />
             </Box>
         </>
     )

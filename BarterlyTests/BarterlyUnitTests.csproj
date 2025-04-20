@@ -33,4 +33,10 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ApplicationTests\Handlers\General\" />
+    <Folder Include="ApplicationTests\Handlers\Users\" />
+    <Folder Include="ApplicationTests\Services\Users\" />
+  </ItemGroup>
+
 </Project>

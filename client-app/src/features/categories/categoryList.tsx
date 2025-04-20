@@ -3,17 +3,23 @@ import { observer } from "mobx-react-lite"
 import useStore from "../../app/stores/store";
 import CategoryListItem from "./categoryListItem";
 import { TransitionGroup } from "react-transition-group";
-import { useState } from "react";
-import AddCategoryModal from "./addCategoryModal";
+import { lazy, Suspense } from "react";
+import useAdminStore from "../../app/stores/adminStores/adminStore";
+
+
+const AddCategoryModal = lazy(() => import('./addCategoryModal'));
+
 
 export default observer(function CategoryList() {
 
     const { categoryStore, uiStore,userStore } = useStore();
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const { adminCategoryStore } = useAdminStore();
     const handleOpenModal = () => {
-        setModalOpen(true);
+        adminCategoryStore.setOpenModal(true);
     }
-
+    const handleCloseModal = () => {
+        adminCategoryStore.setOpenModal(false);
+    }
     return (
         <>
         <Box >
@@ -36,28 +42,32 @@ export default observer(function CategoryList() {
                 <Typography variant="body1">Loading...</Typography>
                     )}
                 {(userStore.user?.role === "Admin" || userStore.user?.role === "Moderator") &&
-                    <Collapse>
-                        <Box display="flex" mt="10px" onClick={handleOpenModal} 
-                            sx={{
+                        <Collapse>
+                            <Box display="flex" mt="10px" onClick={handleOpenModal} 
+                                sx={{
                                 
-                                backgroundColor: "success.main", width: "150px", height: "40px",
-                                alignItems: "center", justifyContent: "center", borderRadius: "10px",
-                                transition: "0.2s ease-out",
-                                ':hover': {
-                                    boxShadow: `1px 1px  ${uiStore.theme.palette.primary.contrastText}`,
-                                    translate:'-2px -2px'
-                                },
-                                cursor: "pointer"
-                            }}>
-                            <Typography >
-                                Add category
-                            </Typography>
-                        </Box>
-                    </Collapse>
-                }
-            </TransitionGroup>
+                                    backgroundColor: "success.main", width: "150px", height: "40px",
+                                    alignItems: "center", justifyContent: "center", borderRadius: "10px",
+                                    transition: "0.2s ease-out",
+                                    ':hover': {
+                                        boxShadow: `1px 1px  ${uiStore.theme.palette.primary.contrastText}`,
+                                        translate:'-2px -2px'
+                                    },
+                                    cursor: "pointer"
+                                }}>
+                                <Typography>
+                                    Add category
+                                </Typography>
+                          
+                            </Box>  
+                        </Collapse>          
+                    }
+                </TransitionGroup>
+                <Suspense>
+                    <AddCategoryModal open={adminCategoryStore.openModal} onClose={handleCloseModal} category={adminCategoryStore.category} />    
+                </Suspense>
             </Box>
-            <AddCategoryModal open={modalOpen} onClose={() => setModalOpen(false)} />
+           
         </>
     )
     

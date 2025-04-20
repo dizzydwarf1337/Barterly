@@ -19,6 +19,7 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task CreateCategoryAsync(Category category)
         {
+
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
         }
@@ -38,7 +39,22 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task UpdateCategoryAsync(Category category)
         {
-            _context.Categories.Update(category);
+            var categoryOld = await _context.Categories
+                .Include(c => c.SubCategories)
+                .FirstOrDefaultAsync(c => c.Id == category.Id);
+
+            if (categoryOld == null) return;
+            _context.SubCategories.RemoveRange(categoryOld.SubCategories);
+            foreach (var sub in category.SubCategories)
+            {
+                sub.CategoryId = category.Id; 
+            }
+
+            await _context.SubCategories.AddRangeAsync(category.SubCategories.Where(s=>!String.IsNullOrWhiteSpace(s.TitlePL) && !String.IsNullOrWhiteSpace(s.TitleEN)));
+            categoryOld.NameEN = category.NameEN;
+            categoryOld.NamePL = category.NamePL;
+            categoryOld.Description = category.Description;
+
             await _context.SaveChangesAsync();
         }
     }

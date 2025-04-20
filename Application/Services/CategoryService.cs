@@ -22,8 +22,18 @@ namespace Application.Services
 
         public async Task AddCategory(CategoryDto category)
         {
+            category.SubCategories = category.SubCategories
+                .Where(x => !String.IsNullOrWhiteSpace(x.TitlePL) && !String.IsNullOrWhiteSpace(x.TitleEN))
+                .ToList();
             var categoryToAdd = _mapper.Map<Category>(category);
             await _categoryCommandRepository.CreateCategoryAsync(categoryToAdd);
+            await _categoryCommandRepository.AddSubCategoryAsync(new SubCategory
+            {
+                Id = new Guid(),
+                CategoryId = category.Id,
+                TitleEN = "All",
+                TitlePL = "Wszystkie",
+            });
         }
 
         public async Task AddSubCategory(SubCategoryDto subCategoryDto)
@@ -73,5 +83,12 @@ namespace Application.Services
             var subCategory = await _categoryQueryRepository.GetSubCategoryByIdAsync(subCategoryId);
             return _mapper.Map<SubCategoryDto>(subCategory);
         }
+
+        public async Task EditCategory(CategoryDto category)
+        {
+            var categoryToEdit = _mapper.Map<Category>(category);
+            await _categoryCommandRepository.UpdateCategoryAsync(categoryToEdit);
+        }
+
     }
 }

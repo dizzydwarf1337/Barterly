@@ -6,7 +6,7 @@
         public string NamePL { get; set; }
         public string NameEN { get; set; }
         public string? Description { get; set; }
-        public SubCategoryDto?[] SubCateogries { get; set; }
+        public List<SubCategoryDto> SubCategories { get; set; }
 
     }
 }
