@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -18,7 +19,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<Notification> GetNotificationAsync(Guid id)
         {
-            return await _context.Notifications.FindAsync(id) ?? throw new Exception("Notification not found");
+            return await _context.Notifications.FindAsync(id) ?? throw new EntityNotFoundException("Notification");
         }
 
         public async Task<ICollection<Notification>> GetNotificationsByUserIdAsync(Guid userId)

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -17,7 +18,7 @@ namespace Persistence.Repositories.Commands.General
         }
         public async Task DeleteMainAnnounsmentAsync(Guid id)
         {
-            var mainAnnounsment = await _context.MainAnnounsments.FindAsync(id) ?? throw new Exception($"MainAnnounsment with id {id} not found.");
+            var mainAnnounsment = await _context.MainAnnounsments.FindAsync(id) ?? throw new EntityNotFoundException($"MainAnnounsment with id {id}");
             _context.MainAnnounsments.Remove(mainAnnounsment);
             await _context.SaveChangesAsync();
         }
@@ -30,7 +31,7 @@ namespace Persistence.Repositories.Commands.General
 
         public async Task UploadImageAsync(Guid id, string imageUrl)
         {
-            var mainAnnounsment = await _context.MainAnnounsments.FindAsync(id) ?? throw new Exception($"MainAnnounsment with id {id} not found.");
+            var mainAnnounsment = await _context.MainAnnounsments.FindAsync(id) ?? throw new EntityNotFoundException($"MainAnnounsment with id {id}");
             mainAnnounsment.ImageUrl = imageUrl;
             _context.Entry(mainAnnounsment).State = EntityState.Modified;
             await _context.SaveChangesAsync();

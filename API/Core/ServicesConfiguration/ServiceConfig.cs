@@ -1,4 +1,6 @@
-﻿using Application.Core.Mapper;
+﻿using Application.Core.Factories.Interfaces;
+using Application.Core.Factories.PostFactory;
+using Application.Core.Mapper;
 using Application.Features.Category.Commands.AddCategory;
 using Application.Interfaces;
 using Application.Services;
@@ -35,7 +37,11 @@ namespace API.Core.ServicesConfiguration
             services.AddScoped<INotificationCommandRepository, NotificationCommandRepository>();
             services.AddScoped<ITokenCommandRepository, TokenCommandRepository>();
             services.AddScoped<IPostCommandRepository, PostCommandRepository>();
+            services.AddScoped<IPostImageCommandRepository, PostImageCommandRepository>();
+            services.AddScoped<IPromotionCommandRepository, PromotionCommandRepository>();
             services.AddScoped<IUserSettingCommandRepository, UserSettingCommandRepository>();
+            services.AddScoped<IPostSettingsCommandRepository, PostSettingsCommandRepository>();
+            
 
             services.AddScoped<ILogQueryRepository, LogQueryRepository>();
             services.AddScoped<ICategoryQueryRepository, CategoryQueryRepository>();
@@ -49,8 +55,10 @@ namespace API.Core.ServicesConfiguration
             services.AddScoped<INotificationQueryRepository, NotificationQueryRepository>();
             services.AddScoped<ITokenQueryRepository, TokenQueryRepository>();
             services.AddScoped<IPostQueryRepository, PostQueryRepository>();
+            services.AddScoped<IPostImageQueryRepository, PostImageQueryRepository>();
+            services.AddScoped<IPromotionQueryRepository, PromotionQueryRepository>();
             services.AddScoped<IUserSettingQueryRepository, UserSettingQueryRepository>();
-
+            services.AddScoped<IPostSettingsQueryRepository, PostSettingsQueryRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -69,6 +77,7 @@ namespace API.Core.ServicesConfiguration
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IVisitingPostService, VisitingPostService>();
             services.AddScoped<IUserSettingsService, UserSettingsService>();
+            services.AddScoped<IPostFactory, PostFactory>();
 
             services.AddAutoMapper(typeof(AutoMapperProfiler).Assembly);
             services.AddMediatR(config =>

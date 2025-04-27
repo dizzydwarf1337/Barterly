@@ -1,103 +1,174 @@
-﻿using Domain.Entities.Posts;
-using Domain.Enums;
+﻿using Azure;
+using Domain.Entities.Posts;
+using Domain.Enums.Posts;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 using Persistence.Repositories.Queries;
+using System.Reflection.Metadata.Ecma335;
 
 public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPostQueryRepository
 {
     public PostQueryRepository(BarterlyDbContext context) : base(context) { }
 
-    public async Task<ICollection<Post>> GetAllPostsAsync()
-    {
-        return await _context.Posts.ToListAsync();
-    }
 
-    public async Task<Post> GetPostByIdAsync(Guid postId)
+    public async Task<Post> GetPostById(Guid postId)
     {
-        var post = await _context.Posts.FindAsync(postId);
-        if (post == null)
-            throw new KeyNotFoundException($"Post with id {postId} doesn't exist");
+        var post = await _context.Posts.Include(x=>x.PostImages).Include(x=>x.PostOpinions).Include(x=>x.Promotion).Include(x=>x.SubCategory).FirstOrDefaultAsync(x=>x.Id==postId);
+        if (post == null || post.PostSettings.IsHidden || post.PostSettings.IsDeleted)
+            throw new EntityNotFoundException($"Post with id {postId}");
         return post;
     }
 
-
-    public async Task<ICollection<Post>> GetPostsByCreatedAtAsync(DateTime createdAt)
+    public async Task<Post> GetPostByIdAdmin(Guid postId)
     {
-        return await _context.Posts
-            .Where(x => x.CreatedAt > createdAt)
-            .ToListAsync();
+        var post = await _context.Posts.FindAsync(postId) ?? throw new EntityNotFoundException("Post");
+
+        return post;
     }
 
-    public async Task<ICollection<Post>> GetPostsByOwnerIdAsync(Guid ownerId)
+    public async Task<ICollection<Post>> GetPostsByOwnerIdPaginated(Guid ownerId, int pageCount, int page, Guid? currentUserId = null)
     {
-        return await _context.Posts
-        .Where(x => x.OwnerId == ownerId)
-            .ToListAsync();
-    }
+        var query = _context.Posts.Where(x => x.OwnerId == ownerId);
 
-    public async Task<ICollection<Post>> GetFiltredPostsAsync(int? pageCount, int? page, Guid? categoryId = null, Guid? subCategoryId = null, string? city = null, string? region = null)
-    {
-        var postsQuery = _context.Posts
-            .Where(p => !categoryId.HasValue || p.SubCategory.CategoryId == categoryId.Value)
-            .Where(p => !subCategoryId.HasValue || p.SubCategoryId == subCategoryId.Value)
-            .Where(p => string.IsNullOrEmpty(city) || p.City.Contains(city))
-            .Where(p => string.IsNullOrEmpty(region) || p.Region.Contains(region))
-            .Skip((page ?? 1 - 1) * (pageCount ?? 10))
-            .Take(pageCount ?? 10);
-        return await postsQuery.ToListAsync();
-    }
-    public async Task<ICollection<Post>> GetUserFavouritePosts(Guid userId)
-    {
-        return await _context.UserFavouritePosts
-            .Where(x => x.UserId == userId)
-        .Select(x => x.Post)
-            .ToListAsync();
-    }
-
-
-    public async Task<ICollection<Post>> GetUserPromotedPostsAsync(Guid userId)
-    {
-        return await _context.Posts
-            .Include(x => x.Promotion)
-            .Where(x => x.OwnerId == userId && x.Promotion.Type != PostPromotionType.None)
-            .ToListAsync();
-    }
-    public async Task<ICollection<Post>> GetFeed(string categories, string cities, int pageCount, int page)
-    {
-        return await _context.Posts
-            .Where(x => categories.Contains(x.SubCategory.Category.NamePL) || categories.Contains(x.SubCategory.Category.NameEN))
-            .Where(x => cities.Contains(x.City))
+        if (currentUserId == null || currentUserId != ownerId)
+        {
+            query = query.Where(x => !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden);
+        }
+        return await query
+            .OrderByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageCount)
             .Take(pageCount)
             .ToListAsync();
     }
 
-    public async Task<ICollection<Post>> GetPromotedPosts(int count, string? categories, string? cities)
+    public async Task<ICollection<Post>> GetFiltredPostsAsync(int? pageCount, int? page, Guid? subCategoryId = null, string? city = null, string? region = null)
     {
-        if (count <= 0) throw new ArgumentOutOfRangeException("Wrong Input");
+        var postsQuery = _context.Posts.AsQueryable();
 
-        var posts = await _context.Posts
-            .Where(x => x.Promotion.Type == PostPromotionType.Top)
-            .Where(x => categories.Contains(x.SubCategory.Category.NamePL) || categories.Contains(x.SubCategory.Category.NameEN))
-            .Where(x => cities.Contains(x.City))
+        if (subCategoryId.HasValue)
+        {
+            postsQuery = postsQuery.Where(p => p.SubCategoryId == subCategoryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(city))
+        {
+            postsQuery = postsQuery.Where(p => p.City.Contains(city));
+        }
+
+        if (!string.IsNullOrEmpty(region))
+        {
+            postsQuery = postsQuery.Where(p => p.Region.Contains(region));
+        }
+
+        return await postsQuery
+            .Where(x => !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden)
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip(((page ?? 1) - 1) * (pageCount ?? 10))
+            .Take(pageCount ?? 10)
+            .ToListAsync();
+    }
+    public async Task<ICollection<Post>> GetUserFavouritePostsPaginated(Guid userId, int pageCount, int page)
+    {
+        return await _context.UserFavouritePosts
+            .OrderByDescending(x=> x.CreatedAt)
+            .Where(x => x.UserId == userId)
+            .Select(x => x.Post)
+            .Where(x => !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden)
+            .Skip(( page - 1) * pageCount)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Post>> GetFeed(List<string>? categories, List<string>? cities, int pageCount, int page)
+    {
+        var query = _context.Posts.AsQueryable();
+
+        if (categories is { Count: > 0 })
+        {
+            query = query.Where(x =>
+                categories.Contains(x.SubCategory.Category.NamePL) ||
+                categories.Contains(x.SubCategory.Category.NameEN));
+        }
+
+        if (cities is { Count: > 0 })
+        {
+            query = query.Where(x => cities.Contains(x.City));
+        }
+
+        return await query
+            .Where(x=> !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden)
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip((page - 1) * pageCount)
+            .Take(pageCount)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Post>> GetPromotedPosts(int count, List<string>? categories, List<string>? cities)
+    {
+        if (count < 0) throw new InvalidDataException("Invalid count");
+
+        var topQuery = _context.Posts
+            .Where(x => x.Promotion.Type == PostPromotionType.Top && (!x.PostSettings.IsDeleted && !x.PostSettings.IsHidden));
+
+        if (categories is { Count: > 0 })
+        {
+            topQuery = topQuery.Where(x =>
+                categories.Contains(x.SubCategory.Category.NamePL) ||
+                categories.Contains(x.SubCategory.Category.NameEN));
+        }
+
+        if (cities is { Count: > 0 })
+        {
+            topQuery = topQuery.Where(x => cities.Contains(x.City));
+        }
+
+        var posts = await topQuery
             .OrderBy(x => x.VisitedPosts.Count)
             .Take(count >= 3 ? count * 2 / 3 : (count == 2 ? 2 : 1))
             .ToListAsync();
 
         if (count > 2)
         {
-            var highlightedPosts = await _context.Posts
-                .Where(x => x.Promotion.Type == PostPromotionType.Highlight)
-                .Where(x => categories.Contains(x.SubCategory.Category.NameEN) || categories.Contains(x.SubCategory.Category.NamePL))
-                .Where(x => cities.Contains(x.City))
+            var highlightQuery = _context.Posts
+                .Where(x => x.Promotion.Type == PostPromotionType.Highlight && (!x.PostSettings.IsDeleted && !x.PostSettings.IsHidden));
+
+            if (categories is { Count: > 0 })
+            {
+                highlightQuery = highlightQuery.Where(x =>
+                    categories.Contains(x.SubCategory.Category.NamePL) ||
+                    categories.Contains(x.SubCategory.Category.NameEN));
+            }
+
+            if (cities is { Count: > 0 })
+            {
+                highlightQuery = highlightQuery.Where(x => cities.Contains(x.City));
+            }
+
+            var highlightedPosts = await highlightQuery
                 .OrderBy(x => x.VisitedPosts.Count)
                 .Take(count / 3)
                 .ToListAsync();
+
             posts.AddRange(highlightedPosts);
         }
 
         return posts;
+    }
+
+    public async Task<ICollection<Post>> GetPopularPosts(int count, string? city)
+    {
+        var query = _context.Posts.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(city))
+        {
+            query = query.Where(p => p.City == city);
+        }
+
+        return await query
+            .Where(x => x.CreatedAt >= DateTime.UtcNow.AddDays(-10) && (!x.PostSettings.IsDeleted && !x.PostSettings.IsHidden))
+            .OrderByDescending(p => p.VisitedPosts.Count)
+            .Take(count)
+            .ToListAsync();
     }
 }

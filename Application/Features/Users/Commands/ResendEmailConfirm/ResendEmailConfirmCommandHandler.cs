@@ -1,5 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Enums.Common;
 using MediatR;
 
 namespace Application.Features.Users.Commands.ResendEmailConfirm
@@ -19,7 +20,7 @@ namespace Application.Features.Users.Commands.ResendEmailConfirm
         {
             try
             {
-                await _tokenService.DeleteTokenByUserMail(request.Email, Domain.Enums.TokenType.EmailConfirmation);
+                await _tokenService.DeleteTokenByUserMail(request.Email, TokenType.EmailConfirmation);
                 await _mailService.SendConfiramationMail(request.Email);
                 return ApiResponse<Unit>.Success(value: Unit.Value);
             }

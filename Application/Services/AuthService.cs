@@ -4,7 +4,10 @@ using Application.Features.Users.Events.UserCreated;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Users;
-using Domain.Enums;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.DataExceptions;
+using Domain.Exceptions.ExternalServicesExceptions;
 using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2.Responses;
 using MediatR;
@@ -35,20 +38,17 @@ namespace Application.Services
 
         public async Task<UserDto> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null)
-            {
-                throw new ArgumentNullException("User not found");
-            }
+            var user = await _userManager.FindByEmailAsync(loginDto.Email) ?? throw new EntityNotFoundException("User");
+
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
             if (!isPasswordCorrect)
             {
-                throw new ArgumentException("Invalid password");
+                throw new InvalidDataProvidedException("Password","User","AuthService.Login");
             }
             if (!isEmailConfirmed)
             {
-                throw new UnauthorizedAccessException("Confirm email first");
+                throw new AccessForbiddenException("AuthService.Login",user.Id.ToString(),"Confirm email first");
             }
             user.LastSeen = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
@@ -67,25 +67,11 @@ namespace Application.Services
 
         public async Task<UserDto> LoginWithGmail(string code)
         {
-            TokenResponse token = null;
-            try
-            {
-                token = await GetGoogleAccessTokenAsync(code);
-                if (token == null)
-                {
-                    throw new Exception("Failed to retrieve access token from Google.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message + ex.StackTrace);
-            }
-
-
-
+            TokenResponse token = await GetGoogleAccessTokenAsync(code) ?? throw new ExternalServiceException("Failed to retrive google token");
+              
             var settings = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new List<string> { _config["GoogleAPI:ClientId"] }
+                Audience = new List<string> { _config["GoogleAPI:ClientId"] ?? throw new ConfigException("Google audience error") }
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken, settings);
             var user = await _userManager.FindByEmailAsync(payload.Email);
@@ -123,25 +109,18 @@ namespace Application.Services
         public async Task Register(RegisterDto registerDto)
         {
             var user = _mapper.Map<User>(registerDto);
-            if (user == null) throw new ArgumentNullException(nameof(user), "User is null before hashing password.");
+            if (user == null) throw new EntityNotFoundException("User");
             if (_userManager == null) throw new InvalidOperationException("UserManager is not initialized.");
 
             user.UserName = user.Email;
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, registerDto.Password);
-            try
+
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(user);
-                if (!result.Succeeded)
-                {
-                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                    await _logService.CreateLogAsync($"User registration failed for {user.Email}. Errors: {errors}",
-                        LogType.Error);
-                    throw new Exception(errors);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while saving user: {ex.InnerException?.Message ?? ex.Message}");
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                await _logService.CreateLogAsync($"User registration failed for {user.Email}. Errors: {errors}",LogType.Error);
+                throw new AccessForbiddenException("AuthService.Login", user.Id.ToString(), errors);
             }
             await _userManager.AddToRoleAsync(user, "User");
 
@@ -157,9 +136,9 @@ namespace Application.Services
             var parameters = new Dictionary<string, string>
             {
                 { "code", code },
-                { "client_id", _config["GoogleAPI:ClientId"] },
-                { "client_secret", _config["GoogleAPI:Key"] },
-                { "redirect_uri", _config["GoogleAPI:RedirectUri"] },
+                { "client_id", _config["GoogleAPI:ClientId"] ?? throw new ConfigException("Google client id error")},
+                { "client_secret", _config["GoogleAPI:Key"] ?? throw new ConfigException("Google client secret error") } ,
+                { "redirect_uri", _config["GoogleAPI:RedirectUri"] ?? throw new ConfigException("Google Redirect api error") },
                 { "grant_type", "authorization_code" }
             };
 
@@ -170,11 +149,10 @@ namespace Application.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent) ?? throw new ExternalServiceException("Google token null response");
                 return tokenResponse;
             }
-
-            return null;
+            else throw new ExternalServiceException("Failed to get google access token");
         }
     }
 }

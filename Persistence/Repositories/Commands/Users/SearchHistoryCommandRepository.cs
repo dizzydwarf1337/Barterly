@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 
@@ -19,7 +20,7 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task DeleteSearchHistory(Guid searchHistoryId)
         {
-            var searchHistory = await _context.SearchHistories.FindAsync(searchHistoryId) ?? throw new Exception("Search history not found");
+            var searchHistory = await _context.SearchHistories.FindAsync(searchHistoryId) ?? throw new EntityNotFoundException("Search history");
             _context.SearchHistories.Remove(searchHistory);
             await _context.SaveChangesAsync();
         }

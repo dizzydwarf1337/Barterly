@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,7 +14,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<UserOpinion> GetUserOpinionByIdAsync(Guid id)
         {
-            return await _context.UserOpinions.FindAsync(id) ?? throw new Exception("User opinion not found");
+            return await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("User opinion");
         }
 
         public async Task<ICollection<UserOpinion>> GetUserOpinionsAsync()

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Posts;
-using Domain.Enums;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -19,7 +20,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<ReportPost> GetReportPostByIdAsync(Guid reportId)
         {
-            return await _context.ReportPosts.FindAsync(reportId) ?? throw new Exception("Post Report not found");
+            return await _context.ReportPosts.FindAsync(reportId) ?? throw new EntityNotFoundException("Post report");
         }
 
         public async Task<ICollection<ReportPost>> GetReportPostsByAuthorIdAsync(Guid authorId)

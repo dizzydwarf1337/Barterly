@@ -14,15 +14,7 @@ namespace API.Controllers
 
         protected IActionResult HandleResponse<T>(ApiResponse<T> result)
         {
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            return NotFound(result);
+            return StatusCode(result.StatusCode, result);
 
         }
     }

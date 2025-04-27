@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /API/appsettings.json
 /Persistence/Seed/Seed.cs
 /API/appsettings.Development.json
+/API/wwwroot/uploads

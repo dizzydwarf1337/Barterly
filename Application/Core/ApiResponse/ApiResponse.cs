@@ -7,9 +7,11 @@
         public T Value { get; set; }
 
         public string Error { get; set; }
+        
+        public int StatusCode { get; set; }
 
-        public static ApiResponse<T> Success(T value) => new ApiResponse<T> { IsSuccess = true, Value = value };
-        public static ApiResponse<T> Failure(string error) => new ApiResponse<T> { IsSuccess = false, Error = error };
+        public static ApiResponse<T> Success(T value, int statusCode = 200) => new ApiResponse<T> { IsSuccess = true, Value = value, StatusCode = statusCode };
+        public static ApiResponse<T> Failure(string error, int statusCode = 400) => new ApiResponse<T> { IsSuccess = false, Error = error, StatusCode = statusCode };
 
     }
 }

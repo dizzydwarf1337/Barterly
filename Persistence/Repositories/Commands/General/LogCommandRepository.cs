@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Common;
-using Domain.Enums;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.General;
 using Persistence.Database;
 
@@ -11,7 +12,7 @@ namespace Persistence.Repositories.Commands.General
 
         public async Task ChangeLogType(Guid id, LogType logType)
         {
-            var log = await _context.Logs.FindAsync(id) ?? throw new Exception("Log not found");
+            var log = await _context.Logs.FindAsync(id) ?? throw new EntityNotFoundException("Log");
             log.LogType = logType;
             await _context.SaveChangesAsync();
         }
@@ -24,7 +25,7 @@ namespace Persistence.Repositories.Commands.General
 
         public async Task DeleteLogAsync(Guid id)
         {
-            var log = await _context.Logs.FindAsync(id) ?? throw new Exception("Log not found");
+            var log = await _context.Logs.FindAsync(id) ?? throw new EntityNotFoundException("Log");
             _context.Logs.Remove(log);
             await _context.SaveChangesAsync();
         }

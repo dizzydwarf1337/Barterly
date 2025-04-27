@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Posts;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Posts;
@@ -11,7 +11,8 @@ namespace Application.Services
         private readonly IUserActivityService _userActivityService;
         private readonly IPostQueryRepository _postQueryRepository;
         private readonly IMapper _mapper;
-
+        private const int DefaultPageSize = 7;
+        private const int PromotedPostsPerPage = 3;
         public RecommendationService(IUserActivityService userActivityService, IPostQueryRepository postQueryRepository, IMapper mapper)
         {
             _userActivityService = userActivityService;
@@ -19,49 +20,48 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<PostDto>> GetFeed(int page, Guid? userId = null)
+        public async Task<ICollection<PostPreviewDto>> GetFeed(int page, Guid? userId = null)
         {
 
-            ICollection<PostDto> posts = new List<PostDto>();
-            ICollection<PostDto> promotedPosts = new List<PostDto>();
+            ICollection<PostPreviewDto> posts = new List<PostPreviewDto>();
+            ICollection<PostPreviewDto> promotedPosts = new List<PostPreviewDto>();
             if (userId == null)
             {
-                posts = await GetPopularPosts(7, page);
-                promotedPosts = await GetPromotedPosts(3);
+                posts = await GetPopularPosts(DefaultPageSize);
+                promotedPosts = await GetPromotedPosts(PromotedPostsPerPage);
             }
             else
             {
                 var userActivity = await _userActivityService.GetUserActivityByUserId(userId.Value);
-                posts = _mapper.Map<ICollection<PostDto>>(await _postQueryRepository.GetFeed(userActivity.MostViewedCategories, userActivity.MostViewedCities, 7, page));
-                promotedPosts = await GetPromotedPosts(3, userActivity.MostViewedCategories, userActivity.MostViewedCities);
+                var mostViewedCategories = userActivity.MostViewedCategories?.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? new List<string>();
+                var mostViewedCitites = userActivity.MostViewedCities?.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? new List<string>();
+                posts = _mapper.Map<ICollection<PostPreviewDto>>(await _postQueryRepository.GetFeed(mostViewedCategories, mostViewedCitites, DefaultPageSize, page));
+                promotedPosts = await GetPromotedPosts(PromotedPostsPerPage, mostViewedCategories,mostViewedCitites);
             }
             return ShufflePosts(posts, promotedPosts);
         }
 
-        public Task<ICollection<PostDto>> GetPopularPosts(int pageCount, int Page)
+        public async Task<ICollection<PostPreviewDto>> GetPopularPosts(int count, string? city = null)
         {
-            throw new NotImplementedException();
+            var posts = await _postQueryRepository.GetPopularPosts(count, city);
+            return _mapper.Map<ICollection<PostPreviewDto>>(posts);
         }
 
-        public Task<ICollection<PostDto>> GetRecommendationPostsByUser(int count, Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<ICollection<PostDto>> GetPromotedPosts(int count, string? categories = null, string? cities = null)
+        public async Task<ICollection<PostPreviewDto>> GetPromotedPosts(int count, List<string>? categories = null, List<string>? cities = null)
         {
 
             ICollection<Post> posts = await _postQueryRepository.GetPromotedPosts(count, categories, cities);
-            return _mapper.Map<ICollection<PostDto>>(posts);
+            return _mapper.Map<ICollection<PostPreviewDto>>(posts);
         }
 
 
-        private ICollection<PostDto> ShufflePosts(ICollection<PostDto> posts, ICollection<PostDto> promotedPosts)
+        private ICollection<PostPreviewDto> ShufflePosts(ICollection<PostPreviewDto> posts, ICollection<PostPreviewDto> promotedPosts)
         {
             if (promotedPosts.Count == 0)
                 return posts;
 
             int proportion = Math.Max(1, posts.Count / promotedPosts.Count);
-            List<PostDto> shuffledPosts = new List<PostDto>();
+            List<PostPreviewDto> shuffledPosts = new List<PostPreviewDto>();
             using var postEnumerator = posts.GetEnumerator();
             using var promotedEnumerator = promotedPosts.GetEnumerator();
 
@@ -81,6 +81,12 @@ namespace Application.Services
             }
 
             return shuffledPosts;
+        }
+
+        public async Task<ICollection<PostPreviewDto>> GetFiltredPosts(int? pageCount, int? page, Guid? subCategoryId = null, string? city = null, string? region = null)
+        {
+            var posts = await _postQueryRepository.GetFiltredPostsAsync(pageCount, page, subCategoryId, city, region);
+            return _mapper.Map<ICollection<PostPreviewDto>>(posts);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 
@@ -18,7 +19,7 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task DeleteFavouriteCategoryAsync(Guid id)
         {
-            var favouriteCategory = await _context.FavouriteCategories.FindAsync(id) ?? throw new Exception("Favourite category not found");
+            var favouriteCategory = await _context.FavouriteCategories.FindAsync(id) ?? throw new EntityNotFoundException("Favourite category");
             _context.FavouriteCategories.Remove(favouriteCategory);
             await _context.SaveChangesAsync();
         }

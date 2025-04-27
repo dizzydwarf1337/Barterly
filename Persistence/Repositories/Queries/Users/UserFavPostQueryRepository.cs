@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -14,7 +15,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<UserFavouritePost> GetUserFavPostByIdAsync(Guid id)
         {
-            return await _context.UserFavouritePosts.FindAsync(id) ?? throw new Exception("User favourite post not found");
+            return await _context.UserFavouritePosts.FindAsync(id) ?? throw new EntityNotFoundException("User favourite post");
         }
 
         public async Task<ICollection<UserFavouritePost>> GetUserFavPostsAsync()

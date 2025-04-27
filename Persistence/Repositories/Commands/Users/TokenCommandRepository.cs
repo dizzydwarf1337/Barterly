@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -16,22 +17,14 @@ namespace Persistence.Repositories.Commands.Users
         }
         public async Task DeleteToken(string token)
         {
-            var Otoken = await _context.UserTokens.FirstOrDefaultAsync(x => x.Value.ToString() == token);
-            if (Otoken == null)
-            {
-                throw new ArgumentNullException(nameof(Otoken));
-            }
+            var Otoken = await _context.UserTokens.FirstOrDefaultAsync(x => x.Value.ToString() == token) ?? throw new EntityNotFoundException("Token"); 
             _context.UserTokens.Remove(Otoken);
             await _context.SaveChangesAsync();
 
         }
         public async Task DeleteToken(Guid userId, TokenType type)
         {
-            var token = await _context.UserTokens.FirstOrDefaultAsync(x => x.UserId == userId && x.Name == type.ToString().ToLower());
-            if (token == null)
-            {
-                throw new ArgumentNullException("Token does not exist or have been deleted");
-            }
+            var token = await _context.UserTokens.FirstOrDefaultAsync(x => x.UserId == userId && x.Name == type.ToString().ToLower()) ?? throw new EntityNotFoundException("Token");
             _context.UserTokens.Remove(token);
             await _context.SaveChangesAsync();
         }

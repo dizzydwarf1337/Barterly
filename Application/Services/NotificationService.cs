@@ -3,7 +3,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Common;
 using Domain.Entities.Users;
-using Domain.Enums;
+using Domain.Enums.Common;
 using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.General;

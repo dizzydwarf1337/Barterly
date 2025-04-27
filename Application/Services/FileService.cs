@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.DataExceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
@@ -11,7 +13,7 @@ namespace Application.Services
         {
             if (file == null || file.Length == 0)
             {
-                throw new ArgumentException("File is invalid");
+                throw new InvalidDataProvidedException("File","","FileService.SaveFile");
             }
 
             string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
@@ -24,14 +26,14 @@ namespace Application.Services
                 await file.CopyToAsync(stream);
             }
 
-            return fileName;
+            return Path.Combine("uploads", fileName).Replace("\\", "/");
         }
 
         public Task DeleteFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException("File path is invalid");
+                throw new EntityNotFoundException("File path");
             }
 
             string fullPath = Path.Combine(_baseFilePath, filePath);
@@ -42,7 +44,7 @@ namespace Application.Services
             }
             else
             {
-                throw new FileNotFoundException("File not found");
+                throw new EntityNotFoundException("File");
             }
 
             return Task.CompletedTask;

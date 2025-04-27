@@ -35,7 +35,10 @@ namespace Application.Features.Users.Events.UserCreated
                 };
                 await _notificationService.SendNotification(userNotification);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) 
+            {
+
+            }
 
         }
     }

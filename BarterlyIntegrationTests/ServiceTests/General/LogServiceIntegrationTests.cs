@@ -1,8 +1,8 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.General;
 using Application.Interfaces;
 using BarterlyIntegrationTests.Core;
 using Domain.Entities.Common;
-using Domain.Enums;
+using Domain.Enums.Common;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 

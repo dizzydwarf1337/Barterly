@@ -1,5 +1,7 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.DataExceptions;
 using MediatR;
 
 namespace Application.Features.Users.Commands.ConfirmEmail
@@ -21,6 +23,18 @@ namespace Application.Features.Users.Commands.ConfirmEmail
                 await _userService.ConfirmEmail(request.userMail, request.token);
 
                 return ApiResponse<Unit>.Success(Unit.Value);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message, 404);
+            }
+            catch (AccessForbiddenException ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message, 403);
+            }
+            catch(InvalidDataProvidedException ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message);
             }
             catch (Exception ex)
             {

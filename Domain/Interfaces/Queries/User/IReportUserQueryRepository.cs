@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.Users;
-using Domain.Enums;
+using Domain.Enums.Common;
 
 namespace Domain.Interfaces.Queries.User
 {

@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.User;
 using Application.Interfaces;
 using Domain.Entities.Users;
-using Domain.Enums;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.DataExceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services
@@ -21,25 +23,21 @@ namespace Application.Services
 
         public async Task ConfirmEmail(string email, string token)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                throw new Exception($"User with email {email} not found.");
-            }
+            var user = await _userManager.FindByEmailAsync(email) ?? throw new EntityNotFoundException($"User with email {email}");
 
-            var result = await _tokenService.CheckUserToken(email, Domain.Enums.TokenType.EmailConfirmation, token);
+            var result = await _tokenService.CheckUserToken(email, TokenType.EmailConfirmation, token);
 
             if (!result)
             {
-                throw new Exception("Email token is invalid or expired");
+                throw new AccessForbiddenException("UserService.ConfirmEmail",$"{user.Id}","Email token is invalid or expired");
             }
 
             var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
             if (!confirmResult.Succeeded)
             {
-                throw new Exception("Email confirmation failed");
+                throw new InvalidDataProvidedException("Email confirmation failed");
             }
-            await _tokenService.DeleteTokenByUserMail(user.Email, Domain.Enums.TokenType.EmailConfirmation);
+            await _tokenService.DeleteTokenByUserMail(user.Email, TokenType.EmailConfirmation);
         }
 
         public Task DeleteUser(Guid userId)
@@ -57,25 +55,20 @@ namespace Application.Services
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                throw new Exception("User not found");
+                throw new EntityNotFoundException("User not found");
             }
             var IsCorrect = await _tokenService.CheckUserToken(email, TokenType.PasswordReset, token);
             if (!IsCorrect)
             {
-                throw new Exception("Reset password token is invalid");
+                throw new AccessForbiddenException("UserService",user.Id.ToString(),"Reset password token is invalid");
             }
-            try
+
+            var res = await _userManager.ResetPasswordAsync(user, token, password);
+            if (res.Succeeded)
             {
-                var res = await _userManager.ResetPasswordAsync(user, token, password);
-                if (res.Succeeded)
-                {
-                    await _tokenService.DeleteTokenByUserMail(email, TokenType.PasswordReset);
-                }
+                await _tokenService.DeleteTokenByUserMail(email, TokenType.PasswordReset);
             }
-            catch
-            {
-                throw new Exception("User manager can't confirm reset token");
-            }
+            else throw new AccessForbiddenException("UserService.ResetPassword",user.Id.ToString(),"User manager can't confirm reset token");
         }
 
         public Task UpdateUser(UserDto userDto)

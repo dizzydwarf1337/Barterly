@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entities.Posts;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Persistence.Database;
 
@@ -19,7 +20,7 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task DeletePostImageAsync(Guid id)
         {
-            var postImage = await _context.PostImages.FindAsync(id);
+            var postImage = await _context.PostImages.FindAsync(id) ?? throw new EntityNotFoundException($"PostImage with id: {id}");
             _context.PostImages.Remove(postImage);
             await _context.SaveChangesAsync();
         }

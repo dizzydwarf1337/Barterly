@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -18,7 +19,7 @@ namespace Persistence.Repositories.Queries.General
 
         public async Task<MainAnnounsment> GetMainAnnounsmentByIdAsync(Guid id)
         {
-            return await _context.MainAnnounsments.FindAsync(id) ?? throw new Exception($"MainAnnounsment with id {id} not found.");
+            return await _context.MainAnnounsments.FindAsync(id) ?? throw new EntityNotFoundException($"MainAnnounsment with id {id}");
         }
     }
 }

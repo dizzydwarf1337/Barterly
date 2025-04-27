@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Categories;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -18,7 +19,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<Category> GetCategoryByIdAsync(Guid id)
         {
-            return await _context.Categories.FindAsync(id) ?? throw new Exception("Category not found");
+            return await _context.Categories.FindAsync(id) ?? throw new EntityNotFoundException("Category");
         }
 
         public async Task<ICollection<SubCategory>> GetSubCategoriesByCategory(Guid id)
@@ -28,7 +29,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<SubCategory> GetSubCategoryByIdAsync(Guid id)
         {
-            return await _context.SubCategories.FindAsync(id);
+            return await _context.SubCategories.FindAsync(id) ?? throw new EntityNotFoundException("SubCategory");
         }
     }
 }

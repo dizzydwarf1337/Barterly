@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Application.DTOs.Auth;
+﻿using Application.DTOs.Auth;
+using Application.DTOs.Users;
 using Application.Features.Users.Commands.CreateUser;
 using Application.Features.Users.Commands.Login;
 using Application.Features.Users.Commands.LoginWithGoogle;

@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -19,7 +20,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<User> GetUserAsync(Guid id)
         {
-            return await _context.Users.FindAsync(id) ?? throw new Exception("User not found");
+            return await _context.Users.FindAsync(id) ?? throw new EntityNotFoundException("User");
         }
 
         public async Task<ICollection<User>> GetUsersAsync()

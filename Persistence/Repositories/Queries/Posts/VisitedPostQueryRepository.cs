@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,7 +14,7 @@ namespace Persistence.Repositories.Queries.Posts
 
         public async Task<VisitedPost> GetVisitedPostByIdAsync(Guid id)
         {
-            return await _context.VisitedPosts.FindAsync(id) ?? throw new Exception("Visited post not found");
+            return await _context.VisitedPosts.FindAsync(id) ?? throw new EntityNotFoundException("Visited post");
         }
 
         public async Task<ICollection<VisitedPost>> GetVisitedPostsAsync()
@@ -32,7 +33,7 @@ namespace Persistence.Repositories.Queries.Posts
         }
         public async Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId)
         {
-            return await _context.VisitedPosts.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId);
+            return await _context.VisitedPosts.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId) ?? throw new EntityNotFoundException("Visited post");
         }
     }
 }

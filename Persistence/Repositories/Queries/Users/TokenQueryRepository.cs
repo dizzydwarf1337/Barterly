@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace Persistence.Repositories.Queries.Users
         {
             return await _context.UserTokens
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.Name.Equals(tokenType.ToString().ToLower()))
-               ?? throw new Exception("Token does not exist or have been deleted");
+               ?? throw new EntityNotFoundException("Token");
         }
     }
 }

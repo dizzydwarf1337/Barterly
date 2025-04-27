@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Posts;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,7 +14,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<PostImage> GetPostImageAsync(Guid id)
         {
-            return await _context.PostImages.FindAsync(id) ?? throw new Exception("Post image not found");
+            return await _context.PostImages.FindAsync(id) ?? throw new EntityNotFoundException("Post image");
         }
 
         public async Task<ICollection<PostImage>> GetPostImagesAsync()

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -23,7 +24,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<UserActivitySummary> GetUserActivityByUserIdAsync(Guid userId)
         {
-            return await _context.UserActivities.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new Exception("User activity summary not found");
+            return await _context.UserActivities.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new EntityNotFoundException("User activity summary ");
         }
     }
 }
