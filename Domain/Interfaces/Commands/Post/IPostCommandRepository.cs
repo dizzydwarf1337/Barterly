@@ -2,9 +2,8 @@
 {
     public interface IPostCommandRepository
     {
-        Task CreatePostAsync(Entities.Posts.Post post);
+        Task<Entities.Posts.Post> CreatePostAsync(Entities.Posts.Post post);
         Task UpdatePostAsync(Entities.Posts.Post post);
-        Task SetHidePostAsync(Guid postId, bool IsHidden);
-        Task DeletePostAsync(Guid postId);
+
     }
 }

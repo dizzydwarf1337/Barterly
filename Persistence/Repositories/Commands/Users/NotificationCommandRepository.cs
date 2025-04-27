@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 
@@ -18,14 +19,14 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task DeleteNotificationAsync(Guid id)
         {
-            var notification = await _context.Notifications.FindAsync(id) ?? throw new Exception("Notification not found");
+            var notification = await _context.Notifications.FindAsync(id) ?? throw new EntityNotFoundException("Notification");
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
         }
 
         public async Task SetReadNotificationAsync(Guid id, bool IsRead)
         {
-            var notification = await _context.Notifications.FindAsync(id) ?? throw new Exception("Notification not found");
+            var notification = await _context.Notifications.FindAsync(id) ?? throw new EntityNotFoundException("Notification");
             notification.IsRead = IsRead;
             await _context.SaveChangesAsync();
         }

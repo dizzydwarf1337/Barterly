@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Categories;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -26,7 +27,7 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task DeleteCategoryAsync(Guid id)
         {
-            var category = await _context.Categories.FindAsync(id) ?? throw new Exception("Category not found");
+            var category = await _context.Categories.FindAsync(id) ?? throw new EntityNotFoundException("Category");
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
@@ -41,16 +42,22 @@ namespace Persistence.Repositories.Commands.Post
         {
             var categoryOld = await _context.Categories
                 .Include(c => c.SubCategories)
-                .FirstOrDefaultAsync(c => c.Id == category.Id);
-
-            if (categoryOld == null) return;
-            _context.SubCategories.RemoveRange(categoryOld.SubCategories);
-            foreach (var sub in category.SubCategories)
+                .FirstOrDefaultAsync(c => c.Id == category.Id) ?? throw new EntityNotFoundException("Category");
+            
+            if (categoryOld.SubCategories != null)
             {
-                sub.CategoryId = category.Id; 
+                _context.SubCategories.RemoveRange(categoryOld.SubCategories);
+            }
+            
+            if (category.SubCategories != null)
+            {
+                foreach (var sub in category.SubCategories)
+                {
+                    sub.CategoryId = category.Id;
+                }
+                await _context.SubCategories.AddRangeAsync(category.SubCategories.Where(s => !String.IsNullOrWhiteSpace(s.TitlePL) && !String.IsNullOrWhiteSpace(s.TitleEN)));
             }
 
-            await _context.SubCategories.AddRangeAsync(category.SubCategories.Where(s=>!String.IsNullOrWhiteSpace(s.TitlePL) && !String.IsNullOrWhiteSpace(s.TitleEN)));
             categoryOld.NameEN = category.NameEN;
             categoryOld.NamePL = category.NamePL;
             categoryOld.Description = category.Description;

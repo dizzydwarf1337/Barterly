@@ -2,6 +2,8 @@
 using Application.DTOs.User;
 using Application.Interfaces;
 using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.ExternalServicesExceptions;
 using MediatR;
 
 namespace Application.Features.Users.Commands.LoginWithGoogle
@@ -52,6 +54,14 @@ namespace Application.Features.Users.Commands.LoginWithGoogle
                     await _userActivityService.CreateUserActivity(userId);
                 }
                 return ApiResponse<UserDto>.Success(userDto);
+            }
+            catch(ExternalServiceException ex)
+            {
+                return ApiResponse<UserDto>.Failure("External server error", 502);
+            }
+            catch(ConfigException ex)
+            {
+                return ApiResponse<UserDto>.Failure("Internal server error due to configuration issue.", 500);
             }
             catch (Exception ex)
             {

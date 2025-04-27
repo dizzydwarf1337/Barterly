@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,7 +14,7 @@ namespace Persistence.Repositories.Queries.General
 
         public async Task<GlobalNotification> GetGlobalNotificationByIdAsync(Guid id)
         {
-            return await _context.GlobalNotifications.FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception("Global Notification not found");
+            return await _context.GlobalNotifications.FirstOrDefaultAsync(x => x.Id == id) ?? throw new EntityNotFoundException("Global Notification");
         }
 
         public async Task<ICollection<GlobalNotification>> GetGlobalNotificationsAsync()

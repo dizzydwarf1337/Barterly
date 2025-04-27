@@ -1,5 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Exceptions.BusinessExceptions;
 using MediatR;
 
 namespace Application.Features.Category.Commands.DeleteCategory
@@ -19,6 +20,10 @@ namespace Application.Features.Category.Commands.DeleteCategory
             {
                 await _categoryService.DeleteCategory(Guid.Parse(request.CategoryId));
                 return ApiResponse<Unit>.Success(Unit.Value);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message, 404);
             }
             catch (Exception ex)
             {

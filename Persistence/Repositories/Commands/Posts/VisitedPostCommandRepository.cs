@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Persistence.Database;
 
@@ -18,7 +19,7 @@ namespace Persistence.Repositories.Commands.Post
 
         public async Task DeleteVisitedPostAsync(Guid id)
         {
-            var visitedPost = await _context.VisitedPosts.FindAsync(id) ?? throw new Exception("VisitedPost not found");
+            var visitedPost = await _context.VisitedPosts.FindAsync(id) ?? throw new EntityNotFoundException("VisitedPost");
             _context.VisitedPosts.Remove(visitedPost);
             await _context.SaveChangesAsync();
         }

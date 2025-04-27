@@ -2,7 +2,7 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Posts;
-using Domain.Enums;
+using Domain.Enums.Common;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
 

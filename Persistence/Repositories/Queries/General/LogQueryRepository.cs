@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.General;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,12 +14,12 @@ namespace Persistence.Repositories.Queries.General
 
         public async Task<Log> GetLogByIdAsync(Guid id)
         {
-            return await _context.Logs.FindAsync(id) ?? throw new Exception($"Log with id {id} not found.");
+            return await _context.Logs.FindAsync(id) ?? throw new EntityNotFoundException($"Log with id {id} not found.");
         }
 
         public async Task<ICollection<Log>> GetLogsPaginatedAsync(int PageSize, int PageNum)
         {
-            return await _context.Logs.OrderByDescending(x => x.CreatedAt).Skip(PageSize * (PageNum - 1)).Take(PageSize).ToListAsync() ?? throw new Exception("No logs found.");
+            return await _context.Logs.OrderByDescending(x => x.CreatedAt).Skip(PageSize * (PageNum - 1)).Take(PageSize).ToListAsync();
         }
 
         public async Task<ICollection<Log>> GetLogsByPostIdAsync(Guid postId)

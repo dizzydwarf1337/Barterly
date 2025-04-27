@@ -6,10 +6,6 @@ namespace Domain.Interfaces.Commands.User
     {
         Task CreateUserSettings(UserSettings settings);
         Task DeleteUserSettings(Guid settingsId);
-        Task SetHiddenAsync(Guid userId, bool isHidden);
-        Task SetBanStatusAsync(Guid userId, bool isBanned);
-        Task SetPostRestrictionAsync(Guid userId, bool isRestricted);
-        Task SetOpinionRestrictionAsync(Guid userId, bool isRestricted);
-        Task SetChatRestrictionAsync(Guid userId, bool isRestricted);
+        Task UpdateUserSettings(UserSettings settings);
     }
 }

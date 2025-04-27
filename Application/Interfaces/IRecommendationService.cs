@@ -1,12 +1,12 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Posts;
 
 namespace Application.Interfaces
 {
     public interface IRecommendationService
     {
-        Task<ICollection<PostDto>> GetRecommendationPostsByUser(int count, Guid userId);
-        Task<ICollection<PostDto>> GetFeed(int page, Guid? userId = null);
-        Task<ICollection<PostDto>> GetPopularPosts(int pageCount, int Page);
-        Task<ICollection<PostDto>> GetPromotedPosts(int count, string? categories = null, string? cities = null);
+        Task<ICollection<PostPreviewDto>> GetFeed(int page, Guid? userId = null);
+        Task<ICollection<PostPreviewDto>> GetPopularPosts(int count, string? city);
+        Task<ICollection<PostPreviewDto>> GetFiltredPosts(int? pageCount, int? page, Guid? subCategoryId = null, string? city = null, string? region = null);
+        Task<ICollection<PostPreviewDto>> GetPromotedPosts(int count, List<string>? categories = null, List<string>? cities = null);
     }
 }

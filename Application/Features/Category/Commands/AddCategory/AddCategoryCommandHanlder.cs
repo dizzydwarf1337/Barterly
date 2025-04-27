@@ -18,7 +18,11 @@ namespace Application.Features.Category.Commands.AddCategory
             try
             {
                 await _categoryService.AddCategory(request.category);
-                return ApiResponse<Unit>.Success(Unit.Value);
+                return ApiResponse<Unit>.Success(Unit.Value, 201);
+            }
+            catch (OperationCanceledException ex)
+            {
+                return ApiResponse<Unit>.Failure(ex.Message, 409);
             }
             catch (Exception ex)
             {

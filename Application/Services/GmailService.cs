@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
-using Domain.Enums;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
+using Domain.Exceptions.ExternalServicesExceptions;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
@@ -18,11 +20,11 @@ namespace Application.Services
         public GmailService(IConfiguration configuration, ITokenService tokenService, ILogService logService)
         {
             var emailConfig = configuration.GetSection("EmailSettings");
-            _smtpServer = emailConfig["SmtpServer"];
-            _smtpPort = int.Parse(emailConfig["SmtpPort"]);
-            _senderEmail = emailConfig["SenderEmail"];
-            _senderPassword = emailConfig["SenderPassword"];
-            _senderName = emailConfig["SenderName"];
+            _smtpServer = emailConfig["SmtpServer"] ?? throw new ConfigException("Smtp Server error");
+            _smtpPort = int.Parse(emailConfig["SmtpPort"] ?? throw new ConfigException("Smtp Port error")) ;
+            _senderEmail = emailConfig["SenderEmail"] ?? throw new ConfigException("Sender email error");
+            _senderPassword = emailConfig["SenderPassword"] ?? throw new ConfigException("Sender Password error");
+            _senderName = emailConfig["SenderName"] ?? throw new ConfigException("Sender name error");
             _tokenService = tokenService;
             _logService = logService;
         }
@@ -58,10 +60,10 @@ namespace Application.Services
                 await SendMail(userEmail, "Email-confirmation", body);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
                 await _logService.CreateLogAsync($"Error sending email to {userEmail}: {ex.Message}", LogType.Error, null, Guid.Empty, Guid.Empty);
-                return false;
+                throw new ExternalServiceException($"Error sending email to {userEmail}: {ex.Message}");
             }
         }
 

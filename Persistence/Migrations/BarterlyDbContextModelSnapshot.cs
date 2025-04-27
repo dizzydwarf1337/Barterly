@@ -17,12 +17,12 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Category", b =>
+            modelBuilder.Entity("Domain.Entities.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,24 +47,33 @@ namespace Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.FavouriteCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Categories.SubCategory", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnOrder(0);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnOrder(1);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId", "CategoryId");
+                    b.Property<string>("TitleEN")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TitlePL")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("FavouriteCategories");
+                    b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GlobalNotification", b =>
+            modelBuilder.Entity("Domain.Entities.Common.GlobalNotification", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,7 +95,7 @@ namespace Persistence.Migrations
                     b.ToTable("GlobalNotifications");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Log", b =>
+            modelBuilder.Entity("Domain.Entities.Common.Log", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,7 +123,7 @@ namespace Persistence.Migrations
                     b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MainAnnounsment", b =>
+            modelBuilder.Entity("Domain.Entities.Common.MainAnnounsment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,38 +148,7 @@ namespace Persistence.Migrations
                     b.ToTable("MainAnnounsments");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Opinion", b =>
+            modelBuilder.Entity("Domain.Entities.Common.Opinion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,14 +183,14 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Opinions");
+                    b.ToTable("Opinion");
 
                     b.HasDiscriminator().HasValue("Opinion");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Payment", b =>
+            modelBuilder.Entity("Domain.Entities.Common.Payment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,119 +206,7 @@ namespace Persistence.Migrations
                     b.ToTable("Payment");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Post", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MainImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("PriceType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("PromotionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Region")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ShortDescription")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<Guid>("SubCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.HasIndex("PromotionId")
-                        .IsUnique();
-
-                    b.HasIndex("SubCategoryId");
-
-                    b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("Domain.Entities.PostImage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("PostImages");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Promotion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Promotions");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Report", b =>
+            modelBuilder.Entity("Domain.Entities.Common.Report", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -376,7 +242,231 @@ namespace Persistence.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Domain.Entities.SearchHistory", b =>
+            modelBuilder.Entity("Domain.Entities.Common.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transaction");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.Property<string>("FullDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("MainImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostSettingsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PriceType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PromotionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ShortDescription")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("SubCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.PrimitiveCollection<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.ToTable("Posts");
+
+                    b.HasDiscriminator().HasValue("Post");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostImages");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RejectionMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("postStatusType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("PostSettings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.Promotion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Users.FavouriteCategory", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("UserId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("FavouriteCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Users.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Users.SearchHistory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -408,49 +498,7 @@ namespace Persistence.Migrations
                     b.ToTable("SearchHistories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SubCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TitleEN")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("TitlePL")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("SubCategories");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Transaction");
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -554,7 +602,7 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserActivitySummary", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserActivitySummary", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -588,7 +636,7 @@ namespace Persistence.Migrations
                     b.ToTable("UserActivities");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserChat", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserChat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -604,7 +652,7 @@ namespace Persistence.Migrations
                     b.ToTable("UserChat");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserFavouritePost", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserFavouritePost", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
@@ -621,10 +669,10 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("UserFavouritePost");
+                    b.ToTable("UserFavouritePosts");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserSettings", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserSettings", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -657,33 +705,6 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("UserSettings");
-                });
-
-            modelBuilder.Entity("Domain.Entities.VisitedPost", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastVisitedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("VisitedCount")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("VisitedPosts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -817,9 +838,30 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.PostOpinion", b =>
+            modelBuilder.Entity("VisitedPost", b =>
                 {
-                    b.HasBaseType("Domain.Entities.Opinion");
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("LastVisitedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("VisitedCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VisitedPosts");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostOpinion", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Common.Opinion");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
@@ -829,9 +871,9 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("PostOpinion");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserOpinion", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserOpinion", b =>
                 {
-                    b.HasBaseType("Domain.Entities.Opinion");
+                    b.HasBaseType("Domain.Entities.Common.Opinion");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -841,9 +883,9 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("UserOpinion");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReportPost", b =>
+            modelBuilder.Entity("Domain.Entities.Posts.ReportPost", b =>
                 {
-                    b.HasBaseType("Domain.Entities.Report");
+                    b.HasBaseType("Domain.Entities.Common.Report");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
@@ -856,9 +898,9 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("ReportPost");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReportUser", b =>
+            modelBuilder.Entity("Domain.Entities.Users.ReportUser", b =>
                 {
-                    b.HasBaseType("Domain.Entities.Report");
+                    b.HasBaseType("Domain.Entities.Common.Report");
 
                     b.Property<Guid>("ReportedUserId")
                         .HasColumnType("uniqueidentifier");
@@ -868,15 +910,168 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("ReportUser");
                 });
 
-            modelBuilder.Entity("Domain.Entities.FavouriteCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Posts.PostTypes.CommonPost", b =>
                 {
-                    b.HasOne("Domain.Entities.Category", "Category")
+                    b.HasBaseType("Domain.Entities.Posts.Post");
+
+                    b.HasDiscriminator().HasValue("CommonPost");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostTypes.RentPost", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Posts.Post");
+
+                    b.Property<decimal?>("Area")
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<int?>("Floor")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NumberOfRooms")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RentObjectType")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("RentPost");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostTypes.WorkPost", b =>
+                {
+                    b.HasBaseType("Domain.Entities.Posts.Post");
+
+                    b.Property<string>("BuildingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Contract")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ExperienceRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("MaxSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MinSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("WorkLocation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Workload")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("WorkPost");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Categories.SubCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Categories.Category", "Category")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Common.Opinion", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", "Author")
+                        .WithMany("CreatedOpinions")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Common.Payment", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Common.Report", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", "Author")
+                        .WithMany("Reports")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Common.Transaction", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", "Owner")
+                        .WithMany("UserPosts")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Categories.SubCategory", "SubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostImage", b =>
+                {
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
+                        .WithMany("PostImages")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostSettings", b =>
+                {
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
+                        .WithOne("PostSettings")
+                        .HasForeignKey("Domain.Entities.Posts.PostSettings", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.Promotion", b =>
+                {
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
+                        .WithOne("Promotion")
+                        .HasForeignKey("Domain.Entities.Posts.Promotion", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Users.FavouriteCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Categories.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("FavouriteCategories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -887,9 +1082,9 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Notification", b =>
+            modelBuilder.Entity("Domain.Entities.Users.Notification", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -898,80 +1093,13 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Opinion", b =>
+            modelBuilder.Entity("Domain.Entities.Users.SearchHistory", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "Author")
-                        .WithMany("CreatedOpinions")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Payment", b =>
-                {
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("Payments")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Post", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Owner")
-                        .WithMany("UserPosts")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Promotion", "Promotion")
-                        .WithOne("Post")
-                        .HasForeignKey("Domain.Entities.Post", "PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.SubCategory", "SubCategory")
-                        .WithMany()
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-
-                    b.Navigation("Promotion");
-
-                    b.Navigation("SubCategory");
-                });
-
-            modelBuilder.Entity("Domain.Entities.PostImage", b =>
-                {
-                    b.HasOne("Domain.Entities.Post", "Post")
-                        .WithMany("PostImages")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Report", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Author")
-                        .WithMany("Reports")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Domain.Entities.SearchHistory", b =>
-                {
-                    b.HasOne("Domain.Entities.Category", "SearchedCategory")
+                    b.HasOne("Domain.Entities.Categories.Category", "SearchedCategory")
                         .WithMany()
                         .HasForeignKey("SearchedCategoryId");
 
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("SearchHistory")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -982,51 +1110,33 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.SubCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserActivitySummary", b =>
                 {
-                    b.HasOne("Domain.Entities.Category", "Category")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Domain.Entities.UserActivitySummary", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithOne("UserActivitySummary")
-                        .HasForeignKey("Domain.Entities.UserActivitySummary", "UserId")
+                        .HasForeignKey("Domain.Entities.Users.UserActivitySummary", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserChat", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserChat", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.Users.User", null)
                         .WithMany("UserChats")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserFavouritePost", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserFavouritePost", b =>
                 {
-                    b.HasOne("Domain.Entities.Post", "Post")
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("FavouritePosts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1037,32 +1147,13 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserSettings", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserSettings", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithOne("Setting")
-                        .HasForeignKey("Domain.Entities.UserSettings", "UserId")
+                        .HasForeignKey("Domain.Entities.Users.UserSettings", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.VisitedPost", b =>
-                {
-                    b.HasOne("Domain.Entities.Post", "Post")
-                        .WithMany("VisitedPosts")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("VisitedPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -1078,7 +1169,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1087,7 +1178,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1102,7 +1193,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1111,16 +1202,35 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.PostOpinion", b =>
+            modelBuilder.Entity("VisitedPost", b =>
                 {
-                    b.HasOne("Domain.Entities.Post", "Post")
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
+                        .WithMany("VisitedPosts")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Users.User", "User")
+                        .WithMany("VisitedPosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Posts.PostOpinion", b =>
+                {
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
                         .WithMany("PostOpinions")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1129,9 +1239,9 @@ namespace Persistence.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Domain.Entities.UserOpinion", b =>
+            modelBuilder.Entity("Domain.Entities.Users.UserOpinion", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.Users.User", "User")
                         .WithMany("UserOpinions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1140,9 +1250,9 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReportPost", b =>
+            modelBuilder.Entity("Domain.Entities.Posts.ReportPost", b =>
                 {
-                    b.HasOne("Domain.Entities.Post", "ReportedPost")
+                    b.HasOne("Domain.Entities.Posts.Post", "ReportedPost")
                         .WithMany("PostReports")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1151,9 +1261,9 @@ namespace Persistence.Migrations
                     b.Navigation("ReportedPost");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ReportUser", b =>
+            modelBuilder.Entity("Domain.Entities.Users.ReportUser", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "ReportedUser")
+                    b.HasOne("Domain.Entities.Users.User", "ReportedUser")
                         .WithMany()
                         .HasForeignKey("ReportedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1162,12 +1272,12 @@ namespace Persistence.Migrations
                     b.Navigation("ReportedUser");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Category", b =>
+            modelBuilder.Entity("Domain.Entities.Categories.Category", b =>
                 {
                     b.Navigation("SubCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Post", b =>
+            modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
                 {
                     b.Navigation("PostImages");
 
@@ -1175,16 +1285,16 @@ namespace Persistence.Migrations
 
                     b.Navigation("PostReports");
 
+                    b.Navigation("PostSettings")
+                        .IsRequired();
+
+                    b.Navigation("Promotion")
+                        .IsRequired();
+
                     b.Navigation("VisitedPosts");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Promotion", b =>
-                {
-                    b.Navigation("Post")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("CreatedOpinions");
 

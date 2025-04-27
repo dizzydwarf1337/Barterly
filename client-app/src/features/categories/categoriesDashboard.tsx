@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material"
 import { observer } from "mobx-react-lite"
 
-import { t } from "i18next";
 import CategoryList from "./categoryList";
+import { useTranslation } from "react-i18next";
 
 export default observer(function CategoriesDashboard() {
-
+    const { t } = useTranslation();
 
     return (
         <>

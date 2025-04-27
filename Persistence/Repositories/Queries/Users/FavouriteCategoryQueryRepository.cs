@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -23,7 +24,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<FavouriteCategory> GetFavouriteCategoryByIdAsync(Guid id)
         {
-            return await _context.FavouriteCategories.FindAsync(id) ?? throw new Exception("Favourite Categories not found");
+            return await _context.FavouriteCategories.FindAsync(id) ?? throw new EntityNotFoundException("Favourite Categories");
         }
     }
 }

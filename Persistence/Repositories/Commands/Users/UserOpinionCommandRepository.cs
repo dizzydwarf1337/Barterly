@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 
@@ -18,14 +19,14 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task DeleteUserOpinionAsync(Guid id)
         {
-            var UserOpinion = await _context.UserOpinions.FindAsync(id) ?? throw new Exception("UserOpinion not found");
+            var UserOpinion = await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("UserOpinion");
             _context.UserOpinions.Remove(UserOpinion);
             await _context.SaveChangesAsync();
         }
 
         public async Task SetHiddenUserOpinionAsync(Guid id, bool IsHidden)
         {
-            var UserOpinion = await _context.UserOpinions.FindAsync(id) ?? throw new Exception("UserOpinion not found");
+            var UserOpinion = await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("UserOpinion");
             UserOpinion.IsHidden = IsHidden;
             await _context.SaveChangesAsync();
         }

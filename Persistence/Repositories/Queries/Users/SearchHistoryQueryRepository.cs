@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -23,7 +24,7 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<SearchHistory> GetSearchHistoryByIdAsync(Guid searchId)
         {
-            return await _context.SearchHistories.FindAsync(searchId) ?? throw new Exception("Search history by id not found");
+            return await _context.SearchHistories.FindAsync(searchId) ?? throw new EntityNotFoundException("Search history");
         }
     }
 }

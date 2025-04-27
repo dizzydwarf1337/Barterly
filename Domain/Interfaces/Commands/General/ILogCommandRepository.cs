@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.Common;
-using Domain.Enums;
+using Domain.Enums.Common;
 
 namespace Domain.Interfaces.Commands.General
 {

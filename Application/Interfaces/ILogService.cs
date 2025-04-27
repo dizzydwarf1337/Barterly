@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Domain.Enums;
+﻿using Application.DTOs.General;
+using Domain.Enums.Common;
 
 namespace Application.Interfaces
 {

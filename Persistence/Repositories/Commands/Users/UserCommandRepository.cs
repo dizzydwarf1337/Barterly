@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
 
@@ -19,7 +20,7 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task DeleteUser(Guid userId)
         {
-            var user = await _context.Users.FindAsync(userId) ?? throw new Exception("User not found");
+            var user = await _context.Users.FindAsync(userId) ?? throw new EntityNotFoundException("User");
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
@@ -32,7 +33,7 @@ namespace Persistence.Repositories.Commands.Users
 
         public async Task UploadPicture(Guid id, string PicPath)
         {
-            var user = await _context.Users.FindAsync(id) ?? throw new Exception("User not found");
+            var user = await _context.Users.FindAsync(id) ?? throw new EntityNotFoundException("User"); 
             user.ProfilePicturePath = PicPath;
             await _context.SaveChangesAsync();
         }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Posts;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -13,7 +14,7 @@ namespace Persistence.Repositories.Queries.Post
 
         public async Task<PostOpinion> GetPostOpinionByIdAsync(Guid id)
         {
-            return await _context.PostOpinions.FindAsync(id) ?? throw new Exception("Post opinion not found");
+            return await _context.PostOpinions.FindAsync(id) ?? throw new EntityNotFoundException("Post opinion");
         }
 
         public async Task<ICollection<PostOpinion>> GetPostOpinionsAsync()
