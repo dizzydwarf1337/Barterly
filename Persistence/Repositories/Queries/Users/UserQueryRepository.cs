@@ -22,7 +22,13 @@ namespace Persistence.Repositories.Queries.Users
         {
             return await _context.Users.FindAsync(id) ?? throw new EntityNotFoundException("User");
         }
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(
+                x => x.NormalizedEmail == email.ToUpper()
+            ) ?? throw new EntityNotFoundException("User");
 
+        }
         public async Task<ICollection<User>> GetUsersAsync()
         {
             return await _context.Users.ToListAsync();

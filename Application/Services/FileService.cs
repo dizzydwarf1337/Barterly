@@ -7,7 +7,7 @@ namespace Application.Services
 {
     public class FileService : IFileService
     {
-        private readonly string _baseFilePath = "wwwroot/uploads";
+        private readonly string _baseFilePath = "wwwroot/";
 
         public async Task<string> SaveFile(IFormFile file)
         {
@@ -17,7 +17,7 @@ namespace Application.Services
             }
 
             string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-            string filePath = Path.Combine(_baseFilePath, fileName);
+            string filePath = Path.Combine(_baseFilePath, "uploads",fileName);
 
             Directory.CreateDirectory(_baseFilePath);
 

@@ -35,8 +35,8 @@ export default observer(function CategoryListItem({ category } : Props) {
                 alignItems: "center", justifyContent: "center", borderRadius: "10px",
                 transition: "0.15s ease-out",
                 ':hover': {
-                    boxShadow: `2px 2px  ${uiStore.theme.palette.primary.contrastText}`,
-                    translate:"-2px -2px",
+                    boxShadow: `0px 2px 4px ${uiStore.theme.palette.primary.contrastText}`,
+                    translate: '0px -2px'
                 },
                 cursor: "pointer",
 

@@ -8,7 +8,7 @@ using Domain.Interfaces.Queries.Post;
 
 namespace Application.Services
 {
-    public class PostOpinionService : IOpinionService
+    public class PostOpinionService : IPostOpinionService
     {
 
         private readonly IPostOpinionCommandRepository _postOpinionCommandRepository;

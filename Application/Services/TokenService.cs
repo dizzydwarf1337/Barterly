@@ -110,6 +110,7 @@ public class TokenService : ITokenService
     {
         var userId = (await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User")).Id;
         var dbToken = await _tokenQueryRepository.GetTokenByUserIdAsync(userId, tokenType);
+        Console.WriteLine("DBTOKEN" + dbToken.Value);
         if (dbToken != null && dbToken.Value == token)
         {
             await _logService.CreateLogAsync("Token confirmed successfully", LogType.Information, null, Guid.Empty, userId);

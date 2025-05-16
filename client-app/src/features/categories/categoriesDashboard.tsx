@@ -14,7 +14,7 @@ export default observer(function CategoriesDashboard() {
                     {t('categories')}
                 </Typography>
             </Box>
-            <Box p="20px" sx={{ backgroundColor: "background.paper", borderRadius: "20px" }}>
+            <Box p="20px" sx={{ backgroundColor: "background.paper", borderRadius: "12px" }}>
                 <CategoryList />
             </Box>
         </>

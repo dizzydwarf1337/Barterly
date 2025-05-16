@@ -30,6 +30,14 @@ namespace Application.Core.Mapper
             CreateMap<WorkPost, PostDto>().IncludeBase<Post,PostDto>();
             CreateMap<RentPost, PostDto>().IncludeBase<Post, PostDto>();
             CreateMap<CommonPost, PostDto>().IncludeBase<Post, PostDto>();
+            CreateMap<PostDto, Post>()
+                .ForMember(x => x.Promotion, opt => opt.MapFrom(x => x.Promotion))
+                .ForMember(x => x.PostSettings, opt => opt.MapFrom(x => x.PostSettings))
+                .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
+                .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
+
+            CreateMap<EditPostDto, Post>()
+                .ForMember(x => x.CreatedAt, opt => opt.Ignore());
             CreateMap<PostSettings, PostSettingsDto>();
             CreateMap<Post, PostPreviewDto>().ForMember(x=>x.PostPromotionType, opt=>opt.MapFrom(x=>x.Promotion.Type));
             CreateMap<PostPreviewDto, Post>();
@@ -50,6 +58,7 @@ namespace Application.Core.Mapper
                 .ForMember(dest => dest.token, opt => opt.Ignore());
             CreateMap<UserSettings, UserSettingsDto>();
             CreateMap<RegisterDto, User>();
+            CreateMap<User, RegisterDto>();
             CreateMap<UserOpinion, OpinionDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.UserId));
             CreateMap<PostOpinion, OpinionDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.PostId));
         }

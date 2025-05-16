@@ -33,6 +33,7 @@ namespace Domain.Entities.Users
 
         public DateTime LastSeen { get; set; } = DateTime.Now;
 
+        public Guid? UserActivitySummaryId { get; set; }
         public Guid? UserSettingId { get; set; }
 
         [ForeignKey("UserSettingId")]

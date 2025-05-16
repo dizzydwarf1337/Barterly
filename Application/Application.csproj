@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
@@ -14,9 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Validators\Implementation\" />
     <Folder Include="Features\Category\Events\" />
-    <Folder Include="Features\Posts\Events\Hanlders\" />
+    <Folder Include="Features\General\Commands\" />
+    <Folder Include="Features\General\Queries\" />
+    <Folder Include="Features\General\Events\" />
     <Folder Include="Features\Reports\Events\Handlers\" />
     <Folder Include="Features\Reports\Commands\" />
     <Folder Include="Features\Reports\Queries\" />

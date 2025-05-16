@@ -15,19 +15,38 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
 
     public async Task<Post> GetPostById(Guid postId)
     {
-        var post = await _context.Posts.Include(x=>x.PostImages).Include(x=>x.PostOpinions).Include(x=>x.Promotion).Include(x=>x.SubCategory).FirstOrDefaultAsync(x=>x.Id==postId);
-        if (post == null || post.PostSettings.IsHidden || post.PostSettings.IsDeleted)
+        var post = await _context.Posts.Include(x=>x.PostSettings).Include(x=>x.PostImages).Include(x=>x.PostOpinions).Include(x=>x.Promotion).Include(x=>x.SubCategory).FirstOrDefaultAsync(x=>x.Id==postId);
+        if (post == null || post.PostSettings == null || post.PostSettings.IsHidden || post.PostSettings.IsDeleted)
             throw new EntityNotFoundException($"Post with id {postId}");
         return post;
     }
 
     public async Task<Post> GetPostByIdAdmin(Guid postId)
     {
-        var post = await _context.Posts.FindAsync(postId) ?? throw new EntityNotFoundException("Post");
+        var post = await _context.Posts
+            .Include(x=>x.PostImages)
+            .Include(x=>x.PostOpinions)
+            .Include(X=>X.SubCategory)
+            .FirstOrDefaultAsync(x=>x.Id == postId) ?? throw new EntityNotFoundException("Post");
+        return post;
+    }
+    public async Task<Post> GetPostByIdOwner(Guid postId, Guid userId)
+    {
+        var post = await _context.Posts
+            .Include(x => x.PostImages)
+            .Include(x => x.PostOpinions)
+            .Include(x => x.Promotion)
+            .Include(x => x.SubCategory)
+            .FirstOrDefaultAsync(x => x.Id == postId);
+
+        if (post == null)
+            throw new EntityNotFoundException($"Post with id {postId} not found");
+
+        if (post.OwnerId != userId)
+            throw new AccessForbiddenException("GetPostByIdOwner", userId.ToString(), "User does not own the post");
 
         return post;
     }
-
     public async Task<ICollection<Post>> GetPostsByOwnerIdPaginated(Guid ownerId, int pageCount, int page, Guid? currentUserId = null)
     {
         var query = _context.Posts.Where(x => x.OwnerId == ownerId);

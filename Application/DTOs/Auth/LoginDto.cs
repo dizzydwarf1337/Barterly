@@ -1,8 +1,16 @@
-﻿namespace Application.DTOs.Auth
+﻿
+
+using System.ComponentModel.DataAnnotations;
+
+namespace Application.DTOs.Auth
 {
     public class LoginDto
     {
+        [Required(ErrorMessage ="Email is required")]
+        [EmailAddress(ErrorMessage ="Invalid email format")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(6)]
         public string Password { get; set; }
     }
 }

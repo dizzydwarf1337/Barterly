@@ -21,14 +21,24 @@ namespace Persistence.Repositories.Commands.Posts
                 .Include(x => x.PostImages)
                 .Include(x => x.PostSettings)
                 .FirstOrDefaultAsync(x => x.Id == post.Id) ?? throw new EntityCreatingException("Post","PostCommandRepository");
+
             return createdPost;
         }
 
 
-        public async Task UpdatePostAsync(Domain.Entities.Posts.Post post)
+        public async Task<Domain.Entities.Posts.Post> UpdatePostAsync(Domain.Entities.Posts.Post post)
         {
+            post.UpdatedAt = DateTime.UtcNow;
             _context.Posts.Update(post);
             await _context.SaveChangesAsync();
+            var updatedPost = await _context.Posts
+                .Include(x => x.Promotion)
+                .Include(x => x.SubCategory)
+                .Include(x => x.PostImages)
+                .Include(x => x.PostSettings)
+                .FirstOrDefaultAsync(x => x.Id == post.Id) ?? throw new EntityCreatingException("Post", "PostCommandRepository");
+            return updatedPost;
+
         }
     }
 }

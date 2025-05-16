@@ -6,6 +6,7 @@ using Application.Features.Category.Commands.EditCategory;
 using Application.Features.Category.Queries.GetAllCategories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Attributes;
 
 namespace API.Controllers
 {
@@ -22,9 +23,8 @@ namespace API.Controllers
         [Authorize(Policy = "Admin")]
         [Authorize(Policy = "Moderator")]
         [HttpPost("createCategory")]
-        public async Task<IActionResult> AddCategory(CategoryDto category)
+        public async Task<IActionResult> AddCategory( [FromBody]CategoryDto category)
         {
-            Console.WriteLine(category.ToString());
             return HandleResponse(await Mediator.Send(new AddCategoryCommand { category = category }));
         }
 

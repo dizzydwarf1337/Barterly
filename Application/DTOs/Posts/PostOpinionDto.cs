@@ -9,10 +9,12 @@ namespace Application.DTOs.Posts
 {
     public class PostOpinionDto
     {
+        [Required]
         public string Id { get; set; }
-
+        [Required]
         public string AuthorId { get; set; }
-
+        [Required]
+        [StringLength(300,MinimumLength =2,ErrorMessage ="Content length must be between 2 and 300")]
         public string Content { get; set; }
 
         public bool IsHidden { get; set; } 

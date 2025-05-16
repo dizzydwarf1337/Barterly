@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Posts;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
@@ -18,6 +19,7 @@ namespace Persistence.Repositories.Commands.Posts
 
         public async Task UpdatePostSettings(PostSettings postSettings)
         {
+            _ = await _context.PostSettings.FindAsync(postSettings.Id) ?? throw new EntityNotFoundException("PostSettings");
             _context.PostSettings.Update(postSettings);
             await _context.SaveChangesAsync();
         }

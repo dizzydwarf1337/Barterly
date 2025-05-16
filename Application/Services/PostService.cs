@@ -5,9 +5,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Enums;
+using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
+using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Application.Services
 {
@@ -19,12 +22,14 @@ namespace Application.Services
         private readonly IFileService _fileService;
         private readonly IMapper _mapper;
         private readonly IPostFactory _postFactory;
+        private readonly IPostSettingsService _postSettingsService;
         public PostService(IPostCommandRepository postCommandRepository,
             IPostQueryRepository postQueryRepository,
             IMapper mapper,
             IFileService fileService,
             IPostImageCommandRepository postImageCommandRepository,
-            IPostFactory postFactory
+            IPostFactory postFactory,
+            IPostSettingsService postSettingsService
             )
         {
             _postCommandRepository = postCommandRepository;
@@ -33,6 +38,7 @@ namespace Application.Services
             _fileService = fileService;
             _postImageCommandRepository = postImageCommandRepository;
             _postFactory = postFactory;
+            _postSettingsService = postSettingsService;
         }
 
 
@@ -59,21 +65,32 @@ namespace Application.Services
                     postToAdd.PostImages.Add(postImage);
                 }
             }
-
             return _mapper.Map<PostDto>(await _postCommandRepository.CreatePostAsync(postToAdd));
         }
 
         public async Task<ICollection<PostPreviewDto>> GetUserFavouritePostsPaginated(Guid userId, int PageSize, int PageNumber)
         {
+
             var posts = await _postQueryRepository.GetUserFavouritePostsPaginated(userId, PageSize,PageNumber);
             return _mapper.Map<ICollection<PostPreviewDto>>(posts);
         }
 
 
-        public async Task<PostDto> GetPostById(Guid postId)
+        public async Task<PostDto> GetPostById(Guid postId, Guid? userId = null)
         {
-            var post = await _postQueryRepository.GetPostById(postId);
-            return _mapper.Map<PostDto>(post);
+            if (userId == null)
+            {
+               var  post = await _postQueryRepository.GetPostById(postId);
+               return _mapper.Map<PostDto>(post);
+
+            }
+            else if(userId != null)
+            {
+               var post = await _postQueryRepository.GetPostByIdOwner(postId, userId.Value);
+                return _mapper.Map<PostDto>(post);
+
+            }
+            throw new EntityNotFoundException("Post");
         }
 
 
@@ -83,12 +100,53 @@ namespace Application.Services
             return _mapper.Map<ICollection<PostPreviewDto>>(posts);
         }
 
-        public async Task UpdatePost(PostDto post)
+        public async Task<PostDto> UpdatePost(EditPostDto postDto)
         {
-            var postUp = _mapper.Map<Post>(post);
-            await _postCommandRepository.UpdatePostAsync(postUp);
+            var postFromDb = await _postQueryRepository.GetPostByIdOwner(Guid.Parse(postDto.Id), Guid.Parse(postDto.OwnerId));
+            _mapper.Map(postDto, postFromDb);
+            await _postSettingsService.ResubmitPost(postFromDb.Id);
+            return _mapper.Map<PostDto>(await _postCommandRepository.UpdatePostAsync(postFromDb));
         }
+        public async Task<PostDto> UploadImages(ImagesDto imagesDto)
+        {
+            var post = await _postQueryRepository.GetPostByIdOwner(Guid.Parse(imagesDto.PostId), Guid.Parse(imagesDto.UserId));
+            if (imagesDto.MainImage != null)
+            {
+                var mainImagePath = await _fileService.SaveFile(imagesDto.MainImage);
+                await _fileService.DeleteFile(post.MainImageUrl);
+                post.MainImageUrl = mainImagePath;
+            }
+            if (imagesDto.SecondaryImages != null)
+            {
+                if (post.PostImages != null)
+                {
+                    foreach (var image in post.PostImages.ToList())
+                    {
+                        await _fileService.DeleteFile(image.ImageUrl);
+                        await _postImageCommandRepository.DeletePostImageAsync(image.Id);
+                    }
+                }
+                if(post.PostImages == null) post.PostImages = new List<PostImage>();
+                foreach (var image in imagesDto.SecondaryImages.ToList())
+                {
 
-
+                    var imagePath = await _fileService.SaveFile(image);
+                    var postImage = new PostImage()
+                    {
+                        PostId = post.Id,
+                        ImageUrl = imagePath,
+                    };
+                    
+                    post.PostImages.Add(postImage);
+                    await _postImageCommandRepository.CreatePostImageAsync(postImage);
+                }
+            }
+            await _postSettingsService.ResubmitPost(post.Id);
+            return (_mapper.Map<PostDto>(await _postCommandRepository.UpdatePostAsync(post)));
+        }
+        public async Task<PostDto> GetPostByIdAdmin(Guid postId)
+        {
+            return _mapper.Map<PostDto>(await _postQueryRepository.GetPostByIdAdmin(postId));
+        }
     }
 }

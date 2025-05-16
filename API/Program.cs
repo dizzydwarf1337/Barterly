@@ -8,12 +8,16 @@ using Persistence.Database;
 using Persistence.Seed;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using System.Text;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
+
+builder.Services.AddControllers(opt=>opt.Filters.Add<ValidationFilter>());
+
 
 builder.Services.AddDbContext<BarterlyDbContext>(opt =>
     opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Database=Barterly;Integrated Security=True;TrustServerCertificate=True;")
@@ -50,6 +54,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.SaveToken = true;
+    options.AutomaticRefreshInterval = TimeSpan.FromDays(10);
     options.TokenValidationParameters = new TokenValidationParameters
     {
 
@@ -60,7 +66,6 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.FromMinutes(5),
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        RefreshBeforeValidation = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
 
     };
@@ -78,18 +83,25 @@ builder.Services.AddAuthentication(options =>
         },
         OnTokenValidated = context =>
         {
-            var token = context.SecurityToken as JwtSecurityToken;
-            Console.WriteLine(token);
-            if (token != null)
+            var token = context.Request.Headers["Authorization"]
+            .ToString()
+            .Replace("Bearer ", "");
+
+            var handler = new JwtSecurityTokenHandler();
+
+            if (handler.CanReadToken(token))
             {
-                Console.WriteLine($"Token validated: {token.RawData}");
-                Console.WriteLine($"Claims: {string.Join(", ", token.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
-                Console.WriteLine($"Valid To (UTC): {token.ValidTo}");
+                var jwt = handler.ReadJwtToken(token);
+
+                Console.WriteLine($"Token validated: {jwt.RawData}");
+                Console.WriteLine($"Claims: {string.Join(", ", jwt.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
+                Console.WriteLine($"Valid To (UTC): {jwt.ValidTo}");
             }
             else
             {
-                Console.WriteLine("Token validation failed: SecurityToken is null");
+                Console.WriteLine("Cannot read token");
             }
+
 
             return Task.CompletedTask;
         }
