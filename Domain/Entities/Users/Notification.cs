@@ -10,7 +10,7 @@ namespace Domain.Entities.Users
 
         public Guid UserId { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(500)]
         public string Message { get; set; }
         public string Title { get; set; }
 

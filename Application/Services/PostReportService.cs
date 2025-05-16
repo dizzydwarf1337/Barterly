@@ -8,7 +8,7 @@ using Domain.Interfaces.Queries.Post;
 
 namespace Application.Services
 {
-    public class PostReportService : IReportService
+    public class PostReportService : IPostReportService
     {
         private readonly IReportPostCommandRepository _reportPostCommandRepository;
         private readonly IReportPostQueryRepository _reportPostQueryRepository;
@@ -35,9 +35,10 @@ namespace Application.Services
             await _logService.CreateLogAsync($"Report with id {reportId} deleted", LogType.Information, null, null, null);
         }
 
-        public async Task<ICollection<ReportDto>> GetAllReports()
+
+        public async Task<ReportDto> GetReportById(Guid reportId)
         {
-            return _mapper.Map<ICollection<ReportDto>>(await _reportPostQueryRepository.GetAllPostReportsAsync());
+            return _mapper.Map<ReportDto>(await _reportPostQueryRepository.GetReportPostByIdAsync(reportId));
         }
 
         public async Task<ICollection<ReportDto>> GetReportsByAuthorId(Guid authorId)

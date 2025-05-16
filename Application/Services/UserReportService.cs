@@ -8,7 +8,7 @@ using Domain.Interfaces.Queries.User;
 
 namespace Application.Services
 {
-    public class UserReportService : IReportService
+    public class UserReportService : IUserReportService
     {
         private readonly IMapper _mapper;
         private readonly IReportUserCommandRepository _reportUserCommandRepository;
@@ -31,10 +31,9 @@ namespace Application.Services
             await _reportUserCommandRepository.DeleteReport(reportId);
         }
 
-        public async Task<ICollection<ReportDto>> GetAllReports()
+        public async Task<ReportDto> GetReportById(Guid reportId)
         {
-            var reportDtos = _mapper.Map<ICollection<ReportDto>>(await _reportUserQueryRepository.GetAllUsersReportsAsync());
-            return reportDtos;
+            return _mapper.Map<ReportDto>(await _reportUserQueryRepository.GetReportUserByIdAsync(reportId));
         }
 
         public async Task<ICollection<ReportDto>> GetReportsByAuthorId(Guid authorId)

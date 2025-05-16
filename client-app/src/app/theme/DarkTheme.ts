@@ -1,4 +1,4 @@
-import { alpha, createTheme, lighten } from "@mui/material";
+import { alpha, createTheme, darken, lighten } from "@mui/material";
 
 
 const darkTheme = createTheme({
@@ -13,55 +13,65 @@ const darkTheme = createTheme({
     },
     palette: {
         primary: {
-            main: "#0B2027", //#1F4342
+            main: "#2F44AB", // 2F44AB 0B2027
             contrastText: "#F1FAF9",
         },
         secondary: {
-            main: "#B5523B",
+            main: "#B13659", // B13659 B5523B
 
         },
         error: {
-            main: "#C62828",
+            main: "#E53935", // E53935 C62828
         },
         warning: {
-            main: "#F9A825",
+            main: "#FFA000", // FFA000 F9A825
         },
         success: {
-            main: "#2C6B2F",
+            main: "#388E3C", // 388E3C 2C6B2F
         },
         info: {
-            main:"#F1FAF9",
+            main: "#1976D2", // 1976D2 F1FAF9
         },
         background: {
             default: "#242424",
             paper:"#343232",
         },
-
+        text: {
+            primary: '#F1FAF9', // F1FAF9
+            secondary: '#B0BEC5',
+        },
 
     },
     components: {
         MuiButton: {
             styleOverrides: {
+
                 root: {
-                    borderRadius: "15px",
+                    borderRadius: "12px",
                     size: "small",
-                    color: "#CBE1E0",
+                    color: "##F1FAF9",
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     transition: "all 0.3s ease",
+                    '&:hover': {
+                        boxShadow: `0px 2px 3px ${alpha("#000", 0.5)}`,
+                        transform: 'translateY(-2px)',
+                    },
                 },
                 outlined: {
                     borderWidth: "2px",
                     '&:hover': {
-                        color: lighten("#0B2027", 0.7),
+                        color: lighten("#2F44AB", 0.9),
                     }
                 },
                 contained: {
                     '&:hover': {
-                        color: lighten("#0B2027", 0.9)
+                        transform: "translateY(-2px)",  
+                        color: lighten("#2F44AB", 0.9)
                     }
                 },
                 outlinedPrimary: {
                     "&:hover": {
-                        backgroundColor: alpha("#0B2027", 0.3),
+                        backgroundColor: alpha("#2F44AB", 0.3),
 
 
                     },
@@ -69,51 +79,51 @@ const darkTheme = createTheme({
 
                 outlinedSecondary: {
                     ":hover": {
-                        backgroundColor: alpha("#B5523B", 0.3),
+                        backgroundColor: alpha("#B13659", 0.3),
 
                     },
                 },
                 outlinedError: {
                     ":hover": {
-                        backgroundColor: alpha("#C62828", 0.3),
+                        backgroundColor: alpha("#E53935", 0.3),
 
                     },
                 },
                 outlinedWarning: {
                     ":hover": {
-                        backgroundColor: alpha("#F9A825", 0.3),
+                        backgroundColor: alpha("#FFA000", 0.3),
 
                     },
                 },
                 outlinedSuccess: {
                     ":hover": {
-                        backgroundColor: alpha("#2C6B2F", 0.3),
+                        backgroundColor: alpha("#388E3C", 0.3),
 
                     },
                 },
                 containedPrimary: {
                     '&:hover': {
-                        backgroundColor: lighten("#0B2027", 0.1),
+                        backgroundColor: lighten("#2F44AB", 0.1),
                     }
                 },
                 containedSecondary: {
                     '&:hover': {
-                        backgroundColor: lighten("#B5523B", 0.1),
+                        backgroundColor: lighten("#B13659", 0.1),
                     }
                 },
                 containedError: {
                     '&:hover': {
-                        backgroundColor: lighten("#C62828", 0.1),
+                        backgroundColor: lighten("#E53935", 0.1),
                     }
                 },
                 containedWarning: {
                     '&:hover': {
-                        backgroundColor: lighten("#F9A825", 0.1),
+                        backgroundColor: lighten("#FFA000", 0.1),
                     }
                 },
                 containedSuccess: {
                     '&:hover': {
-                        backgroundColor: lighten("#2C6B2F", 0.1),
+                        backgroundColor: lighten("#388E3C", 0.1),
                     }
                 },
 
@@ -128,7 +138,7 @@ const darkTheme = createTheme({
                     color: "#F1FAF9"
                 },
                 h1: ({ theme }) => ({
-                    [theme.breakpoints.down("sm")]: {
+                      [theme.breakpoints.down("sm")]: {
                         fontSize: "2rem",
                     },
                     [theme.breakpoints.up("sm")]: {

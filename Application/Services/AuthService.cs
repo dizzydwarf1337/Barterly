@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Auth;
+﻿using Application.Core.Factories.Interfaces;
+using Application.DTOs.Auth;
 using Application.DTOs.User;
 using Application.Features.Users.Events.UserCreated;
 using Application.Interfaces;
@@ -20,20 +21,20 @@ namespace Application.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
+        private readonly IUserFactory _userFactory;
         private readonly ITokenService _tokenService;
         private readonly ILogService _logService;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly IConfiguration _config;
 
-        public AuthService(UserManager<User> userManager, ITokenService tokenService, ILogService logService, IMapper mapper, IMediator mediator, IConfiguration config)
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, ILogService logService, IMapper mapper, IConfiguration config, IUserFactory userFactory)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _logService = logService;
             _mapper = mapper;
-            _mediator = mediator;
             _config = config;
+            _userFactory = userFactory;
         }
 
         public async Task<UserDto> Login(LoginDto loginDto)
@@ -108,26 +109,12 @@ namespace Application.Services
 
         public async Task Register(RegisterDto registerDto)
         {
-            var user = _mapper.Map<User>(registerDto);
-            if (user == null) throw new EntityNotFoundException("User");
-            if (_userManager == null) throw new InvalidOperationException("UserManager is not initialized.");
-
-            user.UserName = user.Email;
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, registerDto.Password);
-
-            var result = await _userManager.CreateAsync(user);
-            if (!result.Succeeded)
+            var user = await _userFactory.CreateUser(registerDto);
+            if (user ==null)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                await _logService.CreateLogAsync($"User registration failed for {user.Email}. Errors: {errors}",LogType.Error);
-                throw new AccessForbiddenException("AuthService.Login", user.Id.ToString(), errors);
+                await _logService.CreateLogAsync($"User registration failed for {registerDto.Email}.",LogType.Error);
+                throw new EntityCreatingException("User","AuthService.Register");
             }
-            await _userManager.AddToRoleAsync(user, "User");
-
-            var userCreatedEvent = new UserCreatedEvent(user.Email, user.FirstName, user.LastName, user.Id);
-            await _mediator.Publish(userCreatedEvent);
-
-            await _logService.CreateLogAsync($"User created successfully: {user.Email}", LogType.Information, userId: user.Id);
         }
 
         private async Task<TokenResponse> GetGoogleAccessTokenAsync(string code)

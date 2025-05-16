@@ -47,11 +47,11 @@ export default observer(function CategoryList() {
                                 sx={{
                                 
                                     backgroundColor: "success.main", width: "150px", height: "40px",
-                                    alignItems: "center", justifyContent: "center", borderRadius: "10px",
+                                    alignItems: "center", justifyContent: "center", borderRadius: "12px",
                                     transition: "0.2s ease-out",
                                     ':hover': {
-                                        boxShadow: `1px 1px  ${uiStore.theme.palette.primary.contrastText}`,
-                                        translate:'-2px -2px'
+                                        boxShadow: `0px 2px 4px ${uiStore.theme.palette.primary.contrastText}`,
+                                        translate:'0px -2px'
                                     },
                                     cursor: "pointer"
                                 }}>

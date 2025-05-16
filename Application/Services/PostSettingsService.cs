@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Posts;
+using Application.Interfaces;
 using Domain.Entities.Posts;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
@@ -22,9 +23,9 @@ namespace Application.Services
             _postSettingsQueryRepository = postSettingsQueryRepository;
         }
 
-        public async Task ApprovePost(Guid postId)
+        public async Task ApprovePost(ApprovePostDto approvePostDto)
         {
-            var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(postId);
+            var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(Guid.Parse(approvePostDto.postId));
             postSettings.IsHidden = false;
             postSettings.postStatusType = Domain.Enums.Posts.PostStatusType.Published;
             postSettings.RejectionMessage = null;
@@ -35,15 +36,16 @@ namespace Application.Services
         {
             var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(postId);
             postSettings.IsDeleted = true;
+            postSettings.IsHidden = true;
             await _postSettingsCommandRepository.UpdatePostSettings(postSettings);
         }
 
-        public async Task RejectPost(Guid postId, string reason)
+        public async Task RejectPost(RejectPostDto rejectPostDto)
         {
-            var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(postId);
+            var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(Guid.Parse(rejectPostDto.postId));
             postSettings.IsHidden = true;
             postSettings.postStatusType = Domain.Enums.Posts.PostStatusType.Rejected;
-            postSettings.RejectionMessage = reason;
+            postSettings.RejectionMessage = rejectPostDto.reason;
             await _postSettingsCommandRepository.UpdatePostSettings(postSettings);
         }
 

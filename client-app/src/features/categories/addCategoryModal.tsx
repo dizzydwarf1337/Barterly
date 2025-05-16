@@ -69,12 +69,12 @@ export default observer(function AddCategoryModal({open, onClose, category} : Pr
         }
         try {
             if (!category) {
-                adminCategoryStore.addCategory(updatedCategory);
+                await adminCategoryStore.addCategory(updatedCategory);
                 uiStore.showSnackbar("Category added", "success", "right");
                 categoryStore.setCategories([...categoryStore.categories!, categoryToAdd]);
             }
             else {
-                adminCategoryStore.editCategory(updatedCategory);
+                await adminCategoryStore.editCategory(updatedCategory);
                 uiStore.showSnackbar("Category updated", "success", "right");
                 categoryStore.setCategories([
                     ...categoryStore.categories!.filter(x => x.id !== updatedCategory.id),

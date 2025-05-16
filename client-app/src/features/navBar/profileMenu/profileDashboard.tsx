@@ -22,10 +22,10 @@ export default observer( function ProfileDashboard() {
     }
     return (
         <>
-            <Box sx={{ display: "flex", flexDirection: "column", m: "2px", p: "2px",  justtifyContent: "center", alignItems: "center", gap:"20px", width:"200px" }}>
-                <Box component="img" src={user.profilePicturePath || "/user/blankUser.svg"} sx={{ width: "100px", borderRadius: "50%", boxShadow: "1px 1px 2px 2px background.main" }} />
+            <Box sx={{ display: "flex", flexDirection: "column", m: "2px", p: "2px", justtifyContent: "center", alignItems: "center", gap: "20px", width: "200px" }}>
+                <Box component="img" src={user!.profilePicturePath || "/user/blankUser.svg"} sx={{ width: "100px", borderRadius: "50%", boxShadow: `1px 1px 2px 2px background.main` }} />
                 <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "10px" }} width="100%">
-                    <Button variant="outlined" fullWidth>
+                    <Button variant="outlined" color="warning" fullWidth>
                         <Box display="flex" gap="10px">
                             <SettingsIcon />
 

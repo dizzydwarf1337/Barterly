@@ -8,7 +8,7 @@ using Domain.Interfaces.Queries.User;
 
 namespace Application.Services
 {
-    public class UserOpinionService : IOpinionService
+    public class UserOpinionService : IUserOpinionService
     {
         private readonly IUserOpinionCommandRepository _userOpinionCommandRepository;
         private readonly IUserOpinionQueryRepository _userOpinionQueryRepository;

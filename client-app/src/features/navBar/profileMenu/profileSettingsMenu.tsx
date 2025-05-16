@@ -1,4 +1,4 @@
-import {  Box, Button, Divider, IconButton, Menu, Typography, } from "@mui/material";
+import {  alpha, Box, Button, Divider, IconButton, Menu, Typography, } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import useStore from "../../../app/stores/store";
 import { useTranslation } from "react-i18next";
@@ -36,14 +36,18 @@ export default observer(function ProfileSettingsMenu() {
             </Box>
             <Divider sx={{ m: "0px 10px 5px 10px" }} />
             <Box display="flex" flexDirection="row" width="100%" justifyContent="center" gap="20px" >
-                <IconButton onClick={() => { uiStore.changeTheme(); console.log("theme changed") }} >
+                <IconButton onClick={() => { uiStore.changeTheme(); console.log("theme changed") }} sx={{ transition:"all 0.3s ease",
+                    '&:hover': {
+                        boxShadow: `0px 2px 3px ${alpha("#000", 0.5)}`,
+                        transform: 'translateY(-2px)',
+}} } >
                     {uiStore.themeMode === "light" ?
                         <DarkModeIcon sx={{ color: theme.palette.primary.contrastText }} />
                         :
                         <LightModeIcon sx={{ color: theme.palette.primary.contrastText }} />
                     }
                 </IconButton>
-                <Button onClick={() => uiStore.changeLanguage()} >
+                <Button onClick={() => uiStore.changeLanguage()} sx={{ boxShadow:"none" }} >
                     <Typography variant="button" color="secondary" > {i18n.language === 'en' ? 'PL' : 'EN'} </Typography>
                 </Button>
             </Box>

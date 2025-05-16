@@ -8,7 +8,7 @@ namespace Application.Interfaces
         Task SendReport(ReportDto reportDto);
         Task ChangeReportStatus(Guid reportId, ReportStatusType reportStatusType);
         Task DeleteReport(Guid reportId);
-        Task<ICollection<ReportDto>> GetAllReports();
+        Task<ReportDto> GetReportById(Guid reportId);
         Task<ICollection<ReportDto>> GetReportsByAuthorId(Guid authorId);
         Task<ICollection<ReportDto>> GetReportsByRepotedSubjectId(Guid repotedSubjectId);
 

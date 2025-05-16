@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Posts
 {
-    public abstract class Post
+    public class Post
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();

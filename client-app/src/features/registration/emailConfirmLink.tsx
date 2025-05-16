@@ -9,20 +9,23 @@ import { useSearchParams } from "react-router";
 export default function EmailConfirmLink() {
     const { userStore, uiStore } = useStore();
     const [searchParams] = useSearchParams();
-    const email = searchParams.get("email");
-    const token = searchParams.get("token");
-    const { userLoading } = userStore;
     const navigate = useNavigate();
     const { t } = useTranslation();
-    if (!email || !token) {
-        navigate("/");
-    }
-    useEffect(() => {
-        userStore.confirmEmail({ email: email!, token: token! })
-            .then(() => uiStore.showSnackbar(t("confirmationMailSuccess"), "success", "center"))
-            .catch(() => uiStore.showSnackbar(t("confirmationMailFailed"), "error", "center"))
-    },[email,token])
+    const { userLoading } = userStore;
 
+    const email = searchParams.get("email");
+    const token = searchParams.get("token")?.replace(/ /g, "+");
+
+    useEffect(() => {
+        if (!email || !token) {
+            navigate("/");
+            return;
+        }
+
+        userStore.confirmEmail({ email, token })
+            .then(() => uiStore.showSnackbar(t("confirmationMailSuccess"), "success", "center"))
+            .catch(() => uiStore.showSnackbar(t("confirmationMailFailed"), "error", "center"));
+    }, [email, token, navigate, userStore, uiStore, t]);
 
     return (
         <>
