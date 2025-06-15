@@ -6,6 +6,6 @@ namespace Application.DTOs.Auth
     {
         [Required(ErrorMessage ="Token is required")]
         [MinLength(10,ErrorMessage = "Token is too short")]
-        public string token { get; set; }
+        public required string token { get; set; }
     }
 }

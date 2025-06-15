@@ -7,7 +7,7 @@ namespace Domain.Entities.Posts
     {
         public Guid ReportedPostId { get; set; }
 
-        [ForeignKey("PostId")]
-        public virtual Post ReportedPost { get; set; }
+        [ForeignKey("ReportedPostId")]
+        public virtual Post ReportedPost { get; set; } = default!;
     }
 }

@@ -8,6 +8,6 @@ namespace Domain.Entities.Users
         public Guid ReportedUserId { get; set; }
 
         [ForeignKey("ReportedUserId")]
-        public virtual User ReportedUser { get; set; }
+        public virtual User ReportedUser { get; set; } = default!;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Posts;
+using Domain.Enums.Posts;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,14 @@ namespace Persistence.Repositories.Commands.Posts
         {
         }
 
-        public async Task UpdatePostSettings(PostSettings postSettings)
+        public async Task UpdatePostSettings(Guid postId, bool? isHidden, bool? isDeleted, PostStatusType? postStatusType, string? RejectionMessage)
         {
-            _ = await _context.PostSettings.FindAsync(postSettings.Id) ?? throw new EntityNotFoundException("PostSettings");
-            _context.PostSettings.Update(postSettings);
+            var settings = await _context.PostSettings.FirstOrDefaultAsync(x=>x.PostId == postId) ?? throw new EntityNotFoundException("PostSettings");
+            settings.IsHidden = isHidden.HasValue ? isHidden.Value : settings.IsHidden;
+            settings.IsDeleted = isDeleted.HasValue ? isDeleted.Value : settings.IsDeleted;
+            settings.postStatusType = postStatusType.HasValue ? postStatusType.Value : settings.postStatusType;
+            settings.RejectionMessage = RejectionMessage ?? settings.RejectionMessage;
+            _context.PostSettings.Update(settings);
             await _context.SaveChangesAsync();
         }
     }

@@ -1,76 +1,68 @@
 ﻿using API.Core.ApiResponse;
+using Application.Core.Factories.Interfaces;
 using Application.DTOs.Posts;
 using Application.Features.Posts.Events.PostCreatedEvent;
 using Application.Interfaces;
-using Application.Services;
+using AutoMapper;
+using Domain.Entities.Posts;
 using Domain.Enums.Common;
-using Domain.Exceptions.BusinessExceptions;
-using Domain.Exceptions.DataExceptions;
+using Domain.Interfaces.Commands.Post;
 using MediatR;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Commands.CreatePost
 {
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiResponse<PostDto>>
     {
-        private readonly IPostService _postService;
         private readonly IMediator _mediator;
-        private readonly IUserSettingsService _userSettingsService;
         private readonly ILogService _logService;
-        public CreatePostCommandHandler(IPostService postService, IMediator mediator,IUserSettingsService userSettingsService,ILogService logService)
+        private readonly IPostFactory _postFactory;
+        private readonly IFileService _fileService;
+        private readonly IPostCommandRepository _postCommandRepository;
+        private readonly IMapper _mapper;
+        public CreatePostCommandHandler( IMediator mediator,ILogService logService, IPostFactory postFactory, IFileService fileService, IPostCommandRepository postCommandRepository, IMapper mapper)
         {
-            _postService = postService;
             _mediator = mediator;
-            _userSettingsService = userSettingsService;
             _logService = logService;
+            _postFactory = postFactory;
+            _fileService = fileService;
+            _postCommandRepository = postCommandRepository;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<PostDto>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
 
-            try
+            var postToAdd = _postFactory.CreatePost(request.Post);
+
+            if (request.Post.MainImage != null)
             {
-                if (await IsUserPostRestricted(request.post.OwnerId))
+                var mainImagePath = await _fileService.SaveFile(request.Post.MainImage);
+                postToAdd.MainImageUrl = mainImagePath;
+            }
+            if (request.Post.SecondaryImages != null && request.Post.SecondaryImages.Length != 0)
+            {
+                foreach (var image in request.Post.SecondaryImages)
                 {
-                    return ApiResponse<PostDto>.Failure("User is restricted from posting");
+                    var imagePath = await _fileService.SaveFile(image);
+                    var postImage = new PostImage()
+                    {
+                        PostId = postToAdd.Id,
+                        ImageUrl = imagePath,
+                    };
+                    postToAdd.PostImages ??= [];
+                    postToAdd.PostImages.Add(postImage);
                 }
-                var post = await _postService.CreatePost(request.post);
-
-                
-                Console.WriteLine("Sending an event");
-                await _mediator.Publish(new PostCreatedEvent
-                {
-                    UserId = Guid.Parse(post.OwnerId),
-                    PostId = Guid.Parse(post.Id)
-                });
-                await _logService.CreateLogAsync($"Post created title: {post.Title}", LogType.Information,postId:Guid.Parse(post.Id),userId:Guid.Parse(post.OwnerId));
-                return ApiResponse<PostDto>.Success(post, 201);
-
             }
-            catch (InvalidDataProvidedException ex)
-            {   
-                return ApiResponse<PostDto>.Failure(ex.Message);
-            } 
-            catch (EntityCreatingException ex)
+            var post = await _postCommandRepository.CreatePostAsync(postToAdd);
+            
+            await _mediator.Publish(new PostCreatedEvent
             {
-                return ApiResponse<PostDto>.Failure(ex.Message,409);
-            }
-            catch (Exception ex) 
-            {
-                Console.WriteLine(request.post.Title + " " + request.post.FullDescription + " " + request.post.City);
-                Console.WriteLine("Error: " + ex.Message + ex.StackTrace);
-                return ApiResponse<PostDto>.Failure("Error while creating new post");
-            }
-        }
-        private async Task<bool> IsUserPostRestricted(string userId)
-        {
-            var userSettings = await _userSettingsService.GetUserSettingByUserIdAsync(Guid.Parse(userId));
-            return userSettings.IsPostRestricted;
+                UserId = Guid.Parse(request.Post.OwnerId),
+                PostId = post.Id
+            });
+            await _logService.CreateLogAsync($"Post created title: {post.Title}", LogType.Information,post.Id.ToString(),post.OwnerId);
+            return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post), 201);
+
         }
     }
 }

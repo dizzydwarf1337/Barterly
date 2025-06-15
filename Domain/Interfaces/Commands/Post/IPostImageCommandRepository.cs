@@ -6,5 +6,6 @@ namespace Domain.Interfaces.Commands.Post
     {
         Task CreatePostImageAsync(PostImage postImage);
         Task DeletePostImageAsync(Guid id);
+        Task DeletePostImagesByPostIdAsync(Guid postId);
     }
 }

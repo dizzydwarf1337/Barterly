@@ -7,6 +7,6 @@ namespace Domain.Interfaces.Commands.User
     {
         Task CreateReport(ReportUser report);
         Task DeleteReport(Guid reportId);
-        Task ChangeReportStatus(Guid id, ReportStatusType status);
+        Task<ReportUser> ReviewReport(Guid id, ReportStatusType status,string reviewerId);
     }
 }

@@ -11,6 +11,6 @@ namespace Application.Features.Category.Commands.EditCategory
 {
     public class EditCategoryCommand : IRequest<ApiResponse<Unit>>
     {
-        public CategoryDto category { get; set; }
+        public required CategoryDto category { get; set; }
     }
 }

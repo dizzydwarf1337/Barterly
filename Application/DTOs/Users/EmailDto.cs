@@ -6,6 +6,6 @@ namespace Application.DTOs.Users
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace Domain.Entities.Users
         public bool IsOpinionRestricted { get; set; } = false;
 
         public bool IsChatRestricted { get; set; } = false;
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = default!;
 
 
     }

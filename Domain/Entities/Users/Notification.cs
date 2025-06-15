@@ -11,14 +11,14 @@ namespace Domain.Entities.Users
         public Guid UserId { get; set; }
 
         [MaxLength(500)]
-        public string Message { get; set; }
-        public string Title { get; set; }
+        public required string Message { get; set; }
+        public required string Title { get; set; }
 
         public bool IsRead { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = default!;
     }
 }

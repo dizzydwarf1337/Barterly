@@ -11,16 +11,9 @@ namespace Persistence.Repositories.Commands.Post
         public ReportPostCommandRepository(BarterlyDbContext context) : base(context)
         {
         }
-
-        public async Task ChangeReportPostStatusAsync(Guid id, ReportStatusType status)
-        {
-            var report = await _context.ReportPosts.FindAsync(id) ?? throw new EntityNotFoundException("PostReport");
-            report.Status = status;
-            await _context.SaveChangesAsync();
-        }
-
         public async Task CreateReportPostAsync(ReportPost report)
         {
+            _ = await _context.Posts.FindAsync(report.ReportedPostId) ?? throw new EntityNotFoundException("Post");
             await _context.ReportPosts.AddAsync(report);
             await _context.SaveChangesAsync();
         }
@@ -30,6 +23,17 @@ namespace Persistence.Repositories.Commands.Post
             var report = await _context.ReportPosts.FindAsync(reportPostId) ?? throw new EntityNotFoundException("PostReport");
             _context.ReportPosts.Remove(report);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ReportPost> ReviewReport(Guid id, ReportStatusType status, string reviewerId)
+        {
+            var report = await _context.ReportPosts.FindAsync(id) ?? throw new EntityNotFoundException("Report");
+            report.Status = status;
+            report.ReviewedBy = reviewerId;
+            report.ReviewedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return report;
         }
     }
 }

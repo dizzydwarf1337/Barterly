@@ -12,16 +12,10 @@ namespace Persistence.Repositories.Commands.Users
         {
         }
 
-        public async Task ChangeReportStatus(Guid id, ReportStatusType status)
-        {
-            var report = await _context.ReportUsers.FindAsync(id) ?? throw new EntityNotFoundException("ReportUser");
-            report.Status = status;
-            await _context.SaveChangesAsync();
-        }
-
         public async Task CreateReport(ReportUser report)
         {
-            await _context.ReportUsers.AddAsync(report);
+            _ = await _context.Users.FindAsync(report.ReportedUserId) ?? throw new EntityNotFoundException("User");
+            await _context.ReportUsers.AddAsync(report); 
             await _context.SaveChangesAsync();
         }
 
@@ -31,5 +25,16 @@ namespace Persistence.Repositories.Commands.Users
             _context.ReportUsers.Remove(report);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<ReportUser> ReviewReport(Guid id, ReportStatusType status, string reviewerId)
+        {
+            var report = await _context.ReportUsers.FindAsync(id) ?? throw new EntityNotFoundException("Report");
+            report.Status = status;
+            report.ReviewedAt = DateTime.Now;
+            report.ReviewedBy = reviewerId;
+            await _context.SaveChangesAsync();
+            return report;
+        }
+
     }
 }

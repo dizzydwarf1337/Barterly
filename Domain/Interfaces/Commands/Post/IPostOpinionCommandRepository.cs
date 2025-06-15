@@ -4,8 +4,8 @@ namespace Domain.Interfaces.Commands.Post
 {
     public interface IPostOpinionCommandRepository
     {
-        Task CreatePostOpinionAsync(PostOpinion opinion);
-        Task UpdatePostOpinionAsync(PostOpinion opinion);
+        Task<PostOpinion> CreatePostOpinionAsync(PostOpinion opinion);
+        Task<PostOpinion> UpdatePostOpinionAsync(Guid id, string content,int rate);
         Task SetHiddenPostOpinionAsync(Guid id, bool value);
         Task DeletePostOpinionAsync(Guid id);
     }

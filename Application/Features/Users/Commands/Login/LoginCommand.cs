@@ -7,6 +7,6 @@ namespace Application.Features.Users.Commands.Login
 {
     public class LoginCommand : IRequest<ApiResponse<UserDto>>
     {
-        public LoginDto loginDto { get; set; }
+        public required LoginDto loginDto { get; set; }
     }
 }

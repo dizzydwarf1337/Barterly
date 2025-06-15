@@ -11,9 +11,9 @@ namespace Application.DTOs.Posts
     public class ImagesDto
     {
         [Required]
-        public string PostId { get; set; }
+        public required string PostId { get; set; }
         [Required]
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
         public IFormFile? MainImage { get; set; }
         public IFormFile[]? SecondaryImages { get; set; }
     }

@@ -9,7 +9,7 @@ namespace Domain.Entities.Common
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [MaxLength(500)]
-        public string Message { get; set; }
+        public required string Message { get; set; }
 
         public string? StackTrace { get; set; }
 

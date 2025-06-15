@@ -3,64 +3,80 @@ using Application.DTOs.Posts;
 using Application.Features.Posts.Events.PostUpdatedEvent;
 using Application.Interfaces;
 using Application.Services;
+using AutoMapper;
+using Domain.Entities.Posts;
 using Domain.Enums.Common;
+using Domain.Enums.Posts;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Exceptions.DataExceptions;
+using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Commands.UpdatePostImages
 {
-    public class UpdatePostImagesCommandHandler : IRequestHandler<UpdatePostImagesCommand, ApiResponse<PostDto>>
+    public class UpdatePostImagesCommandHandler : IRequestHandler<UpdatePostImagesCommand, ApiResponse<Unit>>
     {
-        private readonly IPostService _postService;
+        private readonly IPostImageCommandRepository _postImageCommandRepository;
+        private readonly IPostSettingsCommandRepository _postSettingsCommandRepository;
+        private readonly IPostCommandRepository _postCommandRepository;
         private readonly IMediator _mediator;
-        private readonly IUserSettingsService _userSettingsService;
+        private readonly IMapper _mapper;
+        private readonly IFileService _fileService;
         private readonly ILogService _logService;
 
-        public UpdatePostImagesCommandHandler(IPostService postService, IMediator mediator, IUserSettingsService userSettingsService, ILogService logService)
+        public UpdatePostImagesCommandHandler(IPostImageCommandRepository postImageCommandRepository,
+            IPostSettingsCommandRepository postSettingsCommandRepository,
+            IMediator mediator,
+            IMapper mapper,
+            IFileService fileService, 
+            ILogService logService, 
+            IPostCommandRepository postCommandRepository)
         {
-            _postService = postService;
+            _postImageCommandRepository = postImageCommandRepository;
+            _postSettingsCommandRepository = postSettingsCommandRepository;
             _mediator = mediator;
-            _userSettingsService = userSettingsService;
+            _mapper = mapper;
+            _fileService = fileService;
             _logService = logService;
+            _postCommandRepository = postCommandRepository;
         }
 
-        public async Task<ApiResponse<PostDto>> Handle(UpdatePostImagesCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<Unit>> Handle(UpdatePostImagesCommand request, CancellationToken cancellationToken)
         {
-            try
+            var postId = Guid.Parse(request.ImagesDto.PostId);
+            if (request.ImagesDto.MainImage != null)
             {
-                if (await IsUserPostRestricted(request.ImagesDto.UserId))
+                var mainImagePath = await _fileService.SaveFile(request.ImagesDto.MainImage);
+                await _postCommandRepository.UpdatePostMainImage(postId, mainImagePath);
+            }
+            if (request.ImagesDto.SecondaryImages != null)
+            {
+
+                await _postImageCommandRepository.DeletePostImagesByPostIdAsync(postId);
+            foreach (var image in request.ImagesDto.SecondaryImages.ToList())
+            {
+
+                var imagePath = await _fileService.SaveFile(image);
+                var postImage = new PostImage()
                 {
-                    return ApiResponse<PostDto>.Failure("User is restricted from posting");
-                }
-                var post = await _postService.UploadImages(request.ImagesDto);
-                await _mediator.Publish(new PostUpdatedEvent { PostId = post.Id, UserId=post.OwnerId});
-                await _logService.CreateLogAsync($"Post updated title: {post.Title}", LogType.Information, postId: Guid.Parse(post.Id), userId: Guid.Parse(post.OwnerId));
-                return ApiResponse<PostDto>.Success(post, 200);
+                    PostId = postId,
+                    ImageUrl = imagePath,
+                };
+                await _postImageCommandRepository.CreatePostImageAsync(postImage);
             }
-            catch (InvalidDataProvidedException ex)
-            {
-                return ApiResponse<PostDto>.Failure(ex.Message);
             }
-            catch (EntityNotFoundException ex)
-            {
-                return ApiResponse<PostDto>.Failure(ex.Message, 404);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message + ex.StackTrace);
-                return ApiResponse<PostDto>.Failure("Error while updating post");
-            }
-        }
-        private async Task<bool> IsUserPostRestricted(string userId)
-        {
-            var userSettings = await _userSettingsService.GetUserSettingByUserIdAsync(Guid.Parse(userId));
-            return userSettings.IsPostRestricted;
+            await _postSettingsCommandRepository.UpdatePostSettings(postId,true,false,PostStatusType.ReSubmitted,"");
+            await _mediator.Publish(new PostUpdatedEvent { PostId = postId, UserId=Guid.Parse(request.ImagesDto.UserId)});
+            await _logService.CreateLogAsync($"Post updated", LogType.Information, postId: postId, userId: Guid.Parse(request.ImagesDto.UserId));
+            return ApiResponse<Unit>.Success(Unit.Value, 200);
+
         }
     }
 }

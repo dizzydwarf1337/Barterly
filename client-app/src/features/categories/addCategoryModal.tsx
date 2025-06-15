@@ -16,7 +16,7 @@ interface Props {
 
 export default observer(function AddCategoryModal({open, onClose, category} : Props) {
 
-
+    const [type, setType] = useState<"Edit" | "Create">("Create");
     const { categoryStore, uiStore } = useStore();
     const { adminCategoryStore } = useAdminStore();
     const [error, setError] = useState<string>("");
@@ -32,6 +32,7 @@ export default observer(function AddCategoryModal({open, onClose, category} : Pr
         if (category) {
             setCategoryToAdd(category);
             setSubCategories(category.subCategories || []);
+            setType("Edit");
         } else {
             setCategoryToAdd({
                 id: uuid(),
@@ -41,6 +42,7 @@ export default observer(function AddCategoryModal({open, onClose, category} : Pr
                 description: "",
             });
             setSubCategories([]);
+            setType("Create");
         }
     }, [category]);
    
@@ -68,18 +70,21 @@ export default observer(function AddCategoryModal({open, onClose, category} : Pr
             return;
         }
         try {
-            if (!category) {
+            if (type == "Create") {
                 await adminCategoryStore.addCategory(updatedCategory);
                 uiStore.showSnackbar("Category added", "success", "right");
                 categoryStore.setCategories([...categoryStore.categories!, categoryToAdd]);
             }
-            else {
+            else if (type == "Edit") {
                 await adminCategoryStore.editCategory(updatedCategory);
                 uiStore.showSnackbar("Category updated", "success", "right");
                 categoryStore.setCategories([
                     ...categoryStore.categories!.filter(x => x.id !== updatedCategory.id),
                     updatedCategory
                 ]);
+            }
+            else {
+                throw new Error("Error while adding category");
             }
 
             

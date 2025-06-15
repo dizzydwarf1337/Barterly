@@ -1,29 +1,30 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Entities.Users;
+using Domain.Enums.Common;
+using Domain.Exceptions.BusinessExceptions;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace Application.Features.Users.Commands.ResetPassword
 {
     public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, ApiResponse<Unit>>
     {
-        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public ResetPasswordCommandHandler(IUserService userService)
+        public ResetPasswordCommandHandler(UserManager<User> userManager)
         {
-            _userService = userService;
+            _userManager = userManager;
         }
 
         public async Task<ApiResponse<Unit>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _userService.ResetPassword(request.Email, request.Token, request.Password);
-                return ApiResponse<Unit>.Success(Unit.Value);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<Unit>.Failure($"Error while resetting password, {ex}");
-            }
+
+            var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new EntityNotFoundException("User");
+            var res = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+            return ApiResponse<Unit>.Success(Unit.Value);
+            
         }
     }
 }

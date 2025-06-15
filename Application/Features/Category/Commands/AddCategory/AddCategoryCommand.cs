@@ -7,7 +7,7 @@ namespace Application.Features.Category.Commands.AddCategory
 
     public class AddCategoryCommand : IRequest<ApiResponse<Unit>>
     {
-        public CategoryDto category;
+        public required CategoryDto category;
     }
 
 }

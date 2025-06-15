@@ -4,6 +4,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities.Users;
 using Domain.Exceptions.BusinessExceptions;
+using Google.Apis.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -28,7 +29,7 @@ namespace Application.Core.Factories.UserFactory
         {
             var user = _mapper.Map<User>(registerDto);
             user.UserName = user.Email;
-            user.NormalizedUserName = user.Email.ToUpper();
+            user.NormalizedUserName = user.Email!.ToUpper();
 
 
             var userSettings = new UserSettings { UserId = user.Id, User = user };
@@ -45,6 +46,35 @@ namespace Application.Core.Factories.UserFactory
                 throw new EntityCreatingException("User", string.Join(", ", result.Errors.Select(e => e.Description)));
 
             await _userManager.AddToRoleAsync(user, "User");
+
+            return user;
+        }
+        public async Task<User> CreateUser(GoogleJsonWebSignature.Payload payload)
+        {
+            var user = new User
+            {
+                Email = payload.Email,
+                FirstName = payload.GivenName,
+                LastName = payload.FamilyName,
+                ProfilePicturePath = payload.Picture,
+                UserName = payload.Email,
+                EmailConfirmed = true,
+            };
+            var userSettings = new UserSettings { UserId = user.Id, User = user };
+            var userActivity = new UserActivitySummary { UserId = user.Id, User = user };
+
+            user.UserActivitySummary = userActivity;
+            user.UserActivitySummaryId = userActivity.Id;
+            user.Setting = userSettings;
+            user.UserSettingId = userSettings.Id;
+
+            var result = await _userManager.CreateAsync(user, "TemporaryPassword123!");
+            if (result.Succeeded)
+            {
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+            else throw new EntityCreatingException("User", string.Join(", ", result.Errors.Select(e => e.Description)));
 
             return user;
         }

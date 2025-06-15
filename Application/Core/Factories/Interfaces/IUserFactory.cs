@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Auth;
 using Application.Features.Users.Commands.CreateUser;
 using Domain.Entities.Users;
+using Google.Apis.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Application.Core.Factories.Interfaces
     public interface IUserFactory
     {
         public Task<User> CreateUser(RegisterDto registerDto);
+        public Task<User> CreateUser(GoogleJsonWebSignature.Payload payload);
     }
 }

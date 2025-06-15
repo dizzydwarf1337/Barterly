@@ -9,7 +9,7 @@ namespace Application.DTOs.Posts
 {
     public class PromotionDto
     {
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         public PostPromotionType Type { get; set; }
         public DateTime StartDate { get; set; }

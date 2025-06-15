@@ -18,18 +18,19 @@ export default function GoogleButton() {
             });
     };
     
-    const login = useGoogleLogin({
-        onSuccess: (codeResponse) => handleLogin(codeResponse.code),
-        onError: (error) => console.log('Login Failed:', error),
-        onNonOAuthError: (error) => console.log(error),
-        flow: "auth-code",
-       
-    });
+    const login  = 
+        useGoogleLogin({
+            onSuccess: (codeResponse) => handleLogin(codeResponse.code),
+            onError: (error) => console.log('Login Failed:', error),
+            onNonOAuthError: (error) => console.log(error),
+            flow: "auth-code",
+
+        });
     return (
         <Box width="auto" display="flex" justifyContent="center" alignItems="center">
             <Button variant="outlined" color="primary" onClick={login} fullWidth>
-            {userStore.googleLoading ?
-                <CircularProgress color="primary" />
+                {userStore.googleLoading ?
+                    <CircularProgress color="success" size="30px" />
                 :
                 (
                         <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" gap="10px">
@@ -39,7 +40,7 @@ export default function GoogleButton() {
                 )
             }
 
-        </Button>   
+            </Button>   
         </Box>
     );
 

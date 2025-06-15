@@ -5,7 +5,7 @@ namespace Application.Features.Users.Commands.ConfirmEmail
 {
     public class ConfirmEmailCommand : IRequest<ApiResponse<Unit>>
     {
-        public string userMail { get; set; }
-        public string token { get; set; }
+        public required string userMail { get; set; }
+        public required string token { get; set; }
     }
 }

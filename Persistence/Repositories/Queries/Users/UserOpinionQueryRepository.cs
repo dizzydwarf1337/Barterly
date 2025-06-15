@@ -14,7 +14,9 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<UserOpinion> GetUserOpinionByIdAsync(Guid id)
         {
-            return await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("User opinion");
+            
+           return await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("User opinion");
+            
         }
 
         public async Task<ICollection<UserOpinion>> GetUserOpinionsAsync()

@@ -1,37 +1,41 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities.Categories;
 using Domain.Enums.Common;
+using Domain.Interfaces.Commands.Post;
 using MediatR;
 
 namespace Application.Features.Category.Commands.AddCategory
 {
     public class AddCategoryCommandHanlder : IRequestHandler<AddCategoryCommand, ApiResponse<Unit>>
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryCommandRepository _categoryCommandRepository;
         private readonly ILogService _logService;
+        private readonly IMapper _mapper;
 
-        public AddCategoryCommandHanlder(ICategoryService categoryService, ILogService logService)
+        public AddCategoryCommandHanlder(ICategoryCommandRepository categoryCommandRepository, ILogService logService, IMapper mapper)
         {
-            _categoryService = categoryService;
+            _categoryCommandRepository = categoryCommandRepository;
             _logService = logService;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<Unit>> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
         {
-            try
+            var categoryToAdd = _mapper.Map<Domain.Entities.Categories.Category>(request.category);
+            categoryToAdd.SubCategories = [.. categoryToAdd.SubCategories.Where(x => !string.IsNullOrWhiteSpace(x.TitlePL) && !string.IsNullOrWhiteSpace(x.TitleEN))];
+            categoryToAdd.SubCategories.Add(new SubCategory
             {
-                await _categoryService.AddCategory(request.category);
-                await _logService.CreateLogAsync($"Category created id: {request.category.Id} name: {request.category.NameEN}",LogType.Information);
-                return ApiResponse<Unit>.Success(Unit.Value, 201);
-            }
-            catch (OperationCanceledException ex)
-            {
-                return ApiResponse<Unit>.Failure(ex.Message, 409);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<Unit>.Failure(ex.Message);
-            }
+                Id = new Guid(),
+                CategoryId = categoryToAdd.Id,
+                TitleEN = "All",
+                TitlePL = "Wszystkie",
+            });
+
+            await _categoryCommandRepository.CreateCategoryAsync(categoryToAdd);
+            await _logService.CreateLogAsync($"Category created id: {request.category.Id} name: {request.category.NameEN}",LogType.Information);
+            return ApiResponse<Unit>.Success(Unit.Value, 201);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Persistence.Repositories.Queries.Posts
 
         public async Task<ICollection<VisitedPost>> GetVisitedPostsByUserIdAsync(Guid userId)
         {
-            return await _context.VisitedPosts.Where(x => x.UserId == userId).Include(x => x.Post).ToListAsync();
+            return await _context.VisitedPosts.Where(x => x.UserId == userId).Include(x => x.Post).Include(x=>x.Post.SubCategory).ToListAsync();
         }
         public async Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId)
         {

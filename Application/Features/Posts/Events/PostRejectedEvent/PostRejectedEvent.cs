@@ -9,7 +9,7 @@ namespace Application.Features.Posts.Events.PostRejectedEvent
 {
     public class PostRejectedEvent : INotification
     {
-        public string postId { get; set; }
-        public string reason { get; set; }
+        public required string postId { get; set; }
+        public required string reason { get; set; }
     }
 }

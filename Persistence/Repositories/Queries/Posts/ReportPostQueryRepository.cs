@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Posts;
+using Domain.Entities.Users;
 using Domain.Enums.Common;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
@@ -12,30 +13,34 @@ namespace Persistence.Repositories.Queries.Post
         public ReportPostQueryRepository(BarterlyDbContext context) : base(context)
         {
         }
-
-        public async Task<ICollection<ReportPost>> GetAllPostReportsAsync()
-        {
-            return await _context.ReportPosts.ToListAsync();
-        }
-
         public async Task<ReportPost> GetReportPostByIdAsync(Guid reportId)
         {
             return await _context.ReportPosts.FindAsync(reportId) ?? throw new EntityNotFoundException("Post report");
         }
 
-        public async Task<ICollection<ReportPost>> GetReportPostsByAuthorIdAsync(Guid authorId)
+        public async Task<List<ReportPost>> GetReportPostsFiltredPaginated(int page, int pageSize, Guid? authorId, Guid? postId, ReportStatusType? status)
         {
-            return await _context.ReportPosts.Where(x => x.AuthorId == authorId).ToListAsync();
-        }
+            var query = _context.ReportPosts.AsQueryable();
+            if (authorId != null)
+            {
+                query = query.Where(x => x.AuthorId == authorId);
+            }
+            if (postId != null)
+            {
+                query = query.Where(x => x.ReportedPostId == postId);
+            }
+            if (status != null)
+            {
+                query = query.Where(x => x.Status == status);
+            }
 
-        public async Task<ICollection<ReportPost>> GetReportPostsByTypeAsync(ReportStatusType type)
-        {
-            return await _context.ReportPosts.Where(x => x.Status == type).ToListAsync();
-        }
+            return await query
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        public async Task<ICollection<ReportPost>> GetReportsPostByPostIdAsync(Guid postId)
-        {
-            return await _context.ReportPosts.Where(x => x.ReportedPostId == postId).ToListAsync();
         }
     }
 }
+

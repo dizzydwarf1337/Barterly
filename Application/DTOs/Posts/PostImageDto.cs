@@ -9,7 +9,7 @@ namespace Application.DTOs.Posts
 {
     public class PostImageDto
     {
-        public string Id { get; set; }
-        public string ImageUrl { get; set; }
+        public required string Id { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

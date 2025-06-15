@@ -8,7 +8,7 @@ namespace Domain.Entities.Common
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [MaxLength(50)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public string? Description { get; set; }
 

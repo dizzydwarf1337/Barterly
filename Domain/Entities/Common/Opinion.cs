@@ -13,7 +13,7 @@ namespace Domain.Entities.Common
 
         [Required]
         [MaxLength(500)]
-        public string Content { get; set; }
+        public required string Content { get; set; }
 
         public bool IsHidden { get; set; } = false;
 
@@ -25,6 +25,6 @@ namespace Domain.Entities.Common
         public int? Rate { get; set; } = null;
 
         [ForeignKey("AuthorId")]
-        public virtual User Author { get; set; }
+        public virtual User Author { get; set; } = default!;
     }
 }

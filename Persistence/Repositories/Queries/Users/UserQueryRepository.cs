@@ -13,9 +13,9 @@ namespace Persistence.Repositories.Queries.Users
         {
         }
 
-        public async Task<ICollection<User>> GetNewUsersAsync(DateTime date)
+        public async Task<ICollection<Guid>> GetUsersIdsAsync(DateTime date)
         {
-            return await _context.Users.Where(x => DateTime.Compare(x.CreatedAt, date) >= 0).ToListAsync();
+            return await _context.Users.Where(x => DateTime.Compare(x.CreatedAt, date) >= 0 || DateTime.Compare(x.LastSeen,date) >=0).Select(x=>x.Id).ToListAsync();
         }
 
         public async Task<User> GetUserAsync(Guid id)
@@ -36,12 +36,12 @@ namespace Persistence.Repositories.Queries.Users
 
         public async Task<ICollection<User>> GetUsersByCityAsync(string city)
         {
-            return await _context.Users.Where(x => x.City.Equals(city, StringComparison.OrdinalIgnoreCase)).ToListAsync();
+            return await _context.Users.Where(x => x.City!.Equals(city, StringComparison.OrdinalIgnoreCase)).ToListAsync();
         }
 
         public async Task<ICollection<User>> GetUsersByCountryAsync(string country)
         {
-            return await _context.Users.Where(x => x.Country.Equals(country, StringComparison.OrdinalIgnoreCase)).ToListAsync();
+            return await _context.Users.Where(x => x.Country!.Equals(country, StringComparison.OrdinalIgnoreCase)).ToListAsync();
         }
     }
 }

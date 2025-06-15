@@ -9,14 +9,14 @@ namespace Domain.Entities.Categories
 
         [Required]
         [MaxLength(20)]
-        public string NamePL { get; set; }
+        public required string NamePL { get; set; }
         [Required]
         [MaxLength(20)]
-        public string NameEN { get; set; }
+        public required string NameEN { get; set; }
 
         [MaxLength(50)]
         public string? Description { get; set; }
 
-        public virtual ICollection<SubCategory>? SubCategories { get; set; }
+        public virtual ICollection<SubCategory> SubCategories { get; set; } = [];
     }
 }

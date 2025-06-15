@@ -11,6 +11,7 @@ namespace Application.Features.Posts.Queries.GetPostById
 {
     public class GetPostByIdQuery : IRequest<ApiResponse<PostDto>>
     {
-        public string Id { get; set; }
+        public required string postId { get; set; }
+        public string? userId { get; set; }
     }
 }

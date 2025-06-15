@@ -9,7 +9,7 @@ namespace Application.DTOs.Posts
 {
     public class PostSettingsDto
     {
-        public string Id {  get; set; }
+        public required string Id {  get; set; }
         public bool IsHidden {  get; set; }
         public bool IsDeleted { get; set; }
         public PostStatusType PostStatusType { get; set; }

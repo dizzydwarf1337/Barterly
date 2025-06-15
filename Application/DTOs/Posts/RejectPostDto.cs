@@ -8,7 +8,7 @@ namespace Application.DTOs.Posts
 {
     public class RejectPostDto
     {
-        public string postId { get; set; }
-        public string reason { get; set; }
+        public required string postId { get; set; }
+        public required string reason { get; set; }
     }
 }

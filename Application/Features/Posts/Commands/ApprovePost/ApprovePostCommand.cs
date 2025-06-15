@@ -11,6 +11,6 @@ namespace Application.Features.Posts.Commands.ApprovePost
 {
     public class ApprovePostCommand : IRequest<ApiResponse<Unit>>
     {
-        public ApprovePostDto ApprovePostDto { get; set; }
+        public required ApprovePostDto ApprovePostDto { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Application.Features.Users.Commands.CreateUser
 {
     public class CreateUserCommand : IRequest<ApiResponse<Unit>>
     {
-        public RegisterDto registerDto;
+        public required RegisterDto registerDto;
     }
 }

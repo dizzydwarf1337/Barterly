@@ -1,39 +1,56 @@
 ﻿using API.Core.ApiResponse;
 using Application.DTOs.User;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities.Users;
+using Domain.Enums.Common;
 using Domain.Exceptions.BusinessExceptions;
-using Domain.Exceptions.DataExceptions;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Users.Commands.Login
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<UserDto>>
     {
-        private readonly IAuthService _authService;
+        private readonly UserManager<User> _userManager;
+        private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
+        private readonly ILogService _logService;
 
-        public LoginCommandHandler(IAuthService authService)
+        public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, IMapper mapper, ILogService logService)
         {
-            _authService = authService;
+            _userManager = userManager;
+            _tokenService = tokenService;
+            _mapper = mapper;
+            _logService = logService;
         }
 
         public async Task<ApiResponse<UserDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            try
+
+            var user = await _userManager.FindByEmailAsync(request.loginDto.Email) ?? throw new EntityNotFoundException("User");
+
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.loginDto.Password);
+            var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if (!isPasswordCorrect)
             {
-                return ApiResponse<UserDto>.Success(await _authService.Login(request.loginDto));
+                return ApiResponse<UserDto>.Failure("Wrong password");
             }
-            catch(InvalidDataProvidedException ex)
+            if (!isEmailConfirmed)
             {
-                return ApiResponse<UserDto>.Failure(ex.Message);
+                return ApiResponse<UserDto>.Failure("Confirm email first");
             }
-            catch(AccessForbiddenException ex)
-            {
-                return ApiResponse<UserDto>.Failure(ex.Message, 403);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<UserDto>.Failure(ex.Message);
-            }
+            user.LastSeen = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+            await _logService.CreateLogAsync("User logged in", LogType.Information, userId: user.Id);
+            var token = await _tokenService.GetLoginToken(user.Id);
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.token = token;
+            var roles = await _userManager.GetRolesAsync(user);
+            userDto.Role = roles.Contains("Admin") ? "Admin" :
+                           roles.Contains("Moderator") ? "Moderator" :
+                           "User";
+            return ApiResponse<UserDto>.Success(userDto);
         }
     }
 }

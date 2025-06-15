@@ -6,8 +6,8 @@ namespace Domain.Entities.Common
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public string Title { get; set; }
-        public string Message { get; set; }
+        public required string Title { get; set; }
+        public required string Message { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     }
