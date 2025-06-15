@@ -24,12 +24,12 @@ export default observer(function CategoryList() {
         <>
         <Box >
             <TransitionGroup>
-                {categoryStore.categories && !categoryStore.categoryLoading
-                    ? (
-                        <Box
-                            display="grid"
-                            gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" 
-                            gap="10px"
+                    {categoryStore.categories && !categoryStore.categoryLoading
+                        ? (
+                            <Box
+                                display="grid"
+                                gridTemplateColumns={uiStore.isMobile ? "repeat(auto-fill, minmax(120px, 1fr))" : "repeat(auto-fill, minmax(200px, 1fr))"}
+                                gap= "10px"
                         >
                             {categoryStore.categories!.map(category => (
                                 <Collapse key={category.id} in={true}>

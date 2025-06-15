@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Users;
+﻿using Domain.Entities.Common;
+using Domain.Entities.Users;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
 using Persistence.Database;
@@ -11,10 +12,13 @@ namespace Persistence.Repositories.Commands.Users
         {
         }
 
-        public async Task CreateUserOpinionAsync(UserOpinion userOpinion)
+        public async Task<UserOpinion> CreateUserOpinionAsync(UserOpinion userOpinion)
         {
+            _ = await _context.Users.FindAsync(userOpinion.UserId) ?? throw new EntityNotFoundException("User");
+
             await _context.UserOpinions.AddAsync(userOpinion);
             await _context.SaveChangesAsync();
+            return userOpinion;
         }
 
         public async Task DeleteUserOpinionAsync(Guid id)
@@ -31,10 +35,15 @@ namespace Persistence.Repositories.Commands.Users
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserOpinionAsync(UserOpinion userOpinion)
+        public async Task<UserOpinion> UpdateUserOpinionAsync(Guid id, string content, int rate)
         {
-            _context.UserOpinions.Update(userOpinion);
+            var opinion = await _context.UserOpinions.FindAsync(id) ?? throw new EntityNotFoundException("UserOpinion");
+            opinion.Content = content;
+            opinion.Rate = rate;
+            opinion.LastUpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
+            return opinion;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using API.Core.ApiResponse;
+using Application.Interfaces.CommandInterfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Commands.DeletePost
 {
-    public class DeletePostCommand : IRequest<ApiResponse<Unit>>
+    public class DeletePostCommand : IRequest<ApiResponse<Unit>>, IPostOwner
     {
-        public Guid PostId { get; set; }
+        public required string PostId { get; set; }
+
     }
     
 }

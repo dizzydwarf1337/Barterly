@@ -1,6 +1,8 @@
-﻿using Application.DTOs.User;
+﻿using Application.DTOs.General.Opinions;
+using Application.DTOs.User;
 using Application.Features.Users.Commands.ConfirmEmail;
 using Application.Features.Users.Commands.ResetPassword;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -20,5 +22,6 @@ namespace API.Controllers
         {
             return HandleResponse(await Mediator.Send(new ResetPasswordCommand { Email = resetPasswordDto.Email, Password = resetPasswordDto.Password, Token = resetPasswordDto.Token }));
         }
+
     }
 }

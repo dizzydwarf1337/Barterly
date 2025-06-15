@@ -1,29 +1,26 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Entities.Users;
+using Domain.Exceptions.BusinessExceptions;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Users.Commands.Logout
 {
     public class LogoutCommandHandler : IRequestHandler<LogoutCommand, ApiResponse<Unit>>
     {
-        private readonly IAuthService _authService;
-        public LogoutCommandHandler(IAuthService authService)
+        private readonly UserManager<User> _userManager;
+
+        public LogoutCommandHandler(UserManager<User> userManager)
         {
-            _authService = authService;
+            _userManager = userManager;
         }
 
         public async Task<ApiResponse<Unit>> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _authService.LogOut(request.token);
-
-                return ApiResponse<Unit>.Success(Unit.Value);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<Unit>.Failure("Error while logging out");
-            }
+            var user = await _userManager.FindByEmailAsync(request.userMail) ?? throw new EntityNotFoundException("User");
+            await _userManager.RemoveAuthenticationTokenAsync(user, "App", "JWT");
+            return ApiResponse<Unit>.Success(Unit.Value);
         }
     }
 }

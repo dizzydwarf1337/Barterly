@@ -17,7 +17,7 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -58,13 +58,13 @@ namespace Persistence.Migrations
 
                     b.Property<string>("TitleEN")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TitlePL")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -228,6 +228,12 @@ namespace Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReviewedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -275,6 +281,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -284,6 +293,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("HouseNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("MainImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -329,6 +342,9 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ViewsCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -890,13 +906,10 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Domain.Entities.Common.Report");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ReportedPostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("ReportedPostId");
 
                     b.HasDiscriminator().HasValue("ReportPost");
                 });
@@ -1257,7 +1270,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.Posts.Post", "ReportedPost")
                         .WithMany("PostReports")
-                        .HasForeignKey("PostId")
+                        .HasForeignKey("ReportedPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

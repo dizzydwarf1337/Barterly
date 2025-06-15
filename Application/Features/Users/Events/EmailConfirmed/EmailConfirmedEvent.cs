@@ -9,6 +9,6 @@ namespace Application.Features.Users.Events.EmailConfirmed
 {
     public class EmailConfirmedEvent : INotification
     {
-        public string Email { get; set; }
+        public required string Email { get; set; }
     }
 }

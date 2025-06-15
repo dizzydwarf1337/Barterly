@@ -8,6 +8,6 @@ namespace Domain.Entities.Posts
         public Guid PostId { get; set; }
 
         [ForeignKey("PostId")]
-        public virtual Post Post { get; set; }
+        public virtual Post Post { get; set; } = default!;
     }
 }

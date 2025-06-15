@@ -40,11 +40,10 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(EmailDto emailDto)
         {
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            return HandleResponse(await Mediator.Send(new LogoutCommand { token = token }));
+            return HandleResponse(await Mediator.Send(new LogoutCommand { userMail = emailDto.Email}));
         }
 
         [HttpPost("resendEmailConfirm")]

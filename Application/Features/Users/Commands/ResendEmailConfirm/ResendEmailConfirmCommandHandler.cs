@@ -8,26 +8,17 @@ namespace Application.Features.Users.Commands.ResendEmailConfirm
     public class ResendEmailConfirmCommandHandler : IRequestHandler<ResendEmailConfirmCommand, ApiResponse<Unit>>
     {
         private readonly IMailService _mailService;
-        private readonly ITokenService _tokenService;
 
-        public ResendEmailConfirmCommandHandler(IMailService mailService, ITokenService tokenService)
+        public ResendEmailConfirmCommandHandler(IMailService mailService)
         {
             _mailService = mailService;
-            _tokenService = tokenService;
         }
 
         public async Task<ApiResponse<Unit>> Handle(ResendEmailConfirmCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _tokenService.DeleteTokenByUserMail(request.Email, TokenType.EmailConfirmation);
                 await _mailService.SendConfiramationMail(request.Email);
                 return ApiResponse<Unit>.Success(value: Unit.Value);
-            }
-            catch
-            {
-                return ApiResponse<Unit>.Failure("Error while resenging email confirmation");
-            }
+            
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Domain.Entities.Users
 
         [Required]
         [MaxLength(100)]
-        public string SearchedText { get; set; }
+        public required string SearchedText { get; set; }
 
         public string? SearchedCity { get; set; }
 
@@ -22,7 +22,7 @@ namespace Domain.Entities.Users
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = default!;
         public virtual Category? SearchedCategory { get; set; }
     }
 }

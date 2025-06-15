@@ -9,6 +9,6 @@ namespace Application.Features.Posts.Events.PostApprovedEvent
 {
     public class PostApprovedEvent : INotification
     {
-        public string postId { get; set; }
+        public required string postId { get; set; }
     }
 }

@@ -12,14 +12,14 @@ namespace Application.DTOs.Posts
     public class CreatePostDto
     {
         [Required]
-        public string SubCategoryId { get; set; }
+        public required string SubCategoryId { get; set; }
         [Required]
-        public string OwnerId { get; set; }
+        public required string OwnerId { get; set; }
         [Required]
-        public string PostType { get; set; }
+        public required string PostType { get; set; }
         [Required(ErrorMessage ="Title is Required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 50 characters long")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Required(ErrorMessage ="City is Required")]
         public string? City { get; set; }
@@ -29,11 +29,11 @@ namespace Application.DTOs.Posts
         
         [Required(ErrorMessage ="Full description is Required")]
         [StringLength(10000, MinimumLength = 2, ErrorMessage = "FullDescription must be between 2 and 500 characters long")]
-        public string FullDescription { get; set; }
+        public required string FullDescription { get; set; }
 
         [Required(ErrorMessage ="Short desription is Required")]
         [StringLength(200, MinimumLength = 2, ErrorMessage = "ShortDescription must be between 2 and 100 characters long")]
-        public string ShortDescription { get; set; }
+        public required string ShortDescription { get; set; }
         public decimal? Price { get; set; }
         public PostPriceType? PostPriceType { get; set; } = null;
         public string[]? Tags { get; set; }

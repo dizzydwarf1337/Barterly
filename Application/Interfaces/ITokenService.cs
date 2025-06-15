@@ -6,8 +6,7 @@ namespace Application.Interfaces
     {
         Task<string> GenerateEmailConfirmationToken(string userMail);
         Task<string> GeneratePasswordResetToken(string userMail);
-        Task DeleteTokenByUserMail(string userMail, TokenType tokenType);
-        Task DeleteToken(string token);
+        Task DeleteAuthToken(string userMail);
         Task<bool> CheckUserToken(string userMail, TokenType tokenType, string token);
         Task<string> GetLoginToken(Guid userId);
     }

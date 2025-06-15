@@ -4,9 +4,9 @@
     {
         public bool IsSuccess { get; set; }
 
-        public T Value { get; set; }
+        public T Value { get; set; } = default!;
 
-        public string Error { get; set; }
+        public string Error { get; set; } = default!;
         
         public int StatusCode { get; set; }
 

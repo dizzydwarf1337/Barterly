@@ -21,11 +21,11 @@ namespace Domain.Entities.Posts
 
         [Required]
         [MaxLength(50)]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Required]
         [MaxLength(500)]
-        public string FullDescription { get; set; }
+        public required string FullDescription { get; set; }
 
         [MaxLength(150)]
         public string? ShortDescription { get; set; }
@@ -39,8 +39,10 @@ namespace Domain.Entities.Posts
 
         public DateTime? UpdatedAt { get; set; } = null;
 
+        public int ViewsCount { get; set; } = 0;
         public string? MainImageUrl { get; set; }
         public string[] Tags { get; set; } = [];
+        public PostCurrency Currency { get; set; }
         
         [MaxLength(100)]
         public string? City { get; set; }
@@ -52,20 +54,33 @@ namespace Domain.Entities.Posts
 
         [MaxLength(100)]
         public string? Street { get; set; }
+        [MaxLength(100)]
+        public string? HouseNumber { get; set; }
 
         [ForeignKey("SubCategoryId")]
-        public virtual SubCategory SubCategory { get; set; }
+        public virtual SubCategory SubCategory { get; set; } = default!;
         [ForeignKey("OwnerId")]
-        public virtual User Owner { get; set; }
+        public virtual User Owner { get; set; } = default!;
 
         [ForeignKey("PromotionId")]
-        public virtual Promotion Promotion { get; set; }
+        public virtual Promotion Promotion { get; set; } = default!;
         [ForeignKey("PostSettingsId")]
-        public virtual PostSettings PostSettings { get; set; }
+        public virtual PostSettings PostSettings { get; set; } = default!;
 
         public virtual ICollection<PostImage>? PostImages { get; set; } = new List<PostImage>();
         public virtual ICollection<PostOpinion>? PostOpinions { get; set; } = new List<PostOpinion>();
         public virtual ICollection<ReportPost>? PostReports { get; set; } = new List<ReportPost>();
         public virtual ICollection<VisitedPost>? VisitedPosts { get; set; } = new List<VisitedPost>();
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Post post &&
+                   Id.Equals(post.Id);
+        }
+
+        public override int GetHashCode()
+        {
+           return  this.Id.GetHashCode();
+        }
     }
 }

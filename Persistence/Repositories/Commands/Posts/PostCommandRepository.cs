@@ -20,25 +20,40 @@ namespace Persistence.Repositories.Commands.Posts
                 .Include(x => x.SubCategory)
                 .Include(x => x.PostImages)
                 .Include(x => x.PostSettings)
-                .FirstOrDefaultAsync(x => x.Id == post.Id) ?? throw new EntityCreatingException("Post","PostCommandRepository");
+                .FirstOrDefaultAsync(x => x.Id == post.Id) ?? throw new EntityCreatingException("Post", "PostCommandRepository");
 
             return createdPost;
         }
 
-
         public async Task<Domain.Entities.Posts.Post> UpdatePostAsync(Domain.Entities.Posts.Post post)
         {
-            post.UpdatedAt = DateTime.UtcNow;
+            var existingPost = await _context.Posts
+             .Include(x => x.Promotion)
+             .Include(x => x.SubCategory)
+             .Include(x => x.PostImages)
+             .Include(x => x.PostSettings)
+             .FirstOrDefaultAsync(x => x.Id == post.Id)
+             ?? throw new EntityNotFoundException("Post");
+
+            _context.Entry(existingPost).CurrentValues.SetValues(post);
+            existingPost.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return existingPost;
+
+        }
+        public async Task UpdatePostMainImage(Guid postId, string mainImageUrl)
+        {
+            var post = await _context.Posts.FindAsync(postId) ?? throw new EntityNotFoundException("Post");
+            post.MainImageUrl = mainImageUrl;
             _context.Posts.Update(post);
             await _context.SaveChangesAsync();
-            var updatedPost = await _context.Posts
-                .Include(x => x.Promotion)
-                .Include(x => x.SubCategory)
-                .Include(x => x.PostImages)
-                .Include(x => x.PostSettings)
-                .FirstOrDefaultAsync(x => x.Id == post.Id) ?? throw new EntityCreatingException("Post", "PostCommandRepository");
-            return updatedPost;
-
+        }
+        public async Task IncreasePostView(Guid postId)
+        {
+            var post = await _context.Posts.FindAsync(postId) ?? throw new EntityNotFoundException("Post");
+            post.ViewsCount++;
+            _context.Posts.Update(post);
+            await _context.SaveChangesAsync();
         }
     }
 }

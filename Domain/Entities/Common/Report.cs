@@ -11,15 +11,17 @@ namespace Domain.Entities.Common
 
         [Required]
         [MaxLength(200)]
-        public string Message { get; set; }
+        public required string Message { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ReportStatusType Status { get; set; } = ReportStatusType.Submitted;
 
+        public string? ReviewedBy { get; set; }
+        public DateTime? ReviewedAt { get; set; }
         public Guid AuthorId { get; set; }
 
         [ForeignKey("AuthorId")]
-        public virtual User Author { get; set; }
+        public virtual User Author { get; set; } = default!;
     }
 }

@@ -12,30 +12,29 @@ namespace Application.DTOs.Posts
     public class EditPostDto
     {
         [Required]
-        public string Id { get; set; }
+        public required string Id { get; set; }
         [Required]
-        public string OwnerId { get; set; }
+        public required string OwnerId { get; set; }
         [Required(ErrorMessage = "Title is Required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 50 characters long")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
         [Required]
-        public string SubCategoryId { get; set; }
+        public required string SubCategoryId { get; set; }
 
         [Required(ErrorMessage = "Full description is Required")]
         [StringLength(10000, MinimumLength = 2, ErrorMessage = "FullDescription must be between 2 and 500 characters long")]
-        public string FullDescription { get; set; }
+        public required string FullDescription { get; set; }
 
         [Required(ErrorMessage = "Short desription is Required")]
         [StringLength(200, MinimumLength = 2, ErrorMessage = "ShortDescription must be between 2 and 100 characters long")]
-        public string? ShortDescription { get; set; }
+        public required string ShortDescription { get; set; }
 
         public decimal? Price { get; set; }
 
         public PostPriceType? PriceType { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-
         public DateTime? UpdatedAt { get; set; }
+        public PostCurrency? Currency { get; set; }
         public string[]? Tags { get; set; }
 
         public string? City { get; set; }
@@ -44,6 +43,7 @@ namespace Application.DTOs.Posts
 
         public string? Country { get; set; }
         public string? Street { get; set; }
+        public string? HouseNumber { get; set; }
         public RentObjectType? RentObjectType { get; set; }
         public int? NumberOfRooms { get; set; }
         public decimal? Area { get; set; }
@@ -51,7 +51,7 @@ namespace Application.DTOs.Posts
         public int? Floor { get; set; }
         public WorkloadType? Workload { get; set; } = WorkloadType.Other;
         public WorkLocationType? WorkLocation { get; set; } = WorkLocationType.OnSite;
-        public ContractType? Contract { get; set; } = ContractType.CivilContract;
+        public ContractType? Contract { get; set; } = ContractType.EmploymentContract;
 
         public decimal? MinSalary { get; set; }
         public decimal? MaxSalary { get; set; }

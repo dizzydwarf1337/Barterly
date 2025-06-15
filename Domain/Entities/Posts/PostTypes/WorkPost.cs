@@ -1,11 +1,5 @@
 ﻿using Domain.Enums.Posts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities.Posts.PostTypes
 {
@@ -13,7 +7,7 @@ namespace Domain.Entities.Posts.PostTypes
     {
         public WorkloadType Workload { get; set; } = WorkloadType.Other;
         public WorkLocationType WorkLocation { get; set; } = WorkLocationType.OnSite;
-        public ContractType Contract { get; set; } = ContractType.CivilContract;
+        public ContractType Contract { get; set; } = ContractType.EmploymentContract;
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? MinSalary {  get; set; }

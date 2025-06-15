@@ -2,8 +2,9 @@ import { createBrowserRouter, RouteObject } from "react-router";
 import App from "../layout/App";
 import MainPage from "../../features/home/mainPage";
 import RegisterMain from "../../features/registration/registerMain";
-import EmailConfirm from "../../features/registration/EmailConfirm";
 import EmailConfirmLink from "../../features/registration/emailConfirmLink";
+import PostDetails from "../../features/posts/Details/postDetails";
+import EmailConfirm from "../../features/registration/emailConfirm";
 
 
 const routes: RouteObject[] = [
@@ -26,6 +27,10 @@ const routes: RouteObject[] = [
             {
                 path: "/confirm/",
                 element: <EmailConfirmLink />
+            },
+            {
+                path: '/posts/:postId',
+                element: <PostDetails />
             }
         ],
     },

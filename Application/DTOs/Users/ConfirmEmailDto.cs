@@ -6,9 +6,9 @@ namespace Application.DTOs.User
     {
         [Required(ErrorMessage ="Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "Token is required")]
-        public string Token { get; set; }
+        public required string Token { get; set; }
     }
 }

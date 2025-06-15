@@ -12,5 +12,6 @@ namespace Domain.Enums.Posts
         Published = 1,    
         Rejected = 2,     
         ReSubmitted = 3,   
+        Deleted = 4,
     }
 }

@@ -6,6 +6,8 @@ using Domain.Exceptions.DataExceptions;
 using Domain.Interfaces.Commands.User;
 using Domain.Interfaces.Queries.User;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,8 +19,6 @@ public class TokenService : ITokenService
     private readonly ILogService _logService;
     private readonly IConfiguration _configuration;
     private readonly IConfigurationSection _jwtSettings;
-    private readonly ITokenCommandRepository _tokenCommandRepository;
-    private readonly ITokenQueryRepository _tokenQueryRepository;
     private readonly UserManager<User> _userManager;
 
     private readonly byte[] _key;
@@ -28,13 +28,9 @@ public class TokenService : ITokenService
     public TokenService(
         ILogService logService,
         UserManager<User> userManager,
-        IConfiguration configuration,
-        ITokenQueryRepository tokenQueryRepository,
-        ITokenCommandRepository tokenCommandRepository)
+        IConfiguration configuration)
     {
         _logService = logService;
-        _tokenCommandRepository = tokenCommandRepository;
-        _tokenQueryRepository = tokenQueryRepository;
         _userManager = userManager;
         _configuration = configuration;
         _jwtSettings = _configuration.GetSection("JwtSettings");
@@ -59,18 +55,59 @@ public class TokenService : ITokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    public async Task DeleteAuthToken(string userMail)
+    {
+        var user = await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User");
+        await _userManager.RemoveAuthenticationTokenAsync(user, "App", "JWT");
 
-    public async Task DeleteTokenByUserMail(string userMail, TokenType tokenType)
-    {
-        var userId = (await _userManager.FindByEmailAsync(userMail) ?? throw new Exception("Cannot find user by email, while checking token")).Id;
-        await _tokenCommandRepository.DeleteToken(userId, tokenType);
-        await _logService.CreateLogAsync($"Token with provided type {tokenType} was deleted or expired", LogType.Information, userId: userId);
-    }
-    public async Task DeleteToken(string token)
-    {
-        await _tokenCommandRepository.DeleteToken(token);
     }
 
+    public async Task<string> GenerateEmailConfirmationToken(string userMail)
+    {
+        var user = await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User");
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        await _logService.CreateLogAsync("Generated email confirmation token", LogType.Information, null, Guid.Empty, user.Id);
+        return token;
+    }
+
+    public async Task<string> GeneratePasswordResetToken(string userMail)
+    {
+        var user = await _userManager.FindByIdAsync(userMail) ?? throw new EntityNotFoundException("User");
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        return token;
+    }
+
+    public async Task<bool> CheckUserToken(string userMail, TokenType tokenType, string token)
+    {
+        var user = (await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User"));
+        bool result = false;
+        switch (tokenType)
+        {
+            case TokenType.Auth:
+                result = await _userManager.VerifyUserTokenAsync(user, "App", " ", token);
+                break;
+            case TokenType.EmailConfirmation:
+                result = await _userManager.VerifyUserTokenAsync(user, "App", "EmailConfirmation", token);
+                break;
+            case TokenType.PasswordReset:
+                result = await _userManager.VerifyUserTokenAsync(user, "App", "PasswordReset", token);
+                break;
+            default:
+                break;
+        }
+        await _logService.CreateLogAsync("Token is invalid", LogType.Warning, null, Guid.Empty, user.Id);
+        return result;
+    }
+
+    public async Task<string> GetLoginToken(Guid userId)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(x=>x.Id==userId) ?? throw new EntityNotFoundException("User");
+        
+        string? token = await _userManager.GetAuthenticationTokenAsync(user, "App", "JWT");
+        if (string.IsNullOrEmpty(token)) token = await GenerateAuthToken(userId);
+        return token;
+    }
     private async Task<string> GenerateAuthToken(Guid userId)
     {
         var user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new InvalidDataProvidedException("Wrong user Id");
@@ -83,54 +120,8 @@ public class TokenService : ITokenService
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var token = CreateJwtToken(userId, claims);
-        await _tokenCommandRepository.AddToken(userId, token, "Bearer", TokenType.Auth);
+        await _userManager.SetAuthenticationTokenAsync(user, "App", "JWT", token);
         await _logService.CreateLogAsync("Generated auth token", LogType.Information, null, Guid.Empty, userId);
-        return token;
-    }
-
-    public async Task<string> GenerateEmailConfirmationToken(string userMail)
-    {
-        var user = await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User");
-
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        await _tokenCommandRepository.AddToken(user.Id, token, "user manager", TokenType.EmailConfirmation);
-        await _logService.CreateLogAsync("Generated email confirmation token", LogType.Information, null, Guid.Empty, user.Id);
-        return token;
-    }
-
-    public async Task<string> GeneratePasswordResetToken(string userMail)
-    {
-        var user = await _userManager.FindByIdAsync(userMail) ?? throw new EntityNotFoundException("User");
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        await _tokenCommandRepository.AddToken(user.Id, token, "user manager", TokenType.PasswordReset);
-        return token;
-    }
-
-    public async Task<bool> CheckUserToken(string userMail, TokenType tokenType, string token)
-    {
-        var userId = (await _userManager.FindByEmailAsync(userMail) ?? throw new EntityNotFoundException("User")).Id;
-        var dbToken = await _tokenQueryRepository.GetTokenByUserIdAsync(userId, tokenType);
-        Console.WriteLine("DBTOKEN" + dbToken.Value);
-        if (dbToken != null && dbToken.Value == token)
-        {
-            await _logService.CreateLogAsync("Token confirmed successfully", LogType.Information, null, Guid.Empty, userId);
-            return true;
-        }
-        await _logService.CreateLogAsync("Token is invalid", LogType.Warning, null, Guid.Empty, userId);
-        return false;
-    }
-
-    public async Task<string> GetLoginToken(Guid userId)
-    {
-        string token;
-        try
-        {
-            token = (await _tokenQueryRepository.GetTokenByUserIdAsync(userId, TokenType.Auth)).Value;
-        }
-        catch (Exception)
-        {
-            token = await GenerateAuthToken(userId);
-        }
         return token;
     }
 }

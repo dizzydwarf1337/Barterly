@@ -10,7 +10,7 @@ public class VisitedPost
     public int VisitedCount { get; set; } = 1;
 
     [ForeignKey("PostId")]
-    public virtual Post Post { get; set; }
+    public virtual Post Post { get; set; } = default!;
     [ForeignKey("UserId")]
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = default!;
 }

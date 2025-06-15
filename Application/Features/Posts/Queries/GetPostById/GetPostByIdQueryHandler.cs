@@ -1,41 +1,40 @@
 ﻿using API.Core.ApiResponse;
 using Application.DTOs.Posts;
+using Application.Features.Posts.Events.PostVisitedEvent;
 using Application.Interfaces;
-using Domain.Exceptions.BusinessExceptions;
+using AutoMapper;
+using Domain.Interfaces.Queries.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Queries.GetPostById
 {
     public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, ApiResponse<PostDto>>
     {
-        private readonly IPostService _postService;
+        private readonly IPostQueryRepository _postQueryRepository;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public GetPostByIdQueryHandler(IPostService postService)
+        public GetPostByIdQueryHandler(IPostQueryRepository postQueryRepository, IMapper mapper,IMediator mediator)
         {
-            _postService = postService;
+            _postQueryRepository = postQueryRepository;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<ApiResponse<PostDto>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var post = await _postService.GetPostById(Guid.Parse(request.Id));
-                return ApiResponse<PostDto>.Success(post);
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return ApiResponse<PostDto>.Failure(ex.Message, 404);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return ApiResponse<PostDto>.Failure("Errow while getting post by id");
-            }
+            var postId = Guid.Parse(request.postId);
+
+            Guid? userGuid = null;
+            if (!string.IsNullOrEmpty(request.userId))
+                userGuid = Guid.Parse(request.userId);
+
+            var post = await _postQueryRepository.GetPostById(postId, userGuid);
+
+            if (userGuid.HasValue)
+                await _mediator.Publish(new PostVisitedEvent { PostId = post.Id, UserId = request.userId });
+
+            return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post));
         }
     }
 }

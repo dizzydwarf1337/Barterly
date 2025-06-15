@@ -1,7 +1,10 @@
 ﻿using API.Core.ApiResponse;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities.Categories;
 using Domain.Enums.Common;
 using Domain.Exceptions.BusinessExceptions;
+using Domain.Interfaces.Commands.Post;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,34 +16,23 @@ namespace Application.Features.Category.Commands.EditCategory
 {
     public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ApiResponse<Unit>>
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryCommandRepository _categoryCommandRepository;
+        private readonly IMapper _mapper;
         private readonly ILogService _logService;
 
-        public EditCategoryCommandHandler(ICategoryService categoryService, ILogService logService)
+        public EditCategoryCommandHandler(ICategoryCommandRepository categoryCommandRepository, IMapper mapper,ILogService logService)
         {
-            _categoryService = categoryService;
+            _categoryCommandRepository = categoryCommandRepository;
+            _mapper = mapper;
             _logService = logService;
         }
 
         public async Task<ApiResponse<Unit>> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _categoryService.EditCategory(request.category);
-                await _logService.CreateLogAsync($"Category edited id: {request.category.Id} name: {request.category.NameEN}", LogType.Information);
-                return ApiResponse<Unit>.Success(Unit.Value);
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return ApiResponse<Unit>.Failure(ex.Message, 404);
-            }
-            catch (OperationCanceledException ex)
-            {
-                return ApiResponse<Unit>.Failure(ex.Message, 409);
-            }
-            catch (Exception ex) {
-                return ApiResponse<Unit>.Failure(ex.Message);
-            }
+            var categoryToEdit = _mapper.Map<Domain.Entities.Categories.Category>(request.category);
+            await _categoryCommandRepository.UpdateCategoryAsync(categoryToEdit);
+            await _logService.CreateLogAsync($"Category edited id: {request.category.Id} name: {request.category.NameEN}", LogType.Information);
+            return ApiResponse<Unit>.Success(Unit.Value);
         }
     }
 }

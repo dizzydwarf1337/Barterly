@@ -1,5 +1,6 @@
 ﻿using API.Core.ApiResponse;
 using Application.DTOs.Posts;
+using Application.Interfaces.CommandInterfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Commands.UpdatePost
 {
-    public class UpdatePostCommand : IRequest<ApiResponse<PostDto>>
+    public class UpdatePostCommand : IRequest<ApiResponse<PostDto>>, IHasOwner, IPostOwner
     {
-        public EditPostDto post { get; set; }
+        public required EditPostDto post { get; set; }
+
+        public string OwnerId => post.OwnerId;
+
+        public string PostId => post.Id;
     }
 }

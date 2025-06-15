@@ -19,6 +19,6 @@ namespace Domain.Entities.Users
         public DateTime? UpdatedAt { get; set; } = null;
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = default!;
     }
 }

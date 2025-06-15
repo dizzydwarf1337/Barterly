@@ -13,29 +13,33 @@ namespace Persistence.Repositories.Queries.Users
         {
         }
 
-        public async Task<ICollection<ReportUser>> GetAllUsersReportsAsync()
-        {
-            return await _context.ReportUsers.ToListAsync();
-        }
-
-        public async Task<ICollection<ReportUser>> GetReportsUserByUserIdAsync(Guid userId)
-        {
-            return await _context.ReportUsers.Where(x => x.ReportedUserId == userId).ToListAsync();
-        }
-
         public async Task<ReportUser> GetReportUserByIdAsync(Guid reportId)
         {
             return await _context.ReportUsers.FindAsync(reportId) ?? throw new EntityNotFoundException("User report");
         }
 
-        public async Task<ICollection<ReportUser>> GetReportUsersByAuthorIdAsync(Guid authorId)
+        public async Task<ICollection<ReportUser>> GetReportUserFiltredPaginated(int page, int pageSize, Guid? authorId, Guid? userId, ReportStatusType? status)
         {
-            return await _context.ReportUsers.Where(x => x.AuthorId == authorId).ToListAsync();
-        }
+            var query = _context.ReportUsers.AsQueryable();
+            if(authorId != null)
+            {
+                query = query.Where(x => x.AuthorId == authorId);
+            }
+            if(userId != null)
+            {
+                query = query.Where(x => x.ReportedUserId == userId);
+            }
+            if(status != null)
+            {
+                query = query.Where(x => x.Status == status);
+            }
 
-        public async Task<ICollection<ReportUser>> GetReportUsersByTypeAsync(ReportStatusType type)
-        {
-            return await _context.ReportUsers.Where(x => x.Status == type).ToListAsync();
+            return await query
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
         }
     }
 }

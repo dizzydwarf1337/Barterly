@@ -11,6 +11,6 @@ namespace Application.Features.Posts.Commands.RejectPost
 {
     public class RejectPostCommand : IRequest<ApiResponse<Unit>>
     {
-        public RejectPostDto RejectPostDto { get; set; }
+        public required RejectPostDto RejectPostDto { get; set; }
     }
 }

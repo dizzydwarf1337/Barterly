@@ -2,7 +2,9 @@
 using Application.DTOs.Auth;
 using Application.DTOs.Categories;
 using Application.DTOs.General;
+using Application.DTOs.General.Opinions;
 using Application.DTOs.Posts;
+using Application.DTOs.Reports;
 using Application.DTOs.User;
 using AutoMapper;
 using Domain.Entities.Categories;
@@ -39,7 +41,22 @@ namespace Application.Core.Mapper
             CreateMap<EditPostDto, Post>()
                 .ForMember(x => x.CreatedAt, opt => opt.Ignore());
             CreateMap<PostSettings, PostSettingsDto>();
-            CreateMap<Post, PostPreviewDto>().ForMember(x=>x.PostPromotionType, opt=>opt.MapFrom(x=>x.Promotion.Type));
+            
+            CreateMap<Post, PostPreviewDto>()
+                .ForMember(x=>x.PostPromotionType, opt=>opt.MapFrom(x=>x.Promotion.Type))
+                .ForMember(x => x.PostType, opt => opt.MapFrom(x =>
+                    x is WorkPost ? "Work" :
+                    x is RentPost ? "Rent" :
+                    "Common"));
+            CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
+            CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
+            CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
+            CreateMap<PostDto, Post>()
+                .ForMember(x => x.Promotion, opt => opt.MapFrom(x => x.Promotion))
+                .ForMember(x => x.PostSettings, opt => opt.MapFrom(x => x.PostSettings))
+                .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
+                .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
+
             CreateMap<PostPreviewDto, Post>();
             CreateMap<PostImage, PostImageDto>();
             CreateMap<Promotion, PromotionDto>();
@@ -48,8 +65,9 @@ namespace Application.Core.Mapper
             CreateMap<CreatePostDto, RentPost>().IncludeBase<CreatePostDto, Post>(); 
             CreateMap<CreatePostDto, WorkPost>().IncludeBase<CreatePostDto, Post>();  
             CreateMap<CreatePostDto, CommonPost>().IncludeBase<CreatePostDto, Post>();
-            CreateMap<ReportUser, ReportDto>().ForMember(x => x.RepotedSubjectId, opt => opt.MapFrom(x => x.ReportedUserId));
-            CreateMap<ReportPost, ReportDto>().ForMember(x => x.RepotedSubjectId, opt => opt.MapFrom(x => x.ReportedPostId));
+            CreateMap<ReportUser, ReportDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.ReportedUserId)).ForMember(x=>x.CreatedAt, opt=> opt.MapFrom(x=>x.CreatedAt));
+            CreateMap<ReportPost, ReportDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.ReportedPostId)).ForMember(x => x.CreatedAt, opt => opt.MapFrom(x => x.CreatedAt));
+           
             CreateMap<Category, CategoryDto>().ForMember(x => x.SubCategories, opt => opt.MapFrom(x => x.SubCategories));
             CreateMap<CategoryDto, Category>();
             CreateMap<SubCategory, SubCategoryDto>();
@@ -61,6 +79,19 @@ namespace Application.Core.Mapper
             CreateMap<User, RegisterDto>();
             CreateMap<UserOpinion, OpinionDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.UserId));
             CreateMap<PostOpinion, OpinionDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.PostId));
+            
+            CreateMap<OpinionDto, UserOpinion>()
+                .ForMember(x => x.UserId, opt => opt.MapFrom(x => x.SubjectId));
+            CreateMap<OpinionDto,PostOpinion>()
+                .ForMember(x=>x.PostId, opt => opt.MapFrom(x => x.SubjectId));
+            CreateMap<CreateOpinionDto,PostOpinion>()
+                .ForMember(x => x.PostId, opt => opt.MapFrom(x => x.SubjectId));
+            CreateMap<CreateOpinionDto,UserOpinion>()
+                .ForMember(x => x.UserId, opt => opt.MapFrom(x => x.SubjectId));
+
+            CreateMap<CreateReportDto, ReportUser>().ForMember(x => x.ReportedUserId, opt => opt.MapFrom(x => x.SubjectId));
+            CreateMap<CreateReportDto, ReportPost>().ForMember(x => x.ReportedPostId, opt => opt.MapFrom(x => x.SubjectId));
+
         }
     }
 }

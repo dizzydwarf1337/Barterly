@@ -17,7 +17,7 @@ namespace Persistence.Repositories.Queries.Users
             return await _context.UserActivities.ToListAsync();
         }
 
-        public async Task<UserActivitySummary> GetUserActivityByIdAsync(Guid id)
+        public async Task<UserActivitySummary?> GetUserActivityByIdAsync(Guid id)
         {
             return await _context.UserActivities.FindAsync(id);
         }

@@ -3,13 +3,16 @@ import RegisterDto from "../models/registerDto";
 import ApiResponse from "../models/apiResponse";
 import LoginDto from "../models/loginDto";
 import GoogleLoginDto from "../models/googleLoginDto";
-import User from "../models/user";
 import { store } from "../stores/store";
 import Category from "../models/category";
-import Email from "../models/Email";
 import ConfirmEmail from "../models/confirmEmail";
-import ResetPassword from "../models/ResetPassword";
 import SubCategory from "../models/subCategory";
+import { PostPreview } from "../models/postPreview";
+import User from "../models/user";
+import PostImages from "../models/postImages";
+import Email from "../models/Email";
+import ResetPassword from "../models/ResetPassword";
+
 
 
 
@@ -33,8 +36,14 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 const responseBody = (response: AxiosResponse) => response.data;
 
 const requests = {
-    get: <T>(url: string, noAuth = false) =>
-        axios.get(url, { headers: { NoAuth: noAuth } }).then(responseBody),
+    get: <T>(url: string, noAuth = false, config = {}) =>
+        axios.get<T>(url, {
+            ...config,
+            headers: {
+                ...(config as any).headers,
+                NoAuth: noAuth
+            }
+        }).then(responseBody),
     post:<T>(url: string, body: {}, noAuth = false) =>
         axios.post(url, body, { headers: { NoAuth: noAuth } }).then(responseBody),
     put: <T>(url: string, body: {}, noAuth = false) =>
@@ -49,11 +58,11 @@ const Auth = {
     Register: (registerDto: RegisterDto, noAuth = true) => requests.post<ApiResponse<void>>("auth/register", registerDto, noAuth),
     Login: (loginDto: LoginDto, noAuth = true) => requests.post<ApiResponse<User>>("auth/login", loginDto, noAuth),
     LoginGoogle: (googleLoginDto: GoogleLoginDto, noAuth=true) => requests.post<ApiResponse<User>>("auth/login-google", googleLoginDto,noAuth),
-    Logout: (noAuth = false) => requests.post<ApiResponse<boolean>>("auth/logout", noAuth),
+    Logout: (email:Email,noAuth = false) => requests.post<ApiResponse<boolean>>("auth/logout", email,noAuth),
     ResendEmailConfirm: (email: Email, noAuth = true) => requests.post<ApiResponse<void>>("auth/resendEmailConfirm", { email }, noAuth),
 }
 
-const User = {
+const UserAPI = {
     ConfirmEmail: (confirmEmail: ConfirmEmail, noAuth = true) => requests.post<ApiResponse<void>>("user/confirm", confirmEmail, noAuth),
     ResetPassword:(resetPassword:ResetPassword,noAuth=true) => requests.post<ApiResponse<void>>("user/resetPassword",resetPassword,noAuth),
 }
@@ -65,11 +74,26 @@ const Categories = {
     AddSubCategory: (subCategory: SubCategory, noAuth = false) => requests.patch<ApiResponse<void>>(`category/addSubCategory`, subCategory, noAuth),
     DeleteSubCategory:(id:string,noAuth=false) => requests.delete<ApiResponse<void>>(`category/deleteSubCategory/${id}`,noAuth),
 } 
+const Recommendation = {
+    GetPopularPosts: (noAuth = true, count: number, city?: string) =>
+        requests.get<ApiResponse<PostPreview[]>>('recommendation/popular', noAuth, {
+            params: { count, city }
+    }),
+    GetFeed: (noAuth = true, page: number) => requests.get<ApiResponse<PostPreview[]>>('recommendation/feed', noAuth, {
+        params: { page }
+    }),
+}
+const Posts = {
+    GetPostImages: (postId: string, noAuth = true) => requests.get<ApiResponse<PostImages>>(`post/images/${postId}`, noAuth),
+    GetPostById:(postId:string,noAuth = true) => requests.get<ApiResponse<PostPreview>>(`post/${postId}`,noAuth),
+}
 
 const agent = {
     Auth,
-    User,
+    UserAPI,
     Categories,
+    Recommendation,
+    Posts
 }
 export default agent;
 

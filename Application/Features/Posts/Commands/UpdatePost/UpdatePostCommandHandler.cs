@@ -3,9 +3,13 @@ using Application.DTOs.Posts;
 using Application.Features.Posts.Events.PostUpdatedEvent;
 using Application.Interfaces;
 using Application.Services;
+using AutoMapper;
+using Domain.Entities.Posts;
 using Domain.Enums.Common;
+using Domain.Enums.Posts;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Exceptions.DataExceptions;
+using Domain.Interfaces.Commands.Post;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,51 +21,32 @@ namespace Application.Features.Posts.Commands.UpdatePost
 {
     public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, ApiResponse<PostDto>>
     {
-        private readonly IPostService _postService;
+        private readonly IPostCommandRepository _postCommandRepository;
+        private readonly IPostSettingsCommandRepository _postSettingsCommandRepository;
+        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        private readonly IUserSettingsService _userSettingsService;
         private readonly ILogService _logService;
-        public UpdatePostCommandHandler(IPostService postService, IMediator mediator, IUserSettingsService userSettingsService, ILogService logService)
+
+        public UpdatePostCommandHandler(IPostCommandRepository postCommandRepository,IPostSettingsCommandRepository postSettingsCommandRepository ,IMapper mapper, IMediator mediator, ILogService logService)
         {
-            _postService = postService;
+            
+            _postCommandRepository = postCommandRepository;
+            _postSettingsCommandRepository = postSettingsCommandRepository;
+            _mapper = mapper;
             _mediator = mediator;
-            _userSettingsService = userSettingsService;
             _logService = logService;
         }
 
         public async Task<ApiResponse<PostDto>> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                if (await IsUserPostRestricted(request.post.OwnerId))
-                {
-                   return ApiResponse<PostDto>.Failure("User is restricted from posting");
-                }
-                var post = await _postService.UpdatePost(request.post);
-                await _mediator.Publish(new PostUpdatedEvent { PostId = post.Id, UserId = post.OwnerId});
-                await _logService.CreateLogAsync($"Post updated title: {post.Title}", LogType.Information, postId: Guid.Parse(post.Id), userId: Guid.Parse(post.OwnerId));
-                return ApiResponse<PostDto>.Success(post, 200);
-            }
-            catch (InvalidDataProvidedException ex)
-            {
-                return ApiResponse<PostDto>.Failure(ex.Message);
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return ApiResponse<PostDto>.Failure(ex.Message, 404);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(request.post.Title + " " + request.post.FullDescription + " " + request.post.City);
-                Console.WriteLine("Error: " + ex.Message + ex.StackTrace);
-                return ApiResponse<PostDto>.Failure("Error while updating post");
-            }
+            var post = _mapper.Map<Post>(request.post);
+            await _postCommandRepository.UpdatePostAsync(post);
+            await _postSettingsCommandRepository.UpdatePostSettings(post.Id, true, false, PostStatusType.ReSubmitted, "");
+            await _mediator.Publish(new PostUpdatedEvent { PostId = post.Id, UserId = post.OwnerId});
+            await _logService.CreateLogAsync($"Post updated title: {post.Title}", LogType.Information, postId: post.Id, userId: post.OwnerId);
+            return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post), 200);
+
          
-        }
-        private async Task<bool> IsUserPostRestricted(string userId)
-        {
-            var userSettings = await _userSettingsService.GetUserSettingByUserIdAsync(Guid.Parse(userId));
-            return userSettings.IsPostRestricted;
         }
     }
 }

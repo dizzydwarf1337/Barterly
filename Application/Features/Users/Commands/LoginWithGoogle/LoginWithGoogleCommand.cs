@@ -7,6 +7,6 @@ namespace Application.Features.Users.Commands.LoginWithGoogle
 {
     public class LoginWithGoogleCommand : IRequest<ApiResponse<UserDto>>
     {
-        public GoogleLoginDto googleLoginDto { get; set; }
+        public required GoogleLoginDto googleLoginDto { get; set; }
     }
 }

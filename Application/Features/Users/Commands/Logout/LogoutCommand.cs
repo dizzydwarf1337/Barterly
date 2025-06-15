@@ -5,6 +5,6 @@ namespace Application.Features.Users.Commands.Logout
 {
     public class LogoutCommand : IRequest<ApiResponse<Unit>>
     {
-        public string token { get; set; }
+        public required string userMail { get; set; }
     }
 }

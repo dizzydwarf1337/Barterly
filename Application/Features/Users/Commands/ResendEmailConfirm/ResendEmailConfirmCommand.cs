@@ -5,6 +5,6 @@ namespace Application.Features.Users.Commands.ResendEmailConfirm
 {
     public class ResendEmailConfirmCommand : IRequest<ApiResponse<Unit>>
     {
-        public string Email { get; set; }
+        public required string Email { get; set; }
     }
 }

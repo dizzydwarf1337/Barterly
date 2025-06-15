@@ -8,6 +8,6 @@ namespace Application.DTOs.Posts
 {
     public class ApprovePostDto
     {
-        public string postId { get; set; }
+        public required string postId { get; set; }
     }
 }

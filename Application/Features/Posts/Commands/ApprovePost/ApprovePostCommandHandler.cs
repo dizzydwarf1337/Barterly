@@ -1,45 +1,38 @@
 ﻿using API.Core.ApiResponse;
 using Application.Features.Posts.Events.PostApprovedEvent;
 using Application.Interfaces;
-using Domain.Exceptions.BusinessExceptions;
+using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Posts.Commands.ApprovePost
 {
     public class ApprovePostCommandHandler : IRequestHandler<ApprovePostCommand, ApiResponse<Unit>>
     {
-        private readonly IPostSettingsService _postSettingsService;
         private readonly IMediator _mediator;
         private readonly ILogService _logService;
-        public ApprovePostCommandHandler(IPostSettingsService postSettingsService, IMediator mediator, ILogService logService)
+        private readonly IPostSettingsQueryRepository _postSettingsQueryRepository;
+        private readonly IPostSettingsCommandRepository _postSettingsCommandRepository;
+
+        public ApprovePostCommandHandler(IMediator mediator, ILogService logService, IPostSettingsQueryRepository postQueryRepository, IPostSettingsCommandRepository postSettingsCommandRepository)
         {
-            _postSettingsService = postSettingsService;
             _mediator = mediator;
             _logService = logService;
+            _postSettingsQueryRepository = postQueryRepository;
+            _postSettingsCommandRepository = postSettingsCommandRepository;
         }
         public async Task<ApiResponse<Unit>> Handle(ApprovePostCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _postSettingsService.ApprovePost(request.ApprovePostDto);
-                await _mediator.Publish(new PostApprovedEvent { postId = request.ApprovePostDto.postId });
-                await _logService.CreateLogAsync($"Post approved: {request.ApprovePostDto.postId}", Domain.Enums.Common.LogType.Information, postId: Guid.Parse(request.ApprovePostDto.postId));
-                return ApiResponse<Unit>.Success(Unit.Value, 200);
-            }
-            catch (EntityNotFoundException)
-            {
-                return ApiResponse<Unit>.Failure("Post not found", 404);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message + ex.StackTrace);
-                return ApiResponse<Unit>.Failure("Error while approving post");
-            }
+          
+            var postSettings = await _postSettingsQueryRepository.GetPostSettingsByPostId(Guid.Parse(request.ApprovePostDto.postId));
+            postSettings.IsHidden = false;
+            postSettings.postStatusType = Domain.Enums.Posts.PostStatusType.Published;
+            postSettings.RejectionMessage = null;
+            await _postSettingsCommandRepository.UpdatePostSettings(postSettings.PostId,postSettings.IsHidden,postSettings.IsDeleted,postSettings.postStatusType,postSettings.RejectionMessage);
+            await _mediator.Publish(new PostApprovedEvent { postId = request.ApprovePostDto.postId });
+            await _logService.CreateLogAsync($"Post approved: {request.ApprovePostDto.postId}", Domain.Enums.Common.LogType.Information, postId: Guid.Parse(request.ApprovePostDto.postId));
+            return ApiResponse<Unit>.Success(Unit.Value, 200);
+
         }
     }
 }

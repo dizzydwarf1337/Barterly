@@ -9,16 +9,16 @@ namespace Domain.Entities.Categories
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [MaxLength(20)]
-        public string TitleEN { get; set; }
+        [MaxLength(50)]
+        public required string TitleEN { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string TitlePL { get; set; }
+        [MaxLength(50)]
+        public required string TitlePL { get; set; }
 
         public Guid CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
-        public virtual Category Category { get; set; }
+        public virtual Category Category { get; set; } = default!;
     }
 }

@@ -18,7 +18,7 @@ export default class UserStore {
         this.setUser(user ? JSON.parse(user) : null);
         this.setUserIsLoggedIn(login ? JSON.parse(login) : false);
     }
-    user: User | null;
+    user: User | null = null;
 
     getToken = () => this.user?.token;
     setUser = (user: User | null) => this.user = user;
@@ -88,7 +88,7 @@ export default class UserStore {
     logout = async () => {
         this.setLoading(true);
         try {
-            const res: ApiResponse<boolean> = await agent.Auth.Logout();
+            const res: ApiResponse<boolean> = await agent.Auth.Logout({ email: this.user!.email });
             if (res.isSuccess) {
                 runInAction(() => {
                     this.clearUser();
@@ -137,7 +137,7 @@ export default class UserStore {
     confirmEmail = async (confirmEmail: ConfirmEmail) => {
         this.setLoading(true);
         try {
-            const res: ApiResponse<void> = await agent.User.ConfirmEmail(confirmEmail);
+            const res: ApiResponse<void> = await agent.UserAPI.ConfirmEmail(confirmEmail);
             if (!res.isSuccess) throw res.error && "Error while confirming email";
         }
         catch (e) {
@@ -151,7 +151,7 @@ export default class UserStore {
     resetPassword = async (resetPassword: ResetPassword) => {
         this.setLoading(true);
         try {
-            const res: ApiResponse<void> = await agent.User.ResetPassword(resetPassword);
+            const res: ApiResponse<void> = await agent.UserAPI.ResetPassword(resetPassword);
             if (!res.isSuccess) throw res.error && "Error while resetting password";
         }
         catch (e) {

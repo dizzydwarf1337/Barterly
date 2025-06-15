@@ -11,10 +11,10 @@ namespace Domain.Entities.Users
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public virtual Post Post { get; set; }
+        public virtual Post Post { get; set; } = default!;
         [Key]
         [Column(Order = 1)]
         public Guid UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = default!;
     }
 }
