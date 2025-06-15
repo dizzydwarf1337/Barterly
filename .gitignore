@@ -365,3 +365,6 @@ FodyWeavers.xsd
 /Persistence/Seed/Seed.cs
 /API/appsettings.Development.json
 /API/wwwroot/uploads
+/API/appsettings.Production.json
+/API/wwwroot/profanity_en.txt
+/API/wwwroot/profanity_pl.txt
