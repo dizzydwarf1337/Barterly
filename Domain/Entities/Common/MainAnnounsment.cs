@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Entities.Common
+namespace Domain.Entities.Common;
+
+public class MainAnnounsment
 {
-    public class MainAnnounsment
-    {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
-        [MaxLength(50)]
-        public required string Name { get; set; }
+    [MaxLength(50)] public required string Name { get; set; }
 
-        public string? Description { get; set; }
+    public string? Description { get; set; }
 
-        public string? ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

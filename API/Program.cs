@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Identity;
-using Persistence.Seed;
+using API.Core.Extensions.Auth;
+using API.Core.Extensions.Cors;
+using API.Core.Extensions.Identity;
+using API.Core.Extensions.Middleware;
+using API.Core.Extensions.Persistence;
 using API.Core.ServicesConfiguration.Commands;
 using API.Core.ServicesConfiguration.Infrastructure;
 using API.Core.ServicesConfiguration.Queries;
 using API.Core.ServicesConfiguration.Services;
-using API.Core.Extensions.Middleware;
-using API.Core.Extensions.Persistence;
-using API.Core.Extensions.Identity;
-using API.Core.Extensions.Auth;
-using API.Core.Extensions.Cors;
+using Microsoft.AspNetCore.Identity;
+using Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
@@ -36,12 +36,9 @@ using (var scope = app.Services.CreateScope())
 
     string[] roleNames = { "Admin", "User", "Moderator" };
     foreach (var roleName in roleNames)
-    {
         if (!await roleManager.RoleExistsAsync(roleName))
-        {
             await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
-        }
-    }
+
     await Seed.SeedDb(scope.ServiceProvider);
 }
 
@@ -55,4 +52,3 @@ app.UseStaticFiles();
 
 
 app.Run();
-

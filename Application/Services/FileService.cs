@@ -3,51 +3,41 @@ using Domain.Exceptions.BusinessExceptions;
 using Domain.Exceptions.DataExceptions;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class FileService : IFileService
 {
-    public class FileService : IFileService
+    private readonly string _baseFilePath = "wwwroot/";
+
+    public async Task<string> SaveFile(IFormFile file)
     {
-        private readonly string _baseFilePath = "wwwroot/";
+        if (file == null || file.Length == 0)
+            throw new InvalidDataProvidedException("File", "", "FileService.SaveFile");
 
-        public async Task<string> SaveFile(IFormFile file)
+        var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+        var filePath = Path.Combine(_baseFilePath, "uploads", fileName);
+
+        Directory.CreateDirectory(_baseFilePath);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            if (file == null || file.Length == 0)
-            {
-                throw new InvalidDataProvidedException("File","","FileService.SaveFile");
-            }
-
-            string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-            string filePath = Path.Combine(_baseFilePath, "uploads",fileName);
-
-            Directory.CreateDirectory(_baseFilePath);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return Path.Combine("uploads", fileName).Replace("\\", "/");
+            await file.CopyToAsync(stream);
         }
 
-        public Task DeleteFile(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-            {
-                throw new EntityNotFoundException("File path");
-            }
+        return Path.Combine("uploads", fileName).Replace("\\", "/");
+    }
 
-            string fullPath = Path.Combine(_baseFilePath, filePath);
+    public Task DeleteFile(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath)) throw new EntityNotFoundException("File path");
 
-            if (File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
-            else
-            {
-                throw new EntityNotFoundException("File");
-            }
+        var fullPath = Path.Combine(_baseFilePath, filePath);
 
-            return Task.CompletedTask;
-        }
+        if (File.Exists(fullPath))
+            File.Delete(fullPath);
+        else
+            throw new EntityNotFoundException("File");
+
+        return Task.CompletedTask;
     }
 }

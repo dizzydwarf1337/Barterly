@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import {Box} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from "react";
+import {useState} from "react";
 import ImagesPreviewModal from "./imagesPreviewModal";
 
 
@@ -9,7 +9,7 @@ interface Props {
     postId: string;
 }
 
-export default function ImagesPreview({ mainImageUrl, postId }: Props) {
+export default function ImagesPreview({mainImageUrl, postId}: Props) {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const onCloseModal = () => setIsModalOpen(false);
@@ -38,7 +38,7 @@ export default function ImagesPreview({ mainImageUrl, postId }: Props) {
                 src={import.meta.env.VITE_API_URL.replace("api", "") + mainImageUrl}
                 width="150px"
                 height="150px"
-      
+
             />
             <Box
                 className="overlay"
@@ -57,14 +57,14 @@ export default function ImagesPreview({ mainImageUrl, postId }: Props) {
                     transition: 'opacity 0.3s ease',
 
                 }}
-     
+
             >
-                <SearchIcon sx={{ color: 'white', fontSize: 40, opacity:2}} />
+                <SearchIcon sx={{color: 'white', fontSize: 40, opacity: 2}}/>
             </Box>
             {isModalOpen && (
-                <ImagesPreviewModal isOpen={isModalOpen} onClose={onCloseModal} postId={postId} />
+                <ImagesPreviewModal isOpen={isModalOpen} onClose={onCloseModal} postId={postId}/>
             )
             }
-        </Box>    
-        )
-    }
+        </Box>
+    )
+}

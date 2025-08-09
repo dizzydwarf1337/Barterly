@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
-namespace API.Core.Extensions.Auth
+namespace API.Core.Extensions.Auth;
+
+public static class JwtAuthentication
 {
-    public static class JwtAuthentication
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
-        {
-            var jwtSettings = config.GetSection("JwtSettings");
-            var key = jwtSettings["Key"];
+        var jwtSettings = config.GetSection("JwtSettings");
+        var key = jwtSettings["Key"];
 
-            services.AddAuthentication(options =>
+        services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,7 +41,8 @@ namespace API.Core.Extensions.Auth
                     },
                     OnChallenge = context =>
                     {
-                        Console.WriteLine($"Challenge issued with error: {context.Error}, description: {context.ErrorDescription}");
+                        Console.WriteLine(
+                            $"Challenge issued with error: {context.Error}, description: {context.ErrorDescription}");
                         return Task.CompletedTask;
                     },
                     OnTokenValidated = context =>
@@ -54,15 +55,16 @@ namespace API.Core.Extensions.Auth
                         {
                             var jwt = handler.ReadJwtToken(token);
                             Console.WriteLine($"Token validated: {jwt.RawData}");
-                            Console.WriteLine($"Claims: {string.Join(", ", jwt.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
+                            Console.WriteLine(
+                                $"Claims: {string.Join(", ", jwt.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
                             Console.WriteLine($"Valid To (UTC): {jwt.ValidTo}");
                         }
+
                         return Task.CompletedTask;
                     }
                 };
             });
 
-            return services;
-        }
+        return services;
     }
 }

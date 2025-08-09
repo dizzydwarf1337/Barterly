@@ -1,25 +1,25 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import {makeAutoObservable} from "mobx";
 import agent from "../../API/agent";
-import ApiResponse from "../../models/apiResponse";
-import async from "react-select/async";
 import Category from "../../models/category";
 
 
 export default class AdminCategoryStore {
 
+    openModal: boolean = false;
+    category: Category | null | undefined;
+
     constructor() {
         makeAutoObservable(this);
     }
 
-    openModal: boolean = false;
     setOpenModal = (value: boolean) => {
         this.openModal = value;
     }
+
     getOpenModal = () => {
         this.openModal;
     }
 
-    category: Category | null | undefined;
     setCategory = (category: Category | null) => {
         this.category = category;
     }
@@ -33,8 +33,7 @@ export default class AdminCategoryStore {
     deleteCategory = async (id: string) => {
         try {
             await agent.Categories.DeleteCategory(id)
-        }
-        catch {
+        } catch {
             console.error("Error while deleting category");
             throw new Error("Error while deleting category");
         }
@@ -42,8 +41,7 @@ export default class AdminCategoryStore {
     addCategory = async (category: Category) => {
         try {
             await agent.Categories.AddCategory(category);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
             throw new Error(error);
         }
@@ -52,12 +50,11 @@ export default class AdminCategoryStore {
     editCategory = async (category: Category) => {
         try {
             await agent.Categories.EditCategory(category);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
             throw new Error(error.toString());
         }
     }
 
-    
+
 }

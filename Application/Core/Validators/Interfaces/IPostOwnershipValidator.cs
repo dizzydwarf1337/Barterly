@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Application.Core.Validators.Interfaces;
 
-namespace Application.Core.Validators.Interfaces
+public interface IPostOwnershipValidator
 {
-    public interface IPostOwnershipValidator
-    {
-        Task ValidatePostOwnership(Guid userId, Guid postId);
-
-    }
+    Task ValidatePostOwnership(Guid userId, Guid postId);
 }

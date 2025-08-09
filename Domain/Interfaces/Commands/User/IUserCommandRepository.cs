@@ -1,10 +1,9 @@
-﻿namespace Domain.Interfaces.Commands.User
+﻿namespace Domain.Interfaces.Commands.User;
+
+public interface IUserCommandRepository
 {
-    public interface IUserCommandRepository
-    {
-        Task AddUserAsync(Entities.Users.User user);
-        Task UpdateUserAsync(Entities.Users.User user);
-        Task DeleteUser(Guid userId);
-        Task UploadPicture(Guid id, string PicPath);
-    }
+    Task AddUserAsync(Entities.Users.User user, CancellationToken token);
+    Task UpdateUserAsync(Entities.Users.User user, CancellationToken token);
+    Task DeleteUser(Guid userId, CancellationToken token);
+    Task UploadPicture(Guid id, string PicPath, CancellationToken token);
 }

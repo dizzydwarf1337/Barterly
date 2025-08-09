@@ -1,12 +1,11 @@
-
-import { ContractType } from "../enums/contractType";
-import { PostCurrency } from "../enums/postCurrency";
-import { PostPriceType } from "../enums/postPriceType";
-import { PostPromotionType } from "../enums/postPromotionType";
-import { PostType } from "../enums/postType";
-import { RentObjectType } from "../enums/rentObjectType";
-import { WorkloadType } from "../enums/workLoadType";
-import { WorkLocationType } from "../enums/WorkLocationType";
+import {ContractType} from "../enums/contractType";
+import {PostCurrency} from "../enums/postCurrency";
+import {PostPriceType} from "../enums/postPriceType";
+import {PostPromotionType} from "../enums/postPromotionType";
+import {PostType} from "../enums/postType";
+import {RentObjectType} from "../enums/rentObjectType";
+import {WorkloadType} from "../enums/workLoadType";
+import {WorkLocationType} from "../enums/WorkLocationType";
 
 export interface PostPreview {
     id: string;

@@ -1,13 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import {Box, Button, Typography} from "@mui/material";
+import {useTranslation} from "react-i18next";
 import useStore from "../../app/stores/store";
-import { useParams } from "react-router";
-import { useState, useEffect } from "react";
+import {useParams} from "react-router";
+import {useEffect, useState} from "react";
 
 export default function EmailConfirm() {
-    const { t } = useTranslation();
-    const { email } = useParams();
-    const { userStore, uiStore } = useStore();
+    const {t} = useTranslation();
+    const {email} = useParams();
+    const {userStore, uiStore} = useStore();
 
     const [resendTime, setResendTime] = useState(0);
 
@@ -32,7 +32,7 @@ export default function EmailConfirm() {
     return (
         <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="20px" mt="150px">
             <Typography variant="h2">{t("thankForSignIn")}</Typography>
-            <Typography variant="h5" sx={{ textAlign: "center" }}>
+            <Typography variant="h5" sx={{textAlign: "center"}}>
                 {t("emailConfirmation")}
             </Typography>
             <Button

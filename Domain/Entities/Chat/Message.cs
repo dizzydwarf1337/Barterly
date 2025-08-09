@@ -1,7 +1,6 @@
-﻿namespace Domain.Entities.Chat
+﻿namespace Domain.Entities.Chat;
+
+public class Message
 {
-    public class Message
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-    }
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

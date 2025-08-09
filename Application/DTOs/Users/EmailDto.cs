@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.Users
+namespace Application.DTOs.Users;
+
+public class EmailDto
 {
-    public class EmailDto
-    {
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public required string Email { get; set; }
-    }
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
+    public required string Email { get; set; }
 }

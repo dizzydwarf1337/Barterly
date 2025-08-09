@@ -1,20 +1,19 @@
-import { Box, Typography } from "@mui/material";
-import { observer } from "mobx-react-lite";
+import {Box, Typography} from "@mui/material";
+import {observer} from "mobx-react-lite";
 import useStore from "../../app/stores/store";
-import { useEffect } from "react";
+import {useEffect} from "react";
 import FeedPostList from "./FeedPostList";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 
 
 export default observer(function FeedDashboard() {
 
-    const { userStore,postStore, uiStore } = useStore();
-    const { t } = useTranslation();
+    const {userStore, postStore, uiStore} = useStore();
+    const {t} = useTranslation();
     useEffect(() => {
         try {
             postStore.getFeedApi();
-        }
-        catch (e:Error) {
+        } catch (e: Error) {
             uiStore.showSnackbar(e.Message, "error", "right");
         }
     }, [postStore.feedPage, userStore.user!]);
@@ -26,13 +25,13 @@ export default observer(function FeedDashboard() {
                 justifyContent={uiStore.isMobile ? "center" : "flex-start"}
                 alignItems="center"
                 width="100%"
-                pl={!uiStore.isMobile && "20px" }
+                pl={!uiStore.isMobile && "20px"}
             >
                 <Typography variant="h3">
                     {t('feed')}
                 </Typography>
             </Box>
-            <Box >
+            <Box>
                 <FeedPostList/>
             </Box>
         </Box>

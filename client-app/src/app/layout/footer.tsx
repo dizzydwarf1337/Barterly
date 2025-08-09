@@ -1,13 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import {Box, Typography} from "@mui/material";
 
 export default function Footer() {
     return (
         <Box
             sx={{
                 backgroundColor: "black",
-                bottom: 0,  
+                bottom: 0,
                 left: 0,
-                width:"100%",
+                width: "100%",
                 position: "absolute",
             }}
         >

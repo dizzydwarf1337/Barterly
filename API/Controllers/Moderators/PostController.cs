@@ -1,0 +1,50 @@
+﻿using Application.Commands.Moderators.Posts.ApprovePost;
+using Application.Commands.Moderators.Posts.DeletePost;
+using Application.Commands.Moderators.Posts.RejectPost;
+using Application.Queries.Moderators.Posts.GetPostById;
+using Application.Queries.Public.Posts.GetPostImages;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers;
+
+[Route("moderator/posts")]
+[Authorize(Policy = "Moderator")]
+public class PostController : BaseController
+{
+    [HttpGet]
+    [Route("get/{postId:guid}")]
+    public async Task<IActionResult> GetPostById([FromRoute] Guid postId)
+    {
+        return HandleResponse(await Mediator.Send(new GetPostByIdQuery { PostId = postId }));
+    }
+
+    [HttpDelete]
+    [Route("delete/{postId:guid}")]
+    public async Task<IActionResult> DeletePost([FromRoute] Guid postId)
+    {
+        return HandleResponse(await Mediator.Send(new DeletePostCommand { PostId = postId }));
+    }
+
+    [HttpPost]
+    [Route("approve-post")]
+    public async Task<IActionResult> ApprovePost([FromBody] ApprovePostCommand command)
+    {
+        return HandleResponse(await Mediator.Send(command));
+    }
+
+
+    [HttpPost]
+    [Route("reject-post")]
+    public async Task<IActionResult> RejectPost([FromBody] RejectPostCommand command)
+    {
+        return HandleResponse(await Mediator.Send(command));
+    }
+
+    [HttpGet]
+    [Route("images/{postId:guid}")]
+    public async Task<IActionResult> GetPostImages([FromRoute] Guid postId)
+    {
+        return HandleResponse(await Mediator.Send(new GetPostImagesCommand { PostId = postId }));
+    }
+}

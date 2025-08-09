@@ -1,15 +1,7 @@
-﻿using Application.DTOs.Reports;
-using Domain.Entities.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Application.Core.Factories.Interfaces;
 
-namespace Application.Core.Factories.Interfaces
+public interface IReportFactory
 {
-    public interface IReportFactory
-    {
-        Task CreateReportAsync(CreateReportDto createReportDto); 
-    }
+    Task CreateReportAsync(Guid OwnerId, Guid SubjectId, string Message, string ReportType,
+        CancellationToken token);
 }

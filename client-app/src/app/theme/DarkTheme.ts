@@ -1,4 +1,4 @@
-import { alpha, createTheme, darken, lighten } from "@mui/material";
+import {alpha, createTheme, lighten} from "@mui/material";
 
 
 const darkTheme = createTheme({
@@ -34,7 +34,7 @@ const darkTheme = createTheme({
         },
         background: {
             default: "#242424",
-            paper:"#343232",
+            paper: "#343232",
         },
         text: {
             primary: '#F1FAF9', // F1FAF9
@@ -65,7 +65,7 @@ const darkTheme = createTheme({
                 },
                 contained: {
                     '&:hover': {
-                        transform: "translateY(-2px)",  
+                        transform: "translateY(-2px)",
                         color: lighten("#2F44AB", 0.9)
                     }
                 },
@@ -137,15 +137,15 @@ const darkTheme = createTheme({
                     fontFamily: "Tahoma, Verdana, sans-serif",
                     color: "#F1FAF9"
                 },
-                h1: ({ theme }) => ({
-                      [theme.breakpoints.down("sm")]: {
+                h1: ({theme}) => ({
+                    [theme.breakpoints.down("sm")]: {
                         fontSize: "2rem",
                     },
                     [theme.breakpoints.up("sm")]: {
                         fontSize: "6rem",
                     },
                 }),
-                h2: ({ theme }) => ({
+                h2: ({theme}) => ({
                     [theme.breakpoints.down("sm")]: {
                         fontSize: "1.3rem",
                     },

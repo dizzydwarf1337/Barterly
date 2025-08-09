@@ -1,10 +1,11 @@
-import { createContext, useContext } from 'react'
+import {createContext, useContext} from 'react'
 import AdminCategoryStore from './adminCategoryStore';
 
 
 interface Store {
     adminCategoryStore: AdminCategoryStore,
 }
+
 export const store: Store = {
     adminCategoryStore: new AdminCategoryStore(),
 }

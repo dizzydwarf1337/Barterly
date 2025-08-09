@@ -1,46 +1,50 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { PostPreview } from "../models/postPreview";
+import {makeAutoObservable, runInAction} from "mobx";
+import {PostPreview} from "../models/postPreview";
 import ApiResponse from "../models/apiResponse";
 import agent from "../API/agent";
 import PostImages from "../models/postImages";
 
 export default class PostStore {
+    feedPosts: PostPreview[] = [];
+    popularPosts: PostPreview[] = [];
+    postLoading: boolean = false;
+    isLoggedIn: boolean = false;
+    feedPage: number = 1;
+    postError: string | null = null;
+    currentPost: PostPreview | null = null;
+    loadingCurrentPost: boolean = false;
+    currentPostError: string | null = null;
+
     // Existing constructor and properties...
     constructor() {
         makeAutoObservable(this);
         var userJson = localStorage.getItem("brt_user");
         if (userJson) {
             this.isLoggedIn = true;
-        }
-        else {
+        } else {
             this.isLoggedIn = false;
         }
     }
 
-    feedPosts: PostPreview[] = [];
     setFeedPosts = (posts: PostPreview[]) => this.feedPosts = posts;
+
     getFeedPosts = () => this.feedPosts;
 
-    popularPosts: PostPreview[] = [];
     setPopularPosts = (posts: PostPreview[]) => this.popularPosts = posts;
+
     getPopularPosts = () => this.popularPosts;
 
-    postLoading: boolean = false;
     setPostLoading = (value: boolean) => this.postLoading = value;
-    getPostLoading = () => this.postLoading;
-    isLoggedIn: boolean = false;
 
-    feedPage: number = 1;
+    getPostLoading = () => this.postLoading;
+
     setFeedPage = (value: number) => this.feedPage = value;
+
     getFeedPage = () => this.feedPage;
 
-    postError: string | null = null;
     setPostError = (value: string | null) => this.postError = value;
-    getPostError = () => this.postError;
 
-    currentPost: PostPreview | null = null;
-    loadingCurrentPost: boolean = false;
-    currentPostError: string | null = null;
+    getPostError = () => this.postError;
 
     getFeedApi = async () => {
         this.setPostLoading(true);
@@ -51,13 +55,11 @@ export default class PostStore {
                     this.setFeedPosts(res.value);
                 });
             }
-        }
-        catch (e: any) { // Catch Error type or `any` for broader compatibility
+        } catch (e: any) { // Catch Error type or `any` for broader compatibility
             this.setPostError("Error while loading feed");
             console.error("Feed API Error:", this.getPostError, e); // Use console.error for errors
             throw e; // Re-throw the original error, not a new generic Error
-        }
-        finally {
+        } finally {
             this.setPostLoading(false);
         }
     }
@@ -71,13 +73,11 @@ export default class PostStore {
                     this.setPopularPosts(res.value);
                 });
             }
-        }
-        catch (e: any) { // Catch Error type or `any`
+        } catch (e: any) { // Catch Error type or `any`
             this.setPostError("Error while loading popular posts");
             console.error("Popular Posts API Error:", this.getPostError, e);
             throw e; // Re-throw the original error
-        }
-        finally {
+        } finally {
             this.setPostLoading(false);
         }
     }
@@ -86,8 +86,7 @@ export default class PostStore {
         try {
             const res: ApiResponse<PostImages> = await agent.Posts.GetPostImages(postId);
             return res; // The component should check res.isSuccess
-        }
-        catch (error: any) { // Catch Error type or `any`
+        } catch (error: any) { // Catch Error type or `any`
             console.error("Error fetching post images:", error);
             // Optionally, set an error state here if ImagesPreview needs it
             throw error; // Re-throw so the caller can handle it

@@ -1,18 +1,11 @@
-﻿using Application.DTOs.Auth;
-using Application.Features.Users.Commands.CreateUser;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users;
+using Domain.Enums.Users;
 using Google.Apis.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Core.Factories.Interfaces
+namespace Application.Core.Factories.Interfaces;
+
+public interface IUserFactory
 {
-    public interface IUserFactory
-    {
-        public Task<User> CreateUser(RegisterDto registerDto);
-        public Task<User> CreateUser(GoogleJsonWebSignature.Payload payload);
-    }
+    public Task<User> CreateUser(string FirstName, string LastName, string Email, string Password, UserRoles Role);
+    public Task<User> CreateUser(GoogleJsonWebSignature.Payload payload);
 }

@@ -1,11 +1,10 @@
 ﻿using Domain.Entities.Posts;
 
-namespace Domain.Interfaces.Queries.Post
+namespace Domain.Interfaces.Queries.Post;
+
+public interface IPostImageQueryRepository
 {
-    public interface IPostImageQueryRepository
-    {
-        Task<PostImage> GetPostImageAsync(Guid id);
-        Task<ICollection<PostImage>> GetPostImagesAsync();
-        Task<ICollection<PostImage>> GetPostImagesByPostIdAsync(Guid postId);
-    }
+    Task<PostImage> GetPostImageAsync(Guid id, CancellationToken token);
+    Task<ICollection<PostImage>> GetPostImagesAsync(CancellationToken token);
+    Task<ICollection<PostImage>> GetPostImagesByPostIdAsync(Guid postId, CancellationToken token);
 }

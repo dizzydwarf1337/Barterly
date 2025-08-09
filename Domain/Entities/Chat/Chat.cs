@@ -1,7 +1,6 @@
-﻿namespace Domain.Entities.Chat
+﻿namespace Domain.Entities.Chat;
+
+public class Chat
 {
-    public class Chat
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

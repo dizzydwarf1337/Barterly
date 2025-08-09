@@ -1,6 +1,5 @@
-﻿namespace BarterlyIntegrationTests.ServiceTests.General
+﻿namespace BarterlyIntegrationTests.ServiceTests.General;
+
+internal class AuthServiceTests
 {
-    internal class AuthServiceTests
-    {
-    }
 }

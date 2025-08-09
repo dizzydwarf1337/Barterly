@@ -1,5 +1,5 @@
 ﻿import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import {initReactI18next} from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n
@@ -18,14 +18,14 @@ i18n
                     login: "Login",
                     loginSuccess: "You have logged in out successfully",
                     loginFailed: "Login failed",
-                    logout:"Logout",
+                    logout: "Logout",
                     logoutSuccess: "You have logged out successfully",
                     logoutFailed: "Logout failed",
                     orLogin: "Or login with",
                     orRegister: "Or sign in",
                     signIn: "Sign in",
                     password: "Password",
-                    passwordConfirm:"Confirm Password",
+                    passwordConfirm: "Confirm Password",
                     firstName: "First Name",
                     lastName: "Last Name",
                     country: "Country",
@@ -35,7 +35,7 @@ i18n
                     postalCode: "Postal code",
                     passwordConfirmFailed: "Password field mismatch",
                     signInSuccess: "You have signed in successfully",
-                    signInFailed: "Sign in has failed",                    
+                    signInFailed: "Sign in has failed",
                     settings: "Settings",
                     thankForSignIn: "Thank you for sign in!",
                     emailConfirmation: "To complete your registration, please confirm your email address by clicking the link in the email we sent you. If you didn't receive the email, please check your spam folder or click below to resend the email.",
@@ -66,20 +66,20 @@ i18n
                     "Apartment": "Apartment",
                     "Office": "Office",
                     "Studio": "Studio",
-                    "Full-Time":"Full-time",
-                    "Part-Time" :"Part-Time",
-                    "Freelance":"Freelance",
-                    "Internship":"Internship",
-                    "Shift":"Shift",
-                    "Seasonal":"Seasonal",
+                    "Full-Time": "Full-time",
+                    "Part-Time": "Part-Time",
+                    "Freelance": "Freelance",
+                    "Internship": "Internship",
+                    "Shift": "Shift",
+                    "Seasonal": "Seasonal",
                     "Employment Contract": "Employment contract",
                     "Specific Work Contract": "Specific Work Contract",
                     "Task Contract": "Task contract",
                     "B2B": "B2B",
                     "Volunteer Contract": "Volunteer contract",
-                    "OnSite":"On-site",
-                    "Remote":"Remote",
-                    "Hybrid":"Hybrid"
+                    "OnSite": "On-site",
+                    "Remote": "Remote",
+                    "Hybrid": "Hybrid"
                 }
             },
             pl: {
@@ -99,7 +99,7 @@ i18n
                     orRegister: "Lub zarejestruj się",
                     signIn: "Zarejestruj się",
                     password: "Hasło",
-                    passwordConfirm:"Potwierdź hasło",
+                    passwordConfirm: "Potwierdź hasło",
                     firstName: "Imię",
                     lastName: "Nazwisko",
                     country: "Państwo",
@@ -111,7 +111,7 @@ i18n
                     signInSuccess: "Rejestracja zakończona pomyślnie",
                     signInFailed: "Nieudana próba rejestracji",
                     settings: "Ustawienia",
-                    thankForSignIn:"Dziękujemy za rejestrację!",
+                    thankForSignIn: "Dziękujemy za rejestrację!",
                     emailConfirmation: "Aby zakończyć rejestrację, prosimy o potwierdzenie swojego adresu e-mail, klikając link w wiadomości, którą wysłaliśmy. Jeśli nie otrzymałeś wiadomości, sprawdź folder ze spamem lub kliknij poniżej, aby wysłać wiadomość ponownie.",
                     resendEmailConfirmation: "Wyślij ponownie",
                     confirmationMailSent: "Nowa wiadomość potwierdzająca została wysłana",
@@ -157,9 +157,9 @@ i18n
                 }
             }
         },
-        lng: localStorage.getItem('brt_lng') || 'en', 
+        lng: localStorage.getItem('brt_lng') || 'en',
         fallbackLng: 'en',
-        interpolation: { escapeValue: false }
+        interpolation: {escapeValue: false}
     });
 
 export default i18n;

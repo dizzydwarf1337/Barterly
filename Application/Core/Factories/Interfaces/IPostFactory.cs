@@ -1,15 +1,37 @@
-﻿using Application.DTOs.Posts;
-using Domain.Entities.Posts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities.Posts;
+using Domain.Enums.Posts;
+using Microsoft.AspNetCore.Http;
 
-namespace Application.Core.Factories.Interfaces
+namespace Application.Core.Factories.Interfaces;
+
+public interface IPostFactory
 {
-    public interface IPostFactory
-    {
-        public Post CreatePost(CreatePostDto createPostDto);
-    }
+    public Post CreatePost(
+        Guid subCategoryId,
+        Guid ownerId,
+        string postType,
+        string title,
+        string fullDescription,
+        string shortDescription,
+        CancellationToken token,
+        string? city = null,
+        string? region = null,
+        string? country = null,
+        string? street = null,
+        decimal? price = null,
+        PostPriceType? postPriceType = null,
+        string[]? tags = null,
+        IFormFile? mainImage = null,
+        IFormFile[]? secondaryImages = null,
+        RentObjectType? rentObjectType = null,
+        int? numberOfRooms = null,
+        decimal? area = null,
+        int? floor = null,
+        WorkloadType? workload = null,
+        WorkLocationType? workLocation = null,
+        decimal? minSalary = null,
+        decimal? maxSalary = null,
+        string? buildingNumber = null,
+        bool? experienceRequired = null
+    );
 }

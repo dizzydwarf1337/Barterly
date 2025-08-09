@@ -2,20 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 using Persistence.Database;
 
-namespace API.Core.Extensions.Identity
+namespace API.Core.Extensions.Identity;
+
+public static class IdentityServices
 {
-    public static class IdentityServices
+    public static IServiceCollection AddIdentityServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddIdentityServices(this IServiceCollection services)
-        {
-            services.AddIdentity<User, IdentityRole<Guid>>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
+        services.AddIdentity<User, IdentityRole<Guid>>(options => { options.SignIn.RequireConfirmedAccount = false; })
             .AddEntityFrameworkStores<BarterlyDbContext>()
             .AddDefaultTokenProviders();
 
-            return services;
-        }
+        return services;
     }
 }

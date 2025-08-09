@@ -1,30 +1,30 @@
-import { Box, Typography } from "@mui/material";
-import { PostPreview } from "../../app/models/postPreview";
+import {Box, Typography} from "@mui/material";
+import {PostPreview} from "../../app/models/postPreview";
 import useStore from "../../app/stores/store";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { PostType } from "../../app/enums/postType";
-import { ContractType } from "../../app/enums/contractType";
-import { WorkloadType } from "../../app/enums/workLoadType";
-import { useTranslation } from "react-i18next";
+import {PostType} from "../../app/enums/postType";
+import {ContractType} from "../../app/enums/contractType";
+import {WorkloadType} from "../../app/enums/workLoadType";
+import {useTranslation} from "react-i18next";
 import MoneyIcon from '@mui/icons-material/Money';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { PostCurrency } from "../../app/enums/postCurrency";
-import { WorkLocationType } from "../../app/enums/WorkLocationType";
-import { PostPromotionType } from "../../app/enums/postPromotionType";
-import { useNavigate } from "react-router";
+import {PostCurrency} from "../../app/enums/postCurrency";
+import {WorkLocationType} from "../../app/enums/WorkLocationType";
+import {PostPromotionType} from "../../app/enums/postPromotionType";
+import {useNavigate} from "react-router";
 import HomeIcon from '@mui/icons-material/Home';
-import { RentObjectType } from "../../app/enums/rentObjectType";
-import { PostPriceType } from "../../app/enums/postPriceType";
+import {RentObjectType} from "../../app/enums/rentObjectType";
+import {PostPriceType} from "../../app/enums/postPriceType";
 import ImagesPreview from "./imagesPreview";
 
 interface Props {
     post: PostPreview;
 }
 
-export default observer(function PostItem({ post }: Props) {
-    const { uiStore } = useStore();
-    const { t } = useTranslation();
+export default observer(function PostItem({post}: Props) {
+    const {uiStore} = useStore();
+    const {t} = useTranslation();
     const navigate = useNavigate();
 
     const renderPriceAndType = () => {
@@ -45,7 +45,7 @@ export default observer(function PostItem({ post }: Props) {
 
             return (
                 <Box display="flex" flexDirection="row" alignItems="center" gap="5px">
-                    <AccountBalanceWalletIcon color="success" />
+                    <AccountBalanceWalletIcon color="success"/>
                     <Typography variant="body1">
                         {salaryText} {currencySymbol} {priceTypeTranslation ? `/ ${priceTypeTranslation}` : ''}
                     </Typography>
@@ -54,7 +54,7 @@ export default observer(function PostItem({ post }: Props) {
         } else if (post.postType === PostType.Rent) {
             return (
                 <Box display="flex" flexDirection="row" alignItems="center" gap="5px">
-                    <MoneyIcon color="success" />
+                    <MoneyIcon color="success"/>
                     <Typography variant="body1">
                         {post.price != null ? `${post.price} ${currencySymbol}` : t('negotiable')}
                         {priceTypeTranslation ? ` / ${priceTypeTranslation}` : ''}
@@ -66,7 +66,7 @@ export default observer(function PostItem({ post }: Props) {
                 <Box display="flex" flexDirection="row" alignItems="center" gap="5px">
                     {post.price != null && post.price > 0 && post.priceType !== PostPriceType.Free ? (
                         <>
-                            <MoneyIcon color="success" />
+                            <MoneyIcon color="success"/>
                             <Typography variant="body1">
                                 {post.price} {currencySymbol} {priceTypeTranslation ? `/ ${priceTypeTranslation}` : ''}
                             </Typography>
@@ -102,13 +102,15 @@ export default observer(function PostItem({ post }: Props) {
             }}
         >
             {post.mainImageUrl && (
-                <ImagesPreview mainImageUrl={post.mainImageUrl} postId={post.id} />
+                <ImagesPreview mainImageUrl={post.mainImageUrl} postId={post.id}/>
             )}
             <Box display="flex" flexDirection="column" justifyContent="space-between" flex="auto" padding="10px">
-                <Box position="relative" flex="1" display="flex" flexDirection="row" justifyContent="space-between" alignItems="flex-start">
+                <Box position="relative" flex="1" display="flex" flexDirection="row" justifyContent="space-between"
+                     alignItems="flex-start">
                     <Typography variant="h5"> {post.title}</Typography>
                     {post.postPromotionType !== null && post.postPromotionType !== PostPromotionType.None && (
-                        <Box position="absolute" top="0" right="-20px" padding="2px" width="100px" borderRadius="5px 0px 0px 5px" sx={{ backgroundColor: "secondary.main" }}>
+                        <Box position="absolute" top="0" right="-20px" padding="2px" width="100px"
+                             borderRadius="5px 0px 0px 5px" sx={{backgroundColor: "secondary.main"}}>
                             <Typography textAlign="center">
                                 {PostPromotionType[post.postPromotionType]}
                             </Typography>
@@ -118,7 +120,7 @@ export default observer(function PostItem({ post }: Props) {
                 <Box display="flex" flexDirection="row" gap="10px" flex="2">
                     <Box display="flex" flexDirection="column" justifyContent="space-between" flex="1" padding="5px">
                         <Box display="flex" gap="5px" alignItems="center">
-                            <LocationOnIcon color="primary" />
+                            <LocationOnIcon color="primary"/>
                             <Typography variant="body1">
                                 {post.city}
                                 {post.street && `, ${post.street}`}
@@ -136,7 +138,7 @@ export default observer(function PostItem({ post }: Props) {
                         {post.postType === PostType.Rent && (
                             <Box display="flex" flexDirection="column">
                                 <Box display="flex" flexDirection="row" alignItems="center" gap="5px">
-                                    <HomeIcon color="primary" />
+                                    <HomeIcon color="primary"/>
                                     <Typography variant="subtitle1">
                                         {t(RentObjectType[post.rentObjectType!])}{" "}
                                         {post.area && (
@@ -157,7 +159,8 @@ export default observer(function PostItem({ post }: Props) {
                         </Box>
                     </Box>
                     {/* This Box controls the position of the price/salary */}
-                    <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="flex-end" padding="5px" flex="1">
+                    <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="flex-end"
+                         padding="5px" flex="1">
                         {post.postType === PostType.Work && (
                             <>
                                 <Typography>{t(ContractType[post.contract!])}</Typography>

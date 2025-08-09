@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from "react-router";
+import {createBrowserRouter, RouteObject} from "react-router";
 import App from "../layout/App";
 import MainPage from "../../features/home/mainPage";
 import RegisterMain from "../../features/registration/registerMain";
@@ -10,31 +10,31 @@ import EmailConfirm from "../../features/registration/emailConfirm";
 const routes: RouteObject[] = [
     {
         path: '/',
-        element: <App />,
+        element: <App/>,
         children: [
             {
-                index:true,
-                element: <MainPage />
+                index: true,
+                element: <MainPage/>
             },
             {
                 path: '/sign-in',
-                element:<RegisterMain/>
+                element: <RegisterMain/>
             },
             {
                 path: `/email-confirm/:email`,
-                element: <EmailConfirm />
+                element: <EmailConfirm/>
             },
             {
                 path: "/confirm/",
-                element: <EmailConfirmLink />
+                element: <EmailConfirmLink/>
             },
             {
                 path: '/posts/:postId',
-                element: <PostDetails />
+                element: <PostDetails/>
             }
         ],
     },
-    
+
 ];
 
 export const router = createBrowserRouter(routes);

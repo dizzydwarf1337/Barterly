@@ -1,67 +1,66 @@
-﻿using Application.DTOs.Categories;
-using Domain.Entities.Categories;
-using Domain.Entities.Posts;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.DTOs.Categories;
 using Domain.Enums.Posts;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-namespace Application.DTOs.Posts
+
+namespace Application.DTOs.Posts;
+
+public class PostDto
 {
-    public class PostDto
-    {
-        [Required]
-        public required string Id { get; set; }
-        [Required]
-        public required string OwnerId { get; set; }
-        [Required(ErrorMessage = "Title is Required")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 50 characters long")]
-        public required string Title { get; set; }
-        public required string SubCategoryId { get; set; }
-        public required string PromotionId { get; set; }
+    [Required] public required string Id { get; set; }
+    [Required] public required string OwnerId { get; set; }
+
+    [Required(ErrorMessage = "Title is Required")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 50 characters long")]
+    public required string Title { get; set; }
+
+    public required string SubCategoryId { get; set; }
+    public required string PromotionId { get; set; }
 
 
-        [Required(ErrorMessage = "Full description is Required")]
-        [StringLength(10000, MinimumLength = 2, ErrorMessage = "FullDescription must be between 2 and 500 characters long")]
-        public required string FullDescription { get; set; }
+    [Required(ErrorMessage = "Full description is Required")]
+    [StringLength(10000, MinimumLength = 2,
+        ErrorMessage = "FullDescription must be between 2 and 500 characters long")]
+    public required string FullDescription { get; set; }
 
-        [Required(ErrorMessage = "Short desription is Required")]
-        [StringLength(200, MinimumLength = 2, ErrorMessage = "ShortDescription must be between 2 and 100 characters long")]
-        public required string ShortDescription { get; set; }
+    [Required(ErrorMessage = "Short desription is Required")]
+    [StringLength(200, MinimumLength = 2,
+        ErrorMessage = "ShortDescription must be between 2 and 100 characters long")]
+    public required string ShortDescription { get; set; }
 
-        public decimal? Price { get; set; }
+    public decimal? Price { get; set; }
 
-        public PostPriceType? PriceType { get; set; } 
+    public PostPriceType? PriceType { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
-        public string? MainImageUrl { get; set; }
-        public string[]? Tags { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public string? MainImageUrl { get; set; }
+    public string[]? Tags { get; set; }
 
-        public string? City { get; set; }
-        public PostCurrency? Currency { get; set; }
+    public string? City { get; set; }
+    public PostCurrency? Currency { get; set; }
 
-        public string? Region { get; set; }
-        public int? ViewsCount { get; set; }
-        public string? Country { get; set; }
-        public string? Street { get; set; }
-        public string? HouseNumber { get; set; }
-        public RentObjectType? RentObjectType { get; set; }
-        public int? NumberOfRooms { get; set; }
-        public decimal? Area { get; set; }
+    public string? Region { get; set; }
+    public int? ViewsCount { get; set; }
+    public string? Country { get; set; }
+    public string? Street { get; set; }
+    public string? HouseNumber { get; set; }
+    public RentObjectType? RentObjectType { get; set; }
+    public int? NumberOfRooms { get; set; }
+    public decimal? Area { get; set; }
 
-        public int? Floor { get; set; }
-        public WorkloadType? Workload { get; set; }
-        public WorkLocationType? WorkLocation { get; set; }
-        public ContractType? Contract { get; set; } 
+    public int? Floor { get; set; }
+    public WorkloadType? Workload { get; set; }
+    public WorkLocationType? WorkLocation { get; set; }
+    public ContractType? Contract { get; set; }
 
-        public decimal? MinSalary { get; set; }
-        public decimal? MaxSalary { get; set; }
-        public string? BuildingNumber { get; set; }
-        public bool? ExperienceRequired { get; set; }
-        public PostSettingsDto? PostSettings { get; set; }
-        public SubCategoryDto? SubCategory { get; set; }
-        public PromotionDto? Promotion { get; set; }
-        public ICollection<PostImageDto>? PostImages { get; set; }
-        public ICollection<PostOpinionDto>? PostOpinions { get; set; }
-    }
+    public decimal? MinSalary { get; set; }
+    public decimal? MaxSalary { get; set; }
+    public string? BuildingNumber { get; set; }
+    public bool? ExperienceRequired { get; set; }
+    public PostSettingsDto? PostSettings { get; set; }
+    public SubCategoryDto? SubCategory { get; set; }
+    public PromotionDto? Promotion { get; set; }
+    public ICollection<PostImageDto>? PostImages { get; set; }
+    public ICollection<PostOpinionDto>? PostOpinions { get; set; }
 }

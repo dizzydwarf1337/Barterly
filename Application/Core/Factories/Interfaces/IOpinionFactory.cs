@@ -1,15 +1,9 @@
-﻿using Application.DTOs.General.Opinions;
-using Domain.Entities.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities.Common;
 
-namespace Application.Core.Factories.Interfaces
+namespace Application.Core.Factories.Interfaces;
+
+public interface IOpinionFactory
 {
-    public interface IOpinionFactory
-    {
-        Task<Opinion> CreateOpinionAsync(CreateOpinionDto opinionDto);
-    }
+    Task<Opinion> CreateOpinionAsync(Guid AuthorId, Guid SubjectId, string Content, int Rate, string OpinionType,
+        CancellationToken token);
 }

@@ -1,4 +1,4 @@
-import { ReportStatusType } from "../enums/reportStatusType";
+import {ReportStatusType} from "../enums/reportStatusType";
 
 export default interface Report {
     id: string,
@@ -6,5 +6,5 @@ export default interface Report {
     createdAt: Date,
     status: ReportStatusType,
     authorId: string,
-    reportedSubjectId:string,
+    reportedSubjectId: string,
 }

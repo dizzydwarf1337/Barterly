@@ -1,13 +1,10 @@
-﻿using Domain.Entities.Users;
+﻿namespace Domain.Interfaces.Queries.Post;
 
-namespace Domain.Interfaces.Queries.Post
+public interface IVisitedPostQueryRepository
 {
-    public interface IVisitedPostQueryRepository
-    {
-        Task<VisitedPost> GetVisitedPostByIdAsync(Guid id);
-        Task<ICollection<VisitedPost>> GetVisitedPostsAsync();
-        Task<ICollection<VisitedPost>> GetVisitedPostsByUserIdAsync(Guid userId);
-        Task<ICollection<VisitedPost>> GetVisitedPostsByPostIdAsync(Guid postId);
-        Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId);
-    }
+    Task<VisitedPost> GetVisitedPostByIdAsync(Guid id, CancellationToken token);
+    IQueryable<VisitedPost> GetVisitedPostsAsync();
+    Task<ICollection<VisitedPost>> GetVisitedPostsByUserIdAsync(Guid userId, CancellationToken token);
+    Task<ICollection<VisitedPost>> GetVisitedPostsByPostIdAsync(Guid postId, CancellationToken token);
+    Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId, CancellationToken token);
 }

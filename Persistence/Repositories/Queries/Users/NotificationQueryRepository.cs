@@ -4,32 +4,34 @@ using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
-namespace Persistence.Repositories.Queries.Users
+namespace Persistence.Repositories.Queries.Users;
+
+public class NotificationQueryRepository : BaseQueryRepository<BarterlyDbContext>, INotificationQueryRepository
 {
-    public class NotificationQueryRepository : BaseQueryRepository<BarterlyDbContext>, INotificationQueryRepository
+    public NotificationQueryRepository(BarterlyDbContext context) : base(context)
     {
-        public NotificationQueryRepository(BarterlyDbContext context) : base(context)
-        {
-        }
+    }
 
-        public async Task<ICollection<Notification>> GetAllNotificationsAsync()
-        {
-            return await _context.Notifications.ToListAsync();
-        }
+    public IQueryable<Notification> GetAllNotificationsAsync()
+    {
+        return _context.Notifications;
+    }
 
-        public async Task<Notification> GetNotificationAsync(Guid id)
-        {
-            return await _context.Notifications.FindAsync(id) ?? throw new EntityNotFoundException("Notification");
-        }
+    public async Task<Notification> GetNotificationAsync(Guid id, CancellationToken token)
+    {
+        return await _context.Notifications.FindAsync(id, token) ??
+               throw new EntityNotFoundException("Notification");
+    }
 
-        public async Task<ICollection<Notification>> GetNotificationsByUserIdAsync(Guid userId)
-        {
-            return await _context.Notifications.Where(x => x.UserId == userId).ToListAsync();
-        }
+    public async Task<ICollection<Notification>> GetNotificationsByUserIdAsync(Guid userId, CancellationToken token)
+    {
+        return await _context.Notifications.Where(x => x.UserId == userId).ToListAsync(token);
+    }
 
-        public async Task<ICollection<Notification>> GetPaginatedUserNotifications(Guid userId, int PageSize, int PageNumber)
-        {
-            return await _context.Notifications.Skip(PageSize * (PageNumber - 1)).Take(PageSize).Where(x => x.UserId == userId).ToListAsync();
-        }
+    public async Task<ICollection<Notification>> GetPaginatedUserNotifications(Guid userId, int PageSize,
+        int PageNumber, CancellationToken token)
+    {
+        return await _context.Notifications.Skip(PageSize * (PageNumber - 1)).Take(PageSize)
+            .Where(x => x.UserId == userId).ToListAsync(token);
     }
 }

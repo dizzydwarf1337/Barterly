@@ -1,10 +1,7 @@
-
-
-
-export default interface ResetPassword{
+export default interface ResetPassword {
 
     email: string,
     token: string,
-    password:string,
+    password: string,
 
 }

@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.Auth
+namespace Application.DTOs.Auth;
+
+public class GoogleLoginDto
 {
-    public class GoogleLoginDto
-    {
-        [Required(ErrorMessage ="Token is required")]
-        [MinLength(10,ErrorMessage = "Token is too short")]
-        public required string token { get; set; }
-    }
+    [Required(ErrorMessage = "Token is required")]
+    [MinLength(10, ErrorMessage = "Token is too short")]
+    public required string token { get; set; }
 }

@@ -1,24 +1,20 @@
-﻿using Domain.Enums.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Domain.Enums.Common;
 
-namespace Domain.Entities.Common
+namespace Domain.Entities.Common;
+
+public class Log
 {
-    public class Log
-    {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public LogType LogType = LogType.None;
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
-        [MaxLength(500)]
-        public required string Message { get; set; }
+    [MaxLength(500)] public required string Message { get; set; }
 
-        public string? StackTrace { get; set; }
+    public string? StackTrace { get; set; }
 
-        public LogType LogType = LogType.None;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public Guid? UserId { get; set; }
 
-        public Guid? UserId { get; set; }
-
-        public Guid? PostId { get; set; }
-    }
+    public Guid? PostId { get; set; }
 }

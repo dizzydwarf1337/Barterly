@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import User from "../models/user";
 import LoginDto from "../models/loginDto";
 import agent from "../API/agent";
@@ -11,6 +11,11 @@ import ResetPassword from "../models/ResetPassword";
 
 
 export default class UserStore {
+    user: User | null = null;
+    isLoggedIn: boolean = false;
+    userLoading: boolean = false;
+    googleLoading: boolean = false;
+
     constructor() {
         makeAutoObservable(this);
         const user = localStorage.getItem("brt_user");
@@ -18,25 +23,22 @@ export default class UserStore {
         this.setUser(user ? JSON.parse(user) : null);
         this.setUserIsLoggedIn(login ? JSON.parse(login) : false);
     }
-    user: User | null = null;
 
     getToken = () => this.user?.token;
+
     setUser = (user: User | null) => this.user = user;
+
     clearUser = () => this.user = null;
+
     getUser = () => this.user;
 
-
-    isLoggedIn: boolean = false;
-
     setUserIsLoggedIn = (value: boolean) => this.isLoggedIn = value;
+
     getUserIsLoggedIn = () => this.isLoggedIn;
 
-    userLoading: boolean = false;
-
     setLoading = (value: boolean) => this.userLoading = value;
-    getLoading = () => this.userLoading;
 
-    googleLoading: boolean = false;
+    getLoading = () => this.userLoading;
 
     setGoogleLoading = (value: boolean) => this.googleLoading = value;
     getGoogleLoading = () => this.googleLoading;
@@ -52,21 +54,18 @@ export default class UserStore {
                     this.setUserIsLoggedIn(true);
                     localStorage.setItem("brt_login", JSON.stringify(this.isLoggedIn));
                 })
-            }
-            else console.log(res.error);
-        }
-        catch (e) {
+            } else console.log(res.error);
+        } catch (e) {
             console.log("Login failed ", e);
             throw e;
-        }
-        finally {
+        } finally {
             this.setLoading(false)
         }
     }
     loginWithGoogle = async (token: string) => {
         this.setGoogleLoading(true);
         try {
-            let googleLoginDto: GoogleLoginDto = { token };
+            let googleLoginDto: GoogleLoginDto = {token};
             let res: ApiResponse<User> = await agent.Auth.LoginGoogle(googleLoginDto);
             if (res.isSuccess) {
                 runInAction(() => {
@@ -76,19 +75,17 @@ export default class UserStore {
                     localStorage.setItem("brt_login", JSON.stringify(this.isLoggedIn));
                 })
             }
-        }
-        catch (e) {
+        } catch (e) {
             console.log("Login with google failed", e);
             throw e;
-        }
-        finally {
+        } finally {
             this.setGoogleLoading(false);
         }
     }
     logout = async () => {
         this.setLoading(true);
         try {
-            const res: ApiResponse<boolean> = await agent.Auth.Logout({ email: this.user!.email });
+            const res: ApiResponse<boolean> = await agent.Auth.Logout({email: this.user!.email});
             if (res.isSuccess) {
                 runInAction(() => {
                     this.clearUser();
@@ -97,12 +94,10 @@ export default class UserStore {
                     localStorage.removeItem("brt_user");
                 })
             }
-        }
-        catch (e) {
+        } catch (e) {
             console.log("Logout failed", e);
             throw e;
-        }
-        finally {
+        } finally {
             this.setLoading(false);
         }
     }
@@ -110,13 +105,11 @@ export default class UserStore {
         this.setLoading(true);
         try {
             const regRes: ApiResponse<void> = await agent.Auth.Register(registerDto);
-            if (!regRes.isSuccess)  throw regRes.error && "Error while register new user";
-        }
-        catch (e) {
+            if (!regRes.isSuccess) throw regRes.error && "Error while register new user";
+        } catch (e) {
             console.error(`${e}`);
             throw e;
-        }
-        finally {
+        } finally {
             this.setLoading(false);
         }
     }
@@ -125,12 +118,10 @@ export default class UserStore {
         try {
             const res: ApiResponse<void> = await agent.Auth.ResendEmailConfirm(email);
             if (!res.isSuccess) throw res.error && "Error while sending email confirmation";
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
             throw e
-        }
-        finally {
+        } finally {
             this.setLoading(false);
         }
     }
@@ -139,12 +130,10 @@ export default class UserStore {
         try {
             const res: ApiResponse<void> = await agent.UserAPI.ConfirmEmail(confirmEmail);
             if (!res.isSuccess) throw res.error && "Error while confirming email";
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
             throw e;
-        }
-        finally {
+        } finally {
             this.setLoading(false);
         }
     }
@@ -153,15 +142,13 @@ export default class UserStore {
         try {
             const res: ApiResponse<void> = await agent.UserAPI.ResetPassword(resetPassword);
             if (!res.isSuccess) throw res.error && "Error while resetting password";
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
             throw e;
-        }
-        finally {
+        } finally {
             this.setLoading(true);
         }
     }
 
-    
+
 }

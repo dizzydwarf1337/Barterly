@@ -1,63 +1,128 @@
 ﻿using Application.Core.Factories.Interfaces;
-using Application.DTOs.Posts;
-using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Entities.Posts.PostTypes;
+using Domain.Enums.Posts;
 using Domain.Exceptions.DataExceptions;
+using Microsoft.AspNetCore.Http;
 
+namespace Application.Core.Factories.PostFactory;
 
-namespace Application.Core.Factories.PostFactory
+public class PostFactory : IPostFactory
 {
-    public class PostFactory : IPostFactory
+    public Post CreatePost(Guid subCategoryId,
+        Guid ownerId,
+        string postType,
+        string title,
+        string fullDescription,
+        string shortDescription,
+        CancellationToken token,
+        string? city = null,
+        string? region = null,
+        string? country = null,
+        string? street = null,
+        decimal? price = null,
+        PostPriceType? postPriceType = null,
+        string[]? tags = null,
+        IFormFile? mainImage = null,
+        IFormFile[]? secondaryImages = null,
+        RentObjectType? rentObjectType = null,
+        int? numberOfRooms = null,
+        decimal? area = null,
+        int? floor = null,
+        WorkloadType? workload = null,
+        WorkLocationType? workLocation = null,
+        decimal? minSalary = null,
+        decimal? maxSalary = null,
+        string? buildingNumber = null,
+        bool? experienceRequired = null)
     {
-        private readonly IMapper _mapper;
-
-        public PostFactory(IMapper mapper)
+        Post post;
+        switch (postType)
         {
-            _mapper = mapper;
-        }
-
-        public Post CreatePost(CreatePostDto createPostDto)
-        {
-            Post post;
-            switch (createPostDto.PostType)
+            case "Rent":
             {
-                case "Rent": 
-                    {
-                        post = _mapper.Map<RentPost>(createPostDto);
-                        break;
-                    }
-                case "Work": 
-                    {
-                        post = _mapper.Map<WorkPost>(createPostDto);
-                        break;
-                    }
-                case "Common":
-                    {
-                        post = _mapper.Map<CommonPost>(createPostDto);
-                        break;
-                    }
-                default: throw new InvalidDataProvidedException("PostType","PostDto","PostFactory.CreatePost");
+                post = new RentPost
+                {
+                    OwnerId = ownerId,
+                    Title = title,
+                    FullDescription = fullDescription,
+                    ShortDescription = shortDescription,
+                    City = city,
+                    Region = region,
+                    Country = country,
+                    Street = street,
+                    Price = price,
+                    Tags = tags ?? [],
+                    RentObjectType = rentObjectType ?? RentObjectType.House,
+                    NumberOfRooms = numberOfRooms,
+                    Area = area,
+                    Floor = floor,
+                    PriceType = postPriceType ?? PostPriceType.PerMonth,
+                    HouseNumber = buildingNumber
+                };
+                break;
             }
-            //Promotion 
-            var postPromotion = new Promotion
+            case "Work":
             {
-                PostId = post.Id,
-                Post = post,
-            };
-
-
-            //Settings
-            var postSettings = new PostSettings
+                post = new WorkPost
+                {
+                    OwnerId = ownerId,
+                    Title = title,
+                    FullDescription = fullDescription,
+                    ShortDescription = shortDescription,
+                    City = city,
+                    Region = region,
+                    Country = country,
+                    Street = street,
+                    Price = price,
+                    Tags = tags ?? [],
+                    Workload = workload ?? WorkloadType.FullTime,
+                    WorkLocation = workLocation ?? WorkLocationType.OnSite,
+                    MinSalary = minSalary,
+                    MaxSalary = maxSalary,
+                    ExperienceRequired = experienceRequired ?? false
+                };
+                break;
+            }
+            case "Common":
             {
-                PostId = post.Id,
-                Post = post,
-            };
-            post.PostSettingsId = postSettings.PostId;
-            post.PostSettings = postSettings;
-            post.PromotionId = postPromotion.Id;
-            post.Promotion = postPromotion;
-            return post;
+                post = new CommonPost
+                {
+                    OwnerId = ownerId,
+                    Title = title,
+                    FullDescription = fullDescription,
+                    ShortDescription = shortDescription,
+                    City = city,
+                    Region = region,
+                    Country = country,
+                    Street = street,
+                    Price = price,
+                    Tags = tags ?? [],
+                    PriceType = postPriceType ?? PostPriceType.PerItem
+                };
+                break;
+            }
+            default: throw new InvalidDataProvidedException("PostType", "PostDto", "PostFactory.CreatePost");
         }
+
+        //Promotion 
+        var postPromotion = new Promotion
+        {
+            PostId = post.Id,
+            Post = post
+        };
+
+
+        //Settings
+        var postSettings = new PostSettings
+        {
+            PostId = post.Id,
+            Post = post
+        };
+        post.PostSettingsId = postSettings.PostId;
+        post.PostSettings = postSettings;
+        post.PromotionId = postPromotion.Id;
+        post.Promotion = postPromotion;
+        return post;
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace Domain.Enums.Common
+﻿namespace Domain.Enums.Common;
+
+public enum LogType
 {
-    public enum LogType
-    {
-        None = 0,
-        Information = 1,
-        Warning = 2,
-        Error = 3
-    }
+    None = 0,
+    Information = 1,
+    Warning = 2,
+    Error = 3
 }

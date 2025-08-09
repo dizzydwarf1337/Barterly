@@ -1,11 +1,10 @@
 ﻿using Domain.Entities.Users;
 
-namespace Domain.Interfaces.Commands.User
+namespace Domain.Interfaces.Commands.User;
+
+public interface IUserActivityCommandRepository
 {
-    public interface IUserActivityCommandRepository
-    {
-        Task CreateUserActivitySummary(UserActivitySummary userActivitySummary);
-        Task DeleteUserActivitySummary(Guid SummaryId);
-        Task UpdateUserActivitySummary(UserActivitySummary userActivitySummary);
-    }
+    Task CreateUserActivitySummary(UserActivitySummary userActivitySummary, CancellationToken token);
+    Task DeleteUserActivitySummary(Guid SummaryId, CancellationToken token);
+    Task UpdateUserActivitySummary(UserActivitySummary userActivitySummary, CancellationToken token);
 }

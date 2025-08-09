@@ -1,12 +1,11 @@
 ﻿using Domain.Entities.Common;
 
-namespace Domain.Interfaces.Commands.General
+namespace Domain.Interfaces.Commands.General;
+
+public interface IMainAnnounsmentCommandRepository
 {
-    public interface IMainAnnounsmentCommandRepository
-    {
-        Task CreateMainAnnounsmentAsync(MainAnnounsment mainAnnounsment);
-        Task UpdateMainAnnounsmentAsync(MainAnnounsment mainAnnounsment);
-        Task UploadImageAsync(Guid id, string imageUrl);
-        Task DeleteMainAnnounsmentAsync(Guid id);
-    }
+    Task CreateMainAnnounsmentAsync(MainAnnounsment mainAnnounsment, CancellationToken token);
+    Task UpdateMainAnnounsmentAsync(MainAnnounsment mainAnnounsment, CancellationToken token);
+    Task UploadImageAsync(Guid id, string imageUrl, CancellationToken token);
+    Task DeleteMainAnnounsmentAsync(Guid id, CancellationToken token);
 }

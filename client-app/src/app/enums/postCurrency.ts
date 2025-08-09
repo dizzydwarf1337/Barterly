@@ -1,6 +1,4 @@
-﻿
-
-export enum PostCurrency {
+﻿export enum PostCurrency {
     "$" = 0,
     "€" = 1,
     "zł" = 2

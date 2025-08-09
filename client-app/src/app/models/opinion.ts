@@ -6,5 +6,5 @@ export default interface Opinion {
     createdAt: Date,
     lastUpdatedAt: Date | null,
     rate: number | null,
-    subjectId : string,
+    subjectId: string,
 }

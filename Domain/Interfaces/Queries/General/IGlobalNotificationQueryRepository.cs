@@ -1,11 +1,9 @@
 ﻿using Domain.Entities.Common;
 
-namespace Domain.Interfaces.Queries.General
+namespace Domain.Interfaces.Queries.General;
+
+public interface IGlobalNotificationQueryRepository
 {
-    public interface IGlobalNotificationQueryRepository
-    {
-        Task<ICollection<GlobalNotification>> GetGlobalNotificationsAsync();
-        Task<GlobalNotification> GetGlobalNotificationByIdAsync(Guid id);
-        Task<ICollection<GlobalNotification>> GetPaginatedGlobalNotifications(int PageSize, int PageNumber);
-    }
+    Task<ICollection<GlobalNotification>> GetGlobalNotificationsAsync(CancellationToken token);
+    Task<GlobalNotification> GetGlobalNotificationByIdAsync(Guid id, CancellationToken token);
 }

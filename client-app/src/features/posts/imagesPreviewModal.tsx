@@ -1,27 +1,34 @@
-import {  Box, Modal } from "@mui/material";
-import { useEffect, useState } from "react";
+import {Box, Modal} from "@mui/material";
+import {useEffect, useState} from "react";
 import useStore from "../../app/stores/store";
 
-import { Carousel } from "react-responsive-carousel";
+import {Carousel} from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 interface Props {
     postId: string;
     isOpen: boolean;
     onClose: () => void;
 }
 
-export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
+export default function ImagesPreviewModal({postId, isOpen, onClose}: Props) {
 
     const [images, setImages] = useState<string[]>([]);
-    const { postStore } = useStore();
+    const {postStore} = useStore();
     useEffect(() => {
         let res = postStore.getPostImages(postId);
-        res.then(imageDto => { setImages([imageDto?.value.mainImageUrl,...(imageDto?.value.secondaryImagesUrl || [])]) })
+        res.then(imageDto => {
+            setImages([imageDto?.value.mainImageUrl, ...(imageDto?.value.secondaryImagesUrl || [])])
+        })
     })
 
 
     return (
-        <Modal open={isOpen} onClose={(e) => { setImages([]); e.stopPropagation();  onClose(); }} >
+        <Modal open={isOpen} onClose={(e) => {
+            setImages([]);
+            e.stopPropagation();
+            onClose();
+        }}>
             <Box
                 onClick={(e) => e.stopPropagation()}
                 sx={{
@@ -48,7 +55,7 @@ export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
                             <img
                                 src={import.meta.env.VITE_API_URL.replace("api", "") + imgUrl}
                                 alt={`Image ${index}`}
-                                style={{ borderRadius: "8px", maxHeight:"650px", objectFit: "contain" }}
+                                style={{borderRadius: "8px", maxHeight: "650px", objectFit: "contain"}}
                             />
                         </div>
                     ))}

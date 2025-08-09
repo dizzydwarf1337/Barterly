@@ -1,12 +1,11 @@
 ﻿using Domain.Entities.Posts;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface IPostOpinionCommandRepository
 {
-    public interface IPostOpinionCommandRepository
-    {
-        Task<PostOpinion> CreatePostOpinionAsync(PostOpinion opinion);
-        Task<PostOpinion> UpdatePostOpinionAsync(Guid id, string content,int rate);
-        Task SetHiddenPostOpinionAsync(Guid id, bool value);
-        Task DeletePostOpinionAsync(Guid id);
-    }
+    Task<PostOpinion> CreatePostOpinionAsync(PostOpinion opinion, CancellationToken token);
+    Task<PostOpinion> UpdatePostOpinionAsync(Guid id, string content, int rate, CancellationToken token);
+    Task SetHiddenPostOpinionAsync(Guid id, bool value, CancellationToken token);
+    Task DeletePostOpinionAsync(Guid id, CancellationToken token);
 }

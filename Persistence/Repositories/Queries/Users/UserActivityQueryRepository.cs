@@ -4,27 +4,27 @@ using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
-namespace Persistence.Repositories.Queries.Users
+namespace Persistence.Repositories.Queries.Users;
+
+public class UserActivityQueryRepository : BaseQueryRepository<BarterlyDbContext>, IUserActivityQueryRepository
 {
-    public class UserActivityQueryRepository : BaseQueryRepository<BarterlyDbContext>, IUserActivityQueryRepository
+    public UserActivityQueryRepository(BarterlyDbContext context) : base(context)
     {
-        public UserActivityQueryRepository(BarterlyDbContext context) : base(context)
-        {
-        }
+    }
 
-        public async Task<ICollection<UserActivitySummary>> GetUserActivitiesAsync()
-        {
-            return await _context.UserActivities.ToListAsync();
-        }
+    public IQueryable<UserActivitySummary> GetUserActivities()
+    {
+        return _context.UserActivities;
+    }
 
-        public async Task<UserActivitySummary?> GetUserActivityByIdAsync(Guid id)
-        {
-            return await _context.UserActivities.FindAsync(id);
-        }
+    public async Task<UserActivitySummary?> GetUserActivityByIdAsync(Guid id, CancellationToken token)
+    {
+        return await _context.UserActivities.FindAsync(id, token);
+    }
 
-        public async Task<UserActivitySummary> GetUserActivityByUserIdAsync(Guid userId)
-        {
-            return await _context.UserActivities.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new EntityNotFoundException("User activity summary ");
-        }
+    public async Task<UserActivitySummary> GetUserActivityByUserIdAsync(Guid userId, CancellationToken token)
+    {
+        return await _context.UserActivities.FirstOrDefaultAsync(x => x.UserId == userId, token) ??
+               throw new EntityNotFoundException("User activity summary ");
     }
 }

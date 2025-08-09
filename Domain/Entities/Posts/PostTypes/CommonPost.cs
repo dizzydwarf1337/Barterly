@@ -1,9 +1,5 @@
-﻿
+﻿namespace Domain.Entities.Posts.PostTypes;
 
-namespace Domain.Entities.Posts.PostTypes
+public class CommonPost : Post
 {
-    public  class CommonPost : Post
-    {
-
-    }
 }

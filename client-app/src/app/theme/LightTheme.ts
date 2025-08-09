@@ -1,4 +1,4 @@
-import { alpha, createTheme, darken, lighten } from "@mui/material";
+import {alpha, createTheme, darken, lighten} from "@mui/material";
 
 const lightTheme = createTheme({
     breakpoints: {
@@ -41,7 +41,7 @@ const lightTheme = createTheme({
             styleOverrides: {
 
                 root: {
-                    textTransform:"none",
+                    textTransform: "none",
                     borderRadius: "12px",
                     size: "small",
                     color: "#000000",
@@ -119,7 +119,7 @@ const lightTheme = createTheme({
                     fontFamily: "Tahoma, Verdana, sans-serif",
                     color: "#242424",
                 },
-                h1: ({ theme }) => ({
+                h1: ({theme}) => ({
                     [theme.breakpoints.down("sm")]: {
                         fontSize: "3rem",
                     },
@@ -127,7 +127,7 @@ const lightTheme = createTheme({
                         fontSize: "6rem",
                     },
                 }),
-                h2: ({ theme }) => ({
+                h2: ({theme}) => ({
                     [theme.breakpoints.down("sm")]: {
                         fontSize: "1.3rem",
                     },

@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import {createContext, useContext} from 'react'
 import UserStore from './userStore';
 import UiStore from './uiStore';
 import CategoryStore from './categoryStore';
@@ -11,6 +11,7 @@ interface Store {
     categoryStore: CategoryStore,
     postStore: PostStore,
 }
+
 export const store: Store = {
     userStore: new UserStore(),
     uiStore: new UiStore(),

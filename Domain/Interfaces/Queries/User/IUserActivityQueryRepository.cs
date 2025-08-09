@@ -1,11 +1,10 @@
 ﻿using Domain.Entities.Users;
 
-namespace Domain.Interfaces.Queries.User
+namespace Domain.Interfaces.Queries.User;
+
+public interface IUserActivityQueryRepository
 {
-    public interface IUserActivityQueryRepository
-    {
-        Task<ICollection<UserActivitySummary>> GetUserActivitiesAsync();
-        Task<UserActivitySummary?> GetUserActivityByIdAsync(Guid id);
-        Task<UserActivitySummary> GetUserActivityByUserIdAsync(Guid userId);
-    }
+    IQueryable<UserActivitySummary> GetUserActivities();
+    Task<UserActivitySummary?> GetUserActivityByIdAsync(Guid id, CancellationToken token);
+    Task<UserActivitySummary> GetUserActivityByUserIdAsync(Guid userId, CancellationToken token);
 }

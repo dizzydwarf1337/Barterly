@@ -1,24 +1,25 @@
-import {  Box, ThemeProvider } from '@mui/material'
+import {Box, ThemeProvider} from '@mui/material'
 import './index.css'
-import { useEffect } from 'react';
-import { Outlet } from 'react-router';
+import {useEffect} from 'react';
+import {Outlet} from 'react-router';
 import Footer from './footer';
 import NavBar from './navBar';
-import { observer } from 'mobx-react-lite';
+import {observer} from 'mobx-react-lite';
 import useStore from '../stores/store';
 import CustomSnackbar from './CustromSnackbar';
+
 export default observer(function App() {
-    const { uiStore } = useStore();
+    const {uiStore} = useStore();
     const theme = uiStore.getTheme();
     useEffect(() => {
         document.body.style.backgroundColor = theme.palette.background.default;
     }, [theme]);
 
-    
+
     return (
         <ThemeProvider theme={theme}>
             <Box display="flex" flexDirection="column" width="100%" height="100%" justifyContent="space-between">
-                <NavBar />
+                <NavBar/>
                 <Box
                     display="flex"
                     flexDirection="column"
@@ -34,7 +35,7 @@ export default observer(function App() {
                         p={uiStore.isMobile ? "10px" : "36px"}
                         overflow="hidden"
                     >
-                        <Outlet />
+                        <Outlet/>
                     </Box>
 
                     <Box
@@ -47,7 +48,7 @@ export default observer(function App() {
 
                         }}
                     >
-                        <Footer />
+                        <Footer/>
                     </Box>
 
                     <CustomSnackbar
@@ -59,8 +60,8 @@ export default observer(function App() {
                     />
                 </Box>
             </Box>
-      </ThemeProvider>
-  )
+        </ThemeProvider>
+    )
 })
 
 
