@@ -231,12 +231,39 @@ i18n
 
           // Enhanced UI
           noPostsDescription: "Check back later for new posts",
-          
+
           // Promotion types
           promotion: {
             Highlight: "Highlighted",
             Top: "Top Post",
           },
+
+          postOwner: "Post Owner",
+          contactOwner: "Contact Owner",
+          memberSince: "Member since",
+          userNotAvailable: "User information not available",
+
+          // Navigation
+          goBack: "Go Back",
+
+          // Details sections
+          workDetails: "Work Details",
+          description: "Description",
+          tags: "Tags",
+
+          // Property fields
+          propertyType: "Property Type",
+          area: "Area",
+          workload: "Workload",
+          workLocation: "Work Location",
+          contractType: "Contract Type",
+          experience: "Experience",
+
+          // Actions
+          addToFavorites: "Add to Favorites",
+
+          // General
+          free: "Free",
 
           // Validation translations
           validation: {
@@ -246,6 +273,9 @@ i18n
             nameMinLength: "Name must be at least 2 characters long",
             passwordsDoNotMatch: "Passwords do not match",
           },
+          // Price/Salary
+          price: "Price",
+          salary: "Salary",
         },
       },
       pl: {
@@ -381,7 +411,8 @@ i18n
           subcategory: "podkategoria",
           subcategories: "podkategorie",
           error: "Błąd",
-          browseCategoriesDescription: "Przeglądaj wszystkie dostępne kategorie",
+          browseCategoriesDescription:
+            "Przeglądaj wszystkie dostępne kategorie",
           explore: "Eksploruj",
 
           // Email confirmation page specific
@@ -391,12 +422,15 @@ i18n
               "Proszę czekać, podczas gdy potwierdzamy Twój adres email.",
             success: "Email Zweryfikowany!",
             successDescription: "Twój email został pomyślnie zweryfikowany.",
-            accountActivated: "Twoje konto jest teraz aktywne i gotowe do użycia.",
-            redirecting: "Przekierowanie do strony logowania za {{seconds}} sekund...",
+            accountActivated:
+              "Twoje konto jest teraz aktywne i gotowe do użycia.",
+            redirecting:
+              "Przekierowanie do strony logowania za {{seconds}} sekund...",
             goToLogin: "Przejdź do Logowania",
             goHome: "Strona Główna",
             failed: "Weryfikacja Nieudana",
-            failedDescription: "Nie mogliśmy zweryfikować Twojego adresu email.",
+            failedDescription:
+              "Nie mogliśmy zweryfikować Twojego adresu email.",
             possibleReasons:
               "Może to być spowodowane wygasłym lub nieprawidłowym linkiem. Spróbuj poprosić o nowy email weryfikacyjny.",
             tryLogin: "Spróbuj się Zalogować",
@@ -488,6 +522,65 @@ i18n
             passwordMinLength: "Hasło musi mieć co najmniej 6 znaków",
             nameMinLength: "Imię musi mieć co najmniej 2 znaki",
             passwordsDoNotMatch: "Hasła się nie zgadzają",
+            postOwner: "Właściciel Ogłoszenia",
+            contactOwner: "Napisz do Właściciela",
+            memberSince: "Członek od",
+            userNotAvailable: "Informacje o użytkowniku niedostępne",
+
+            // Navigation
+            goBack: "Wróć",
+
+            // Details sections
+            propertyDetails: "Szczegóły Nieruchomości",
+            workDetails: "Szczegóły Pracy",
+            description: "Opis",
+            tags: "Tagi",
+
+            // Property fields
+            propertyType: "Typ Nieruchomości",
+            area: "Powierzchnia",
+            workload: "Wymiar Pracy",
+            workLocation: "Lokalizacja Pracy",
+            contractType: "Typ Umowy",
+            experience: "Doświadczenie",
+
+            // Actions
+            addToFavorites: "Dodaj do Ulubionych",
+
+            // General
+            free: "Darmowe",
+
+            // Property types (if not already present)
+            House: "Dom",
+            Apartment: "Mieszkanie",
+            Studio: "Kawalerka",
+            Room: "Pokój",
+            WareHouse: "Magazyn",
+            Office: "Biuro",
+            Other: "Inne",
+
+            // Work types (if not already present)
+            "Full-Time": "Pełny etat",
+            "Part-Time": "Niepełny etat",
+            Freelance: "Freelance",
+            Internship: "Praktyki",
+            Shift: "Praca zmianowa",
+            Seasonal: "Praca sezonowa",
+
+            // Work locations (if not already present)
+            OnSite: "W biurze",
+            Remote: "Zdalnie",
+            Hybrid: "Hybrydowo",
+
+            // Contract types (if not already present)
+            "Employment Contract": "Umowa o Pracę",
+            "Specific Work Contract": "Umowa o Dzieło",
+            "Task Contract": "Umowa Zlecenie",
+            B2B: "Umowa B2B",
+            "Volunteer Contract": "Umowa Wolontariacka",
+
+            price: "Cena",
+            salary: "Wynagrodzenie",
           },
         },
       },

@@ -18,7 +18,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ApiResp
             .Where(x => x.Id == request.Id)
             .Where(x => !x.Setting.IsHidden && !x.Setting.IsBanned && !x.Setting.IsDeleted)
             .Select(x => new GetUserByIdQuery.Result(
-                x.Id, x.FirstName, x.LastName, x.ProfilePicturePath
+                x.Id, x.FirstName, x.CreatedAt, x.LastName, x.ProfilePicturePath
             ))
             .FirstOrDefaultAsync(cancellationToken);
         if (user == null)
