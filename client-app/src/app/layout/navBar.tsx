@@ -7,7 +7,6 @@ import {
   Typography,
   Badge,
   Avatar,
-  Chip,
   Tooltip,
   useScrollTrigger,
   Slide,
@@ -21,7 +20,6 @@ import { useState, ReactElement } from "react";
 
 // Icons
 import ReorderIcon from "@mui/icons-material/Reorder";
-import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PersonIcon from "@mui/icons-material/Person";
@@ -30,8 +28,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LanguageIcon from "@mui/icons-material/Language";
-
-import ProfileSettingsMenu from "../../features/navBar/profileMenu/profileSettingsMenu";
 import useStore from "../stores/store";
 import MobileNavDialog from "./MobileNavDialog";
 import { Link, useNavigate } from "react-router";
@@ -198,36 +194,16 @@ export default observer(function NavBar() {
               src={authStore.user?.profilePicturePath ?? ""}
               alt={authStore.user?.firstName}
             >
-              {authStore.user?.firstName?.charAt(0) || <PersonIcon />}
+              <img src={authStore.user?.profilePicturePath || authStore.user?.firstName?.charAt(0)} alt={authStore.user?.firstName} />
+              {authStore.user?.profilePicturePath || <PersonIcon />}
             </Avatar>
             <Box display="flex" flexDirection="column" alignItems="flex-start">
               <Typography variant="body2" fontWeight="600" noWrap>
                 {t("hello")}, {authStore.user?.firstName || t("user")}!
               </Typography>
-              <Chip
-                label={authStore.user?.role || "User"}
-                size="small"
-                color="primary"
-                variant="outlined"
-                sx={{ height: 16, fontSize: "0.6rem" }}
-              />
             </Box>
           </UserInfo>
 
-          {/* Settings */}
-          <Tooltip title={t("settings")}>
-            <IconButton
-              onClick={(event) => handleOpenUserSettings(event.currentTarget)}
-              sx={{
-                transition: "transform 0.3s ease",
-                "&:hover": {
-                  transform: "rotate(90deg)",
-                },
-              }}
-            >
-              <SettingsIcon />
-            </IconButton>
-          </Tooltip>
 
           {/* Logout */}
           <Tooltip title={t("logout")}>
@@ -432,9 +408,6 @@ export default observer(function NavBar() {
           </Toolbar>
         </StyledAppBar>
       </HideOnScroll>
-
-      {/* Profile Settings Menu */}
-      <ProfileSettingsMenu />
 
       {/* Mobile Navigation Dialog */}
       <MobileNavDialog />

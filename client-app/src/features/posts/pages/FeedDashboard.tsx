@@ -1,4 +1,4 @@
-import { Box, Typography, Skeleton, Alert, Fade, Chip } from "@mui/material";
+import { Box, Typography, Skeleton, Alert, Fade } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import useStore from "../../../app/stores/store";
 import { useEffect, useState } from "react";
@@ -126,19 +126,6 @@ export default observer(function FeedDashboard() {
             </Box>
           </Box>
           
-          {posts.length > 0 && !loading && (
-            <Chip
-              label={t("trending")}
-              color="primary"
-              variant="outlined"
-              size="small"
-              sx={{
-                borderRadius: "12px",
-                fontWeight: 600,
-                display: { xs: "none", sm: "flex" }
-              }}
-            />
-          )}
         </Box>
       </Fade>
 

@@ -16,7 +16,7 @@ const authApi = {
     apiClient.post<LoginResponseDTO>("public/auth/login", body, true),
 
   loginWithGoogle: (body: LoginWithGoogleRequestDTO) =>
-    apiClient.post<LoginWithGoogleResponseDTO>("public/auth/google/login", body, true),
+    apiClient.post<LoginWithGoogleResponseDTO>("public/auth/login-google", body, true),
 
   register: (body: RegisterRequestDTO) =>
     apiClient.post<LoginResponseDTO>("public/auth/register", body, true),

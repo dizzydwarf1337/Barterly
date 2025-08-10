@@ -46,7 +46,7 @@ export default observer(function CategoryList() {
         };
 
         fetchCategories();
-    }, [t]);
+    }, []);
 
     // Loading skeleton
     if (loading) {
