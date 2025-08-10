@@ -87,8 +87,7 @@ export interface PostPreview {
   floor?: number | null;
   postType: string;
   ownerName:string;
-  createdAt?:Date | null;
-  viewsCount?: number | null;
+  
 }
 
 export interface PostDetails extends PostPreview {
@@ -96,9 +95,12 @@ export interface PostDetails extends PostPreview {
   tags?: string[] | null;
 
   region?: string | null;
+  viewsCount?: number | null;
   country?: string | null;
   street?: string | null;
   houseNumber?: string | null;
+
+  createdAt: string;
   updatedAt?: string | null;
 
   buildingNumber?: string | null;

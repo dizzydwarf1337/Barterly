@@ -47,13 +47,15 @@ import {
     WorkLocationType 
 } from '../types/postTypes';
 import postApi from '../api/postApi';
+import { PostOwner } from '../../users/types/userTypes';
+import userApi from '../../users/api/userApi';
 
 export default observer(function PostDetails() {
     const { postId } = useParams<{ postId: string }>();
     const { uiStore } = useStore();
     const { t } = useTranslation();
     const navigate = useNavigate();
-    
+    const [owner,setOwner] = useState<PostOwner>();
     const [currentPost, setCurrentPost] = useState<PostDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -81,6 +83,21 @@ export default observer(function PostDetails() {
 
         fetchPost();
     }, [postId, t]);
+
+    useEffect(()=>{
+        const fetchOwner = async () => {
+            if (!currentPost) return;
+
+            try {
+                const response = await userApi.getPostOwner({ id: currentPost.ownerId });
+                setOwner(response.value);
+            } catch (err) {
+                console.error('Failed to fetch post owner:', err);
+            }
+        };
+
+        fetchOwner();
+    }, [currentPost]);
 
     const formatDate = (dateString: string) => {
         try {

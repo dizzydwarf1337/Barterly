@@ -140,6 +140,8 @@ i18n
           subcategory: "subcategory",
           subcategories: "subcategories",
           error: "Error",
+          browseCategoriesDescription: "Browse all available categories",
+          explore: "Explore",
 
           // Email confirmation page specific
           emailConfirm: {
@@ -229,6 +231,7 @@ i18n
 
           // Enhanced UI
           noPostsDescription: "Check back later for new posts",
+          
           // Promotion types
           promotion: {
             Highlight: "Highlighted",
@@ -364,7 +367,7 @@ i18n
           saved: "Zapisane",
           history: "Historia",
           help: "Pomoc",
-          about: "O aplikacji",
+          about: "O nas",
           darkMode: "Tryb ciemny",
           language: "Język",
           currentLanguage: "PL",
@@ -376,27 +379,26 @@ i18n
           failedToLoadCategories: "Nie udało się załadować kategorii",
           noCategoriesFound: "Nie znaleziono kategorii",
           subcategory: "podkategoria",
-          subcategories: "podkategorii",
+          subcategories: "podkategorie",
           error: "Błąd",
+          browseCategoriesDescription: "Przeglądaj wszystkie dostępne kategorie",
+          explore: "Eksploruj",
 
           // Email confirmation page specific
           emailConfirm: {
-            verifying: "Weryfikujemy Twój email...",
+            verifying: "Weryfikowanie adresu email...",
             verifyingDescription:
               "Proszę czekać, podczas gdy potwierdzamy Twój adres email.",
             success: "Email Zweryfikowany!",
             successDescription: "Twój email został pomyślnie zweryfikowany.",
-            accountActivated:
-              "Twoje konto jest teraz aktywne i gotowe do użycia.",
-            redirecting:
-              "Przekierowanie na stronę logowania za {{seconds}} sekund...",
+            accountActivated: "Twoje konto jest teraz aktywne i gotowe do użycia.",
+            redirecting: "Przekierowanie do strony logowania za {{seconds}} sekund...",
             goToLogin: "Przejdź do Logowania",
             goHome: "Strona Główna",
             failed: "Weryfikacja Nieudana",
-            failedDescription:
-              "Nie mogliśmy zweryfikować Twojego adresu email.",
+            failedDescription: "Nie mogliśmy zweryfikować Twojego adresu email.",
             possibleReasons:
-              "Może to być spowodowane wygaśnięciem lub nieprawidłowym linkiem. Spróbuj poprosić o nowy email weryfikacyjny.",
+              "Może to być spowodowane wygasłym lub nieprawidłowym linkiem. Spróbuj poprosić o nowy email weryfikacyjny.",
             tryLogin: "Spróbuj się Zalogować",
             invalidLink: "Nieprawidłowy Link",
             invalidLinkDescription:

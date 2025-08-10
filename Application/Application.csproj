@@ -18,6 +18,7 @@
     <ItemGroup>
         <Folder Include="Commands\Public\Accounts\PasswordRemind\"/>
         <Folder Include="Interfaces\Services\"/>
+        <Folder Include="Queries\Public\Categories\Users\" />
     </ItemGroup>
 
     <PropertyGroup>
