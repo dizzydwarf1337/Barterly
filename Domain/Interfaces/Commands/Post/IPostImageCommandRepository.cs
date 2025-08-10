@@ -1,11 +1,10 @@
 ﻿using Domain.Entities.Posts;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface IPostImageCommandRepository
 {
-    public interface IPostImageCommandRepository
-    {
-        Task CreatePostImageAsync(PostImage postImage);
-        Task DeletePostImageAsync(Guid id);
-        Task DeletePostImagesByPostIdAsync(Guid postId);
-    }
+    Task CreatePostImageAsync(PostImage postImage, CancellationToken token);
+    Task DeletePostImageAsync(Guid id, CancellationToken token);
+    Task DeletePostImagesByPostIdAsync(Guid postId, CancellationToken token);
 }

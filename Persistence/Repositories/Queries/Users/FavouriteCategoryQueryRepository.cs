@@ -4,27 +4,29 @@ using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
-namespace Persistence.Repositories.Queries.Users
+namespace Persistence.Repositories.Queries.Users;
+
+public class FavouriteCategoryQueryRepository : BaseQueryRepository<BarterlyDbContext>,
+    IFavouriteCategoryQueryRepository
 {
-    public class FavouriteCategoryQueryRepository : BaseQueryRepository<BarterlyDbContext>, IFavouriteCategoryQueryRepository
+    public FavouriteCategoryQueryRepository(BarterlyDbContext context) : base(context)
     {
-        public FavouriteCategoryQueryRepository(BarterlyDbContext context) : base(context)
-        {
-        }
+    }
 
-        public async Task<ICollection<FavouriteCategory>> GetFavouriteCategoriesAsync()
-        {
-            return await _context.FavouriteCategories.ToListAsync();
-        }
+    public async Task<ICollection<FavouriteCategory>> GetFavouriteCategoriesAsync(CancellationToken token)
+    {
+        return await _context.FavouriteCategories.ToListAsync(token);
+    }
 
-        public async Task<ICollection<FavouriteCategory>> GetFavouriteCategoriesByUserIdAsync(Guid userId)
-        {
-            return await _context.FavouriteCategories.Where(x => x.UserId == userId).ToListAsync();
-        }
+    public async Task<ICollection<FavouriteCategory>> GetFavouriteCategoriesByUserIdAsync(Guid userId,
+        CancellationToken token)
+    {
+        return await _context.FavouriteCategories.Where(x => x.UserId == userId).ToListAsync(token);
+    }
 
-        public async Task<FavouriteCategory> GetFavouriteCategoryByIdAsync(Guid id)
-        {
-            return await _context.FavouriteCategories.FindAsync(id) ?? throw new EntityNotFoundException("Favourite Categories");
-        }
+    public async Task<FavouriteCategory> GetFavouriteCategoryByIdAsync(Guid id, CancellationToken token)
+    {
+        return await _context.FavouriteCategories.FindAsync(id, token) ??
+               throw new EntityNotFoundException("Favourite Categories");
     }
 }

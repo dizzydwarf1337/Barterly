@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.User
-{
-    public class ConfirmEmailDto
-    {
-        [Required(ErrorMessage ="Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public required string Email { get; set; }
+namespace Application.DTOs.Users;
 
-        [Required(ErrorMessage = "Token is required")]
-        public required string Token { get; set; }
-    }
+public class ConfirmEmailDto
+{
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
+    public required string Email { get; set; }
+
+    [Required(ErrorMessage = "Token is required")]
+    public required string Token { get; set; }
 }

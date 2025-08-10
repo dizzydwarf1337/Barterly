@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Application.DTOs.Posts;
 
-namespace Application.DTOs.Posts
+public class PostImagesDto
 {
-    public class PostImagesDto
-    {
-        public required string postId { get; set; }
-        public string? MainImageUrl { get; set; }
-        public string[]? SecondaryImagesUrl { get; set; }
-    }
+    public required string postId { get; set; }
+    public string? MainImageUrl { get; set; }
+    public string[]? SecondaryImagesUrl { get; set; }
 }

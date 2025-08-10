@@ -1,25 +1,42 @@
-import { Theme } from "@mui/material";
-import { makeAutoObservable, runInAction } from "mobx";
+import {Theme} from "@mui/material";
+import {makeAutoObservable, runInAction} from "mobx";
 import lightTheme from "../theme/LightTheme";
 import i18n from "../locales/i18n";
 import darkTheme from "../theme/DarkTheme";
 
 
 export default class UiStore {
+    // Application theme using for choosing colors and so on 
+    theme!: Theme;
+    // String representing application theme mode "dark" or "light"
+    themeMode!: "dark" | "light";
+    // App Language
+    lang: string = "pl";
+    // NavBar user profile settings dialog
+    userSettingIsOpen: boolean = false;
+    // Menu controll stuff
+    menuElement: HTMLElement | undefined;
+    // Snackbar feature 
+    snackbarOpen: boolean = false;
+    snackbarMessage: string = "";
+    snackbarSeverity: 'success' | 'error' | 'warning' | 'info' = 'info'
+    snackbarPosition: 'right' | 'left' | 'center' = 'right'
+    // var for contolling user interface
+    isMobile = window.innerWidth < 480;
+    isMobileMenuOpen: boolean = false;
+
     constructor() {
         makeAutoObservable(this);
-        let theme = localStorage.getItem("brt_theme") 
+        let theme = localStorage.getItem("brt_theme")
         this.setTheme(theme === "dark" ? darkTheme : lightTheme);
         this.setThemeMode(theme === "dark" ? "dark" : "light");
         window.addEventListener("resize", this.updateIsMobile);
     }
 
-
-    // Application theme using for choosing colors and so on 
-    theme!: Theme;
-
     setTheme = (theme: Theme) => this.theme = theme;
+
     getTheme = () => this.theme;
+
     changeTheme = () => {
         if (localStorage.getItem("brt_theme") == "dark") {
             localStorage.setItem("brt_theme", "light");
@@ -32,19 +49,14 @@ export default class UiStore {
         }
     }
 
-
-    // String representing application theme mode "dark" or "light"
-    themeMode!: "dark" | "light";
-
     setThemeMode = (themeMode: "dark" | "light") => this.themeMode = themeMode;
+
     getThemeMode = () => this.themeMode;
 
-
-    // App Language
-    lang: string = "pl";
-
     setLanguage = (language: string) => this.lang = language;
+
     getLanguage = () => this.lang;
+
     changeLanguage = () => {
         const newLanguage = this.getLanguage() === 'en' ? 'pl' : 'en';
         i18n.changeLanguage(newLanguage);
@@ -52,25 +64,15 @@ export default class UiStore {
         localStorage.setItem("brt_lng", newLanguage);
     }
 
-    // NavBar user profile settings dialog
-    userSettingIsOpen: boolean = false;
     setUserSettingIsOpen = (value: boolean) => this.userSettingIsOpen = value;
+
     getUserSettingIsOpen = () => this.userSettingIsOpen;
 
-    // Menu controll stuff
-    menuElement: HTMLElement | undefined;
     setMenuElement = (el: HTMLElement | undefined) => this.menuElement = el;
+
     getMenuElement = () => this.menuElement;
 
-
-    // Snackbar feature 
-    snackbarOpen: boolean = false;
-    setSnackbarOpen = (value: boolean) => this.snackbarOpen = value; 
-
-    snackbarMessage: string = "";
-    snackbarSeverity: 'success' | 'error' | 'warning' | 'info' = 'info'
-    snackbarPosition: 'right' | 'left' | 'center'  = 'right'
-
+    setSnackbarOpen = (value: boolean) => this.snackbarOpen = value;
 
     showSnackbar(message: string, severity: 'success' | 'error' | 'warning' | 'info', position: 'left' | 'center' | 'right') {
         this.snackbarMessage = message;
@@ -87,8 +89,7 @@ export default class UiStore {
         })
     }
 
-    // var for contolling user interface
-    isMobile = window.innerWidth < 480;
+    // Mobile nav menu controll
 
     updateIsMobile = () => {
         runInAction(() => {
@@ -96,9 +97,6 @@ export default class UiStore {
         })
     }
 
-    // Mobile nav menu controll
-
-    isMobileMenuOpen: boolean = false;
     setIsMobileMenuOpen = (value: boolean) => {
         this.isMobileMenuOpen = value;
     }

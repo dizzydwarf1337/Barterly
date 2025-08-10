@@ -1,7 +1,6 @@
-﻿namespace Domain.Entities.Users
+﻿namespace Domain.Entities.Users;
+
+public class UserChat
 {
-    public class UserChat
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-    }
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

@@ -1,10 +1,9 @@
 ﻿using Domain.Entities.Users;
 
-namespace Domain.Interfaces.Queries.User
+namespace Domain.Interfaces.Queries.User;
+
+public interface IUserSettingQueryRepository
 {
-    public interface IUserSettingQueryRepository
-    {
-        Task<UserSettings> GetUserSettingByIdAsync(Guid id);
-        Task<UserSettings> GetUserSettingByUserIdAsync(Guid userId);
-    }
+    Task<UserSettings> GetUserSettingByIdAsync(Guid id, CancellationToken token);
+    Task<UserSettings> GetUserSettingByUserIdAsync(Guid userId, CancellationToken token);
 }

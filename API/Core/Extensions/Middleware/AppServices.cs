@@ -1,13 +1,12 @@
-﻿namespace API.Core.Extensions.Middleware
-{
-    public static class AppServices
-    {
-        public static IServiceCollection AddAppServices(this IServiceCollection services)
-        {
-            services.AddControllers();
-            services.AddEndpointsApiExplorer();
+﻿namespace API.Core.Extensions.Middleware;
 
-            return services;
-        }
+public static class AppServices
+{
+    public static IServiceCollection AddAppServices(this IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+
+        return services;
     }
 }

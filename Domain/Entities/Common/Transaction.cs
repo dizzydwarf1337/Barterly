@@ -1,7 +1,6 @@
-﻿namespace Domain.Entities.Common
+﻿namespace Domain.Entities.Common;
+
+public class Transaction
 {
-    public class Transaction
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-    }
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

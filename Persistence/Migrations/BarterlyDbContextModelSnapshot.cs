@@ -231,8 +231,8 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("ReviewedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReviewedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("ReviewedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

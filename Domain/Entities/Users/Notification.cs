@@ -1,24 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Entities.Users
+namespace Domain.Entities.Users;
+
+public class Notification
 {
-    public class Notification
-    {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid UserId { get; set; }
+    public Guid UserId { get; set; }
 
-        [MaxLength(500)]
-        public required string Message { get; set; }
-        public required string Title { get; set; }
+    [MaxLength(500)] public required string Message { get; set; }
+    public required string Title { get; set; }
 
-        public bool IsRead { get; set; } = false;
+    public bool IsRead { get; set; } = false;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; } = default!;
-    }
+    [ForeignKey("UserId")] public virtual User User { get; set; } = default!;
 }

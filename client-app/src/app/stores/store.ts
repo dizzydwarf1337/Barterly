@@ -1,21 +1,16 @@
-import { createContext, useContext } from 'react'
-import UserStore from './userStore';
+import {createContext, useContext} from 'react'
 import UiStore from './uiStore';
-import CategoryStore from './categoryStore';
-import PostStore from './postStore';
+import authStore from '../../features/auth/store/authStore';
 
 
 interface Store {
-    userStore: UserStore,
     uiStore: UiStore,
-    categoryStore: CategoryStore,
-    postStore: PostStore,
+    authStore: authStore,
 }
+
 export const store: Store = {
-    userStore: new UserStore(),
     uiStore: new UiStore(),
-    categoryStore: new CategoryStore(),
-    postStore: new PostStore(),
+    authStore: new authStore(),
 }
 
 export const StoreContext = createContext(store);

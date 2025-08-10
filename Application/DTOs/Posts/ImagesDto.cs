@@ -1,20 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace Application.DTOs.Posts
+namespace Application.DTOs.Posts;
+
+public class ImagesDto
 {
-    public class ImagesDto
-    {
-        [Required]
-        public required string PostId { get; set; }
-        [Required]
-        public required string UserId { get; set; }
-        public IFormFile? MainImage { get; set; }
-        public IFormFile[]? SecondaryImages { get; set; }
-    }
+    [Required] public required Guid PostId { get; set; }
+    public IFormFile? MainImage { get; set; }
+    public IFormFile[]? SecondaryImages { get; set; }
 }

@@ -1,15 +1,9 @@
 ﻿using Domain.Entities.Posts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Interfaces.Queries.Post
+namespace Domain.Interfaces.Queries.Post;
+
+public interface IPostSettingsQueryRepository
 {
-    public interface IPostSettingsQueryRepository
-    {
-        public Task<PostSettings> GetPostSettingsById(Guid settingsId);
-        public Task<PostSettings> GetPostSettingsByPostId(Guid postId);
-    }
+    public Task<PostSettings> GetPostSettingsById(Guid settingsId, CancellationToken token);
+    public Task<PostSettings> GetPostSettingsByPostId(Guid postId, CancellationToken token);
 }

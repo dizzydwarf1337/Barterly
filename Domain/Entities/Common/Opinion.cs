@@ -1,30 +1,24 @@
-﻿using Domain.Entities.Users;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Entities.Users;
 
-namespace Domain.Entities.Common
+namespace Domain.Entities.Common;
+
+public abstract class Opinion
 {
-    public abstract class Opinion
-    {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid AuthorId { get; set; }
+    public Guid AuthorId { get; set; }
 
-        [Required]
-        [MaxLength(500)]
-        public required string Content { get; set; }
+    [Required] [MaxLength(500)] public required string Content { get; set; }
 
-        public bool IsHidden { get; set; } = false;
+    public bool IsHidden { get; set; } = false;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? LastUpdatedAt { get; set; }
+    public DateTime? LastUpdatedAt { get; set; }
 
-        [Range(1, 5)]
-        public int? Rate { get; set; } = null;
+    [Range(1, 5)] public int? Rate { get; set; } = null;
 
-        [ForeignKey("AuthorId")]
-        public virtual User Author { get; set; } = default!;
-    }
+    [ForeignKey("AuthorId")] public virtual User Author { get; set; } = default!;
 }

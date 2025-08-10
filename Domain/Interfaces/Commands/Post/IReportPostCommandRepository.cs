@@ -1,12 +1,11 @@
 ﻿using Domain.Entities.Posts;
 using Domain.Enums.Common;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface IReportPostCommandRepository
 {
-    public interface IReportPostCommandRepository
-    {
-        Task CreateReportPostAsync(ReportPost report);
-        Task DeleteReportPostAsync(Guid reportPostId);
-        Task<ReportPost> ReviewReport(Guid id, ReportStatusType status, string reviewerId);
-    }
+    Task CreateReportPostAsync(ReportPost report, CancellationToken token);
+    Task DeleteReportPostAsync(Guid reportPostId, CancellationToken token);
+    Task<ReportPost> ReviewReport(Guid id, ReportStatusType status, Guid reviewerId, CancellationToken token);
 }

@@ -3,38 +3,35 @@ using Domain.Entities.Common;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.Post;
 using Domain.Interfaces.Queries.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Core.Validators.Implementation
+namespace Application.Core.Validators.Implementation;
+
+public class OpinionOwnershipValidator : IOpinionOwnershipValidator
 {
-    public class OpinionOwnershipValidator : IOpinionOwnershipValidator
+    private readonly IPostOpinionQueryRepository _postOpinionQueryRepository;
+    private readonly IUserOpinionQueryRepository _userOpinionQueryRepository;
+
+    public OpinionOwnershipValidator(IUserOpinionQueryRepository userOpinionQueryRepository,
+        IPostOpinionQueryRepository postOpinionQueryRepository)
     {
-        private readonly IUserOpinionQueryRepository _userOpinionQueryRepository;
-        private readonly IPostOpinionQueryRepository _postOpinionQueryRepository;
+        _userOpinionQueryRepository = userOpinionQueryRepository;
+        _postOpinionQueryRepository = postOpinionQueryRepository;
+    }
 
-        public OpinionOwnershipValidator(IUserOpinionQueryRepository userOpinionQueryRepository, IPostOpinionQueryRepository postOpinionQueryRepository)
+    public async Task ValidateOpinionOwnership(Guid userId, Guid opinionId)
+    {
+        Opinion? opinion = null;
+        try
         {
-            _userOpinionQueryRepository = userOpinionQueryRepository;
-            _postOpinionQueryRepository = postOpinionQueryRepository;
+            opinion = await _userOpinionQueryRepository.GetUserOpinionByIdAsync(opinionId, CancellationToken.None);
+        }
+        catch
+        {
+            opinion = await _postOpinionQueryRepository.GetPostOpinionByIdAsync(opinionId, CancellationToken.None);
         }
 
-        public async Task ValidateOpinionOwnership(Guid userId, Guid opinionId)
-        {
-            Opinion? opinion = null;
-            try
-            {
-              opinion = await _userOpinionQueryRepository.GetUserOpinionByIdAsync(opinionId);
-            }
-            catch 
-            {
-              opinion = await _postOpinionQueryRepository.GetPostOpinionByIdAsync(opinionId); 
-            }
-            if (opinion.AuthorId != userId) throw new AccessForbiddenException("ValidateOpinionOwnerShip", userId.ToString(), "AuthorId and userId mismatch");
-
-        }
+        if (opinion.AuthorId != userId)
+            throw new AccessForbiddenException("ValidateOpinionOwnerShip", userId.ToString(),
+                "AuthorId and userId mismatch");
     }
 }

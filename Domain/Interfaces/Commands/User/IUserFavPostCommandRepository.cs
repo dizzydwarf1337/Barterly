@@ -1,10 +1,9 @@
 ﻿using Domain.Entities.Users;
 
-namespace Domain.Interfaces.Commands.User
+namespace Domain.Interfaces.Commands.User;
+
+public interface IUserFavPostCommandRepository
 {
-    public interface IUserFavPostCommandRepository
-    {
-        Task CreateUserFavPostAsync(UserFavouritePost userFavPost);
-        Task DeleteUserFavPostAsync(Guid id);
-    }
+    Task CreateUserFavPostAsync(UserFavouritePost userFavPost, CancellationToken token);
+    Task DeleteUserFavPostAsync(Guid id, CancellationToken token);
 }

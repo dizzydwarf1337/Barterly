@@ -1,56 +1,56 @@
 ﻿using Application.Core.Factories.Interfaces;
-using Application.DTOs.General.Opinions;
-using AutoMapper;
-using Azure.Core;
 using Domain.Entities.Common;
 using Domain.Entities.Posts;
 using Domain.Entities.Users;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Commands.User;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Core.Factories.OpinionFactory
+namespace Application.Core.Factories.OpinionFactory;
+
+public class OpinionFactory : IOpinionFactory
 {
-    public class OpinionFactory : IOpinionFactory
+    private readonly IPostOpinionCommandRepository _postOpinionCommandRepository;
+    private readonly IUserOpinionCommandRepository _userOpinionCommandRepository;
+
+    public OpinionFactory(IUserOpinionCommandRepository userOpinionCommandRepository,
+        IPostOpinionCommandRepository postOpinionCommandRepository)
     {
-        private readonly IUserOpinionCommandRepository _userOpinionCommandRepository;
-        private readonly IPostOpinionCommandRepository _postOpinionCommandRepository;
-        private readonly IMapper _mapper;
+        _userOpinionCommandRepository = userOpinionCommandRepository;
+        _postOpinionCommandRepository = postOpinionCommandRepository;
+    }
 
-        public OpinionFactory(IUserOpinionCommandRepository userOpinionCommandRepository, IPostOpinionCommandRepository postOpinionCommandRepository, IMapper mapper)
+    public async Task<Opinion> CreateOpinionAsync(Guid AuthorId, Guid SubjectId, string Content, int Rate,
+        string OpinionType, CancellationToken token)
+    {
+        dynamic opinionDb;
+        if (OpinionType == "Post")
         {
-            _userOpinionCommandRepository = userOpinionCommandRepository;
-            _postOpinionCommandRepository = postOpinionCommandRepository;
-            _mapper = mapper;
+            var opinion = new PostOpinion
+            {
+                AuthorId = AuthorId,
+                Content = Content,
+                PostId = SubjectId,
+                Rate = Rate
+            };
+            opinionDb = await _postOpinionCommandRepository.CreatePostOpinionAsync(opinion, token);
+        }
+        else if (OpinionType == "User")
+        {
+            var opinion = new UserOpinion
+            {
+                AuthorId = AuthorId,
+                Content = Content,
+                UserId = SubjectId,
+                Rate = Rate
+            };
+            opinionDb = await _userOpinionCommandRepository.CreateUserOpinionAsync(opinion, token);
+        }
+        else
+        {
+            throw new EntityCreatingException("Opinion", "OpinionFactory");
         }
 
-        public async Task<Opinion> CreateOpinionAsync(CreateOpinionDto opinionDto)
-        {
-
-            Opinion opinionDb;
-            if(opinionDto.OpinionType == "Post")
-            {
-                var opinion = _mapper.Map<PostOpinion>(opinionDto);
-
-                opinionDb = await _postOpinionCommandRepository.CreatePostOpinionAsync(opinion);
-            }
-            else if (opinionDto.OpinionType == "User")
-            {
-                var opinion = _mapper.Map<UserOpinion>(opinionDto);
-                opinionDb = await _userOpinionCommandRepository.CreateUserOpinionAsync(opinion);
-            }
-            else
-            {
-                throw new EntityCreatingException("Opinion","OpinionFactory");
-            }
-            return opinionDb;
-
-        }
+        return opinionDb;
     }
 }

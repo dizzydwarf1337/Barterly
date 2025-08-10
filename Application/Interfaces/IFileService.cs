@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IFileService
 {
-    public interface IFileService
-    {
-        Task<string> SaveFile(IFormFile file);
-        Task DeleteFile(string FilePath);
-    }
+    Task<string> SaveFile(IFormFile file);
+    Task DeleteFile(string FilePath);
 }

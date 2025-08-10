@@ -1,11 +1,8 @@
-﻿using Domain.Entities.Users;
+﻿namespace Domain.Interfaces.Commands.Post;
 
-namespace Domain.Interfaces.Commands.Post
+public interface IVisitedPostCommandRepository
 {
-    public interface IVisitedPostCommandRepository
-    {
-        Task UpdateVisitedPost(VisitedPost post);
-        Task DeleteVisitedPostAsync(Guid id);
-        Task VisitPost(Guid postId, Guid userId);
-    }
+    Task UpdateVisitedPost(VisitedPost post, CancellationToken token);
+    Task DeleteVisitedPostAsync(Guid id, CancellationToken token);
+    Task VisitPost(Guid postId, Guid userId, CancellationToken token);
 }

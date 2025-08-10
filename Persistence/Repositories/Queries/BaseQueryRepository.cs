@@ -1,11 +1,11 @@
-﻿namespace Persistence.Repositories.Queries
+﻿namespace Persistence.Repositories.Queries;
+
+public class BaseQueryRepository<TContext>
 {
-    public class BaseQueryRepository<TContext>
+    internal readonly TContext _context;
+
+    public BaseQueryRepository(TContext context)
     {
-        internal readonly TContext _context;
-        public BaseQueryRepository(TContext context)
-        {
-            this._context = context;
-        }
+        _context = context;
     }
 }

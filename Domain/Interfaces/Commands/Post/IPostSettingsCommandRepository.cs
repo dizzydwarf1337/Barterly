@@ -1,15 +1,9 @@
-﻿using Domain.Entities.Posts;
-using Domain.Enums.Posts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Enums.Posts;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface IPostSettingsCommandRepository
 {
-    public interface IPostSettingsCommandRepository
-    {
-        public Task UpdatePostSettings(Guid postId, bool? isHidden, bool? isDeleted, PostStatusType? postStatusType, string? rejectionMessage);
-    }
+    public Task UpdatePostSettings(Guid postId, bool? isHidden, bool? isDeleted, PostStatusType? postStatusType,
+        string? rejectionMessage, CancellationToken token);
 }

@@ -1,7 +1,5 @@
-
-
 export enum ReportStatusType {
-    "Submitted"= 0,
+    "Submitted" = 0,
     "Approved" = 1,
-    "Rejected"= 2,
+    "Rejected" = 2,
 }

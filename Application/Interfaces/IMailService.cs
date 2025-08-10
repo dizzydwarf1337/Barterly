@@ -1,10 +1,8 @@
-﻿namespace Application.Interfaces
-{
-    public interface IMailService
-    {
+﻿namespace Application.Interfaces;
 
-        Task SendMail(string RecieverEmail, string subject, string body);
-        Task<bool> SendConfiramationMail(string UserEmail);
-        Task SendPasswordResetMail(string UserEmail);
-    }
+public interface IMailService
+{
+    Task SendMail(string RecieverEmail, string subject, string body);
+    Task<bool> SendConfiramationMail(string UserEmail, CancellationToken token);
+    Task SendPasswordResetMail(string UserEmail);
 }

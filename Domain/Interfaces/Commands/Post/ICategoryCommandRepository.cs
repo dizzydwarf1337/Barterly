@@ -1,13 +1,12 @@
 ﻿using Domain.Entities.Categories;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface ICategoryCommandRepository
 {
-    public interface ICategoryCommandRepository
-    {
-        Task CreateCategoryAsync(Category category);
-        Task UpdateCategoryAsync(Category category);
-        Task AddSubCategoryAsync(SubCategory subCategory);
-        Task DeleteSubCategoryAsync(Guid id);
-        Task DeleteCategoryAsync(Guid id);
-    }
+    Task<Category> CreateCategoryAsync(Category category, CancellationToken token);
+    Task<Category> UpdateCategoryAsync(Category category, CancellationToken token);
+    Task AddSubCategoryAsync(SubCategory subCategory, CancellationToken token);
+    Task DeleteSubCategoryAsync(Guid id, CancellationToken token);
+    Task DeleteCategoryAsync(Guid id, CancellationToken token);
 }

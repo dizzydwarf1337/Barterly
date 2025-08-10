@@ -1,10 +1,8 @@
 ﻿using Domain.Entities.Posts;
-using Domain.Enums;
 
-namespace Domain.Interfaces.Commands.Post
+namespace Domain.Interfaces.Commands.Post;
+
+public interface IPromotionCommandRepository
 {
-    public interface IPromotionCommandRepository
-    {
-        Task UpdatePromotionAsync(Promotion promotion);
-    }
+    Task UpdatePromotionAsync(Promotion promotion, CancellationToken token);
 }

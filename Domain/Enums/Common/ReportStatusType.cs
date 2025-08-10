@@ -1,9 +1,8 @@
-﻿namespace Domain.Enums.Common
+﻿namespace Domain.Enums.Common;
+
+public enum ReportStatusType
 {
-    public enum ReportStatusType
-    {
-        Submitted = 0,
-        Approved = 1,
-        Rejected = 2
-    }
+    Submitted = 0,
+    Approved = 1,
+    Rejected = 2
 }

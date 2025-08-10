@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Application.Core.Validators.Interfaces;
 
-namespace Application.Core.Validators.Interfaces
+public interface IAuthChecker
 {
-    public interface IAuthChecker
-    {
-        Task CheckPostPermission(string ownerId);
-        Task CheckCommentPermission(string ownerId);
-    }
+    Task CheckPostPermission(Guid ownerId);
+    Task CheckCommentPermission(Guid ownerId);
 }

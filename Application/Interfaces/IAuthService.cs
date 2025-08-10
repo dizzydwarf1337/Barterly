@@ -1,11 +1,9 @@
 ﻿using Application.DTOs.Auth;
-using Application.DTOs.User;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<LoginExternalResponse> LoginWithGmail(string token);
-        Task LoginWithFaceBook();
-    }
+    Task<LoginExternalResponse> LoginWithGmail(string token, CancellationToken cancToken);
+    Task LoginWithFaceBook();
 }

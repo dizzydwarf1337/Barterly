@@ -1,9 +1,8 @@
-﻿namespace Domain.Enums.Posts
+﻿namespace Domain.Enums.Posts;
+
+public enum PostPromotionType
 {
-    public enum PostPromotionType
-    {
-        None = 0,
-        Highlight = 1,
-        Top = 2
-    }
+    None = 0,
+    Highlight = 1,
+    Top = 2
 }

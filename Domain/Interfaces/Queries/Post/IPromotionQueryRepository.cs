@@ -1,12 +1,9 @@
 ﻿using Domain.Entities.Posts;
-using Domain.Enums;
 
-namespace Domain.Interfaces.Queries.Post
+namespace Domain.Interfaces.Queries.Post;
+
+public interface IPromotionQueryRepository
 {
-    public interface IPromotionQueryRepository
-    {
-        Task<Promotion> GetPromotionByIdAsync(Guid id);
-        Task<Promotion> GetPromotionByPostIdAsync(Guid postId);
-
-    }
+    Task<Promotion> GetPromotionByIdAsync(Guid id, CancellationToken token);
+    Task<Promotion> GetPromotionByPostIdAsync(Guid postId, CancellationToken token);
 }

@@ -1,10 +1,10 @@
 ﻿using Domain.Enums.Common;
+using Microsoft.AspNetCore.Identity;
 
-namespace Domain.Interfaces.Queries.User
+namespace Domain.Interfaces.Queries.User;
+
+public interface ITokenQueryRepository
 {
-    public interface ITokenQueryRepository
-    {
-
-        Task<Microsoft.AspNetCore.Identity.IdentityUserToken<Guid>> GetTokenByUserIdAsync(Guid userId, TokenType TokenType);
-    }
+    Task<IdentityUserToken<Guid>> GetTokenByUserIdAsync(Guid userId,
+        TokenType TokenType);
 }

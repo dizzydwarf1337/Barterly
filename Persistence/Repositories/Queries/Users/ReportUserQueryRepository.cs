@@ -5,41 +5,40 @@ using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
-namespace Persistence.Repositories.Queries.Users
+namespace Persistence.Repositories.Queries.Users;
+
+public class ReportUserQueryRepository : BaseQueryRepository<BarterlyDbContext>, IReportUserQueryRepository
 {
-    public class ReportUserQueryRepository : BaseQueryRepository<BarterlyDbContext>, IReportUserQueryRepository
+    public ReportUserQueryRepository(BarterlyDbContext context) : base(context)
     {
-        public ReportUserQueryRepository(BarterlyDbContext context) : base(context)
-        {
-        }
+    }
 
-        public async Task<ReportUser> GetReportUserByIdAsync(Guid reportId)
-        {
-            return await _context.ReportUsers.FindAsync(reportId) ?? throw new EntityNotFoundException("User report");
-        }
+    public async Task<ICollection<ReportUser>> GetReportUserByAuthorIdAsync(Guid authorId, CancellationToken token)
+    {
+        return await _context.ReportUsers.Where(x => x.AuthorId == authorId).ToListAsync(token) ??
+               throw new EntityNotFoundException("User report");
+    }
 
-        public async Task<ICollection<ReportUser>> GetReportUserFiltredPaginated(int page, int pageSize, Guid? authorId, Guid? userId, ReportStatusType? status)
-        {
-            var query = _context.ReportUsers.AsQueryable();
-            if(authorId != null)
-            {
-                query = query.Where(x => x.AuthorId == authorId);
-            }
-            if(userId != null)
-            {
-                query = query.Where(x => x.ReportedUserId == userId);
-            }
-            if(status != null)
-            {
-                query = query.Where(x => x.Status == status);
-            }
+    public async Task<ReportUser> GetReportUserByIdAsync(Guid reportId, CancellationToken token)
+    {
+        return await _context.ReportUsers.FindAsync(reportId, token) ??
+               throw new EntityNotFoundException("User report");
+    }
 
-            return await query
-                .OrderByDescending(x => x.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+    public async Task<ICollection<ReportUser>> GetReportUserFiltredPaginated(int page, int pageSize, Guid? authorId,
+        Guid? userId, ReportStatusType? status, CancellationToken token)
+    {
+        var query = _context.ReportUsers.AsQueryable();
+        if (authorId != null) query = query.Where(x => x.AuthorId == authorId);
 
-        }
+        if (userId != null) query = query.Where(x => x.ReportedUserId == userId);
+
+        if (status != null) query = query.Where(x => x.Status == status);
+
+        return await query
+            .OrderByDescending(x => x.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 }
