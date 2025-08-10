@@ -23,7 +23,7 @@ public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery,
                 new GetAllCategoriesQuery.Result(
                     x.Id,
                     x.NameEN,
-                    x.NameEN,
+                    x.NamePL,
                     x.Description ?? "",
                     x.SubCategories.Select(y => new GetAllCategoriesQuery.SubCategory(y.Id, y.TitleEN, y.TitlePL)
                     ).ToList())));

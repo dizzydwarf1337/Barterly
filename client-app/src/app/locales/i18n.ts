@@ -135,15 +135,10 @@ i18n
           invalidConfirmationLink: "Invalid confirmation link",
 
           // Categories translations
-          categoriesSubtitle: "Explore all available categories to find what you're looking for",
-          browseCategories: "Browse Categories",
-          selectCategoryDescription: "Select a category to view posts and subcategories",
-          categoriesHelpText: "Can't find what you're looking for? Use the search function or contact support",
           failedToLoadCategories: "Failed to load categories",
           noCategoriesFound: "No categories found",
-          noCategoriesDescription: "Categories will appear here when they become available",
-          categoriesCount: "{{count}} categories available",
-          subcategoriesAvailable: "Some categories have subcategories for more specific browsing",
+          subcategory: "subcategory",
+          subcategories: "subcategories",
           error: "Error",
 
           // Email confirmation page specific
@@ -351,15 +346,10 @@ i18n
           invalidConfirmationLink: "Nieprawidłowy link potwierdzający",
 
           // Categories translations
-          categoriesSubtitle: "Przeglądaj wszystkie dostępne kategorie, aby znaleźć to, czego szukasz",
-          browseCategories: "Przeglądaj Kategorie",
-          selectCategoryDescription: "Wybierz kategorię, aby zobaczyć ogłoszenia i podkategorie",
-          categoriesHelpText: "Nie możesz znaleźć tego, czego szukasz? Użyj funkcji wyszukiwania lub skontaktuj się z pomocą",
           failedToLoadCategories: "Nie udało się załadować kategorii",
           noCategoriesFound: "Nie znaleziono kategorii",
-          noCategoriesDescription: "Kategorie pojawią się tutaj, gdy staną się dostępne",
-          categoriesCount: "{{count}} dostępnych kategorii",
-          subcategoriesAvailable: "Niektóre kategorie mają podkategorie dla bardziej szczegółowego przeglądania",
+          subcategory: "podkategoria",
+          subcategories: "podkategorii",
           error: "Błąd",
 
           // Email confirmation page specific
