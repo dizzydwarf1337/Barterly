@@ -110,6 +110,7 @@ i18n
           Hybrid: "Hybrid",
 
           // Navigation translations
+          Home: "Home",
           home: "Home",
           search: "Search",
           searchPlaceholder: "Search posts, categories...",
@@ -121,6 +122,7 @@ i18n
           switchToLight: "Switch to light theme",
           switchToDark: "Switch to dark theme",
           favorites: "Favorites",
+          savedPosts: "Saved Posts",
           saved: "Saved",
           history: "History",
           help: "Help",
@@ -131,6 +133,18 @@ i18n
           loginRequired: "Login required",
           allRightsReserved: "All rights reserved",
           invalidConfirmationLink: "Invalid confirmation link",
+
+          // Categories translations
+          categoriesSubtitle: "Explore all available categories to find what you're looking for",
+          browseCategories: "Browse Categories",
+          selectCategoryDescription: "Select a category to view posts and subcategories",
+          categoriesHelpText: "Can't find what you're looking for? Use the search function or contact support",
+          failedToLoadCategories: "Failed to load categories",
+          noCategoriesFound: "No categories found",
+          noCategoriesDescription: "Categories will appear here when they become available",
+          categoriesCount: "{{count}} categories available",
+          subcategoriesAvailable: "Some categories have subcategories for more specific browsing",
+          error: "Error",
 
           // Email confirmation page specific
           emailConfirm: {
@@ -156,12 +170,12 @@ i18n
             thankYou: "Thank you!",
             registrationComplete: "Your registration is almost complete",
             checkInbox:
-              "We've sent a verification link to your email address. Please check your inbox and click the link to activate your account.",
+              "We've sent a verification link to your email address. Check your inbox and click the link to activate your account.",
             instructions:
               "To complete your registration, check your email and click the verification link. The link will expire in 24 hours for security reasons.",
             didntReceive: "Didn't receive the email?",
             resendEmail: "Resend Verification Email",
-            resendIn: "You can resend in",
+            resendIn: "You can resend the email in",
             resendAvailable: "You can resend the email in",
             sending: "Sending...",
             emailsSent: "Verification emails sent: {{count}}",
@@ -221,6 +235,7 @@ i18n
           login: "Zaloguj się",
           loginSuccess: "Zalogowałeś się pomyślnie",
           loginFailed: "Nieudana próba logowania",
+          logout: "Wyloguj się",
           logoutSuccess: "Zostałeś pomyślnie wylogowany",
           logoutFailed: "Nieudana próba wylogowania",
           orLogin: "Lub zaloguj się za pomocą",
@@ -311,6 +326,7 @@ i18n
           Hybrid: "Hybrydowo",
 
           // Navigation translations
+          Home: "Strona Główna",
           home: "Strona główna",
           search: "Szukaj",
           searchPlaceholder: "Szukaj ogłoszeń, kategorii...",
@@ -322,6 +338,7 @@ i18n
           switchToLight: "Przełącz na jasny motyw",
           switchToDark: "Przełącz na ciemny motyw",
           favorites: "Ulubione",
+          savedPosts: "Zapisane Ogłoszenia",
           saved: "Zapisane",
           history: "Historia",
           help: "Pomoc",
@@ -332,6 +349,18 @@ i18n
           loginRequired: "Wymagane logowanie",
           allRightsReserved: "Wszystkie prawa zastrzeżone",
           invalidConfirmationLink: "Nieprawidłowy link potwierdzający",
+
+          // Categories translations
+          categoriesSubtitle: "Przeglądaj wszystkie dostępne kategorie, aby znaleźć to, czego szukasz",
+          browseCategories: "Przeglądaj Kategorie",
+          selectCategoryDescription: "Wybierz kategorię, aby zobaczyć ogłoszenia i podkategorie",
+          categoriesHelpText: "Nie możesz znaleźć tego, czego szukasz? Użyj funkcji wyszukiwania lub skontaktuj się z pomocą",
+          failedToLoadCategories: "Nie udało się załadować kategorii",
+          noCategoriesFound: "Nie znaleziono kategorii",
+          noCategoriesDescription: "Kategorie pojawią się tutaj, gdy staną się dostępne",
+          categoriesCount: "{{count}} dostępnych kategorii",
+          subcategoriesAvailable: "Niektóre kategorie mają podkategorie dla bardziej szczegółowego przeglądania",
+          error: "Błąd",
 
           // Email confirmation page specific
           emailConfirm: {

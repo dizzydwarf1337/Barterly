@@ -46,9 +46,6 @@ import HistoryIcon from '@mui/icons-material/History';
 import HelpIcon from '@mui/icons-material/Help';
 import InfoIcon from '@mui/icons-material/Info';
 import useStore from '../stores/store';
-import darkTheme from '../theme/DarkTheme';
-import lightTheme from '../theme/LightTheme';
-
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -73,7 +70,7 @@ interface MenuItem {
 
 export default observer(function MobileNavDialog() {
     const { uiStore, authStore } = useStore();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const theme = useTheme();
     
@@ -123,8 +120,17 @@ export default observer(function MobileNavDialog() {
         handleClose();
     };
 
-    const toggleTheme = () => {
-        uiStore.setTheme(uiStore.themeMode === 'light' ? darkTheme : lightTheme);
+    // ✅ ИСПРАВЛЕНО: Теперь используем правильный метод из uiStore
+    const handleThemeChange = () => {
+        uiStore.changeTheme();
+    };
+
+    // ✅ ИСПРАВЛЕНО: Добавлен обработчик смены языка как в основном NavBar
+    const handleLanguageChange = () => {
+        const newLanguage = i18n.language === "en" ? "pl" : "en";
+        i18n.changeLanguage(newLanguage);
+        localStorage.setItem("brt_lng", newLanguage);
+        uiStore.setLanguage(newLanguage);
     };
 
     // Menu items configuration
@@ -145,39 +151,56 @@ export default observer(function MobileNavDialog() {
             onClick: handleAddPost,
             chip: authStore.isLoggedIn ? undefined : t('loginRequired'),
         },
-        { divider: true, icon: <></>, text: '' },
-        {
-            icon: <FavoriteIcon />,
-            text: t('favorites'),
-            path: '/favorites',
-            requireAuth: true,
-        },
-        {
-            icon: <BookmarkIcon />,
-            text: t('saved'),
-            path: '/saved',
-            requireAuth: true,
-        },
-        {
-            icon: <HistoryIcon />,
-            text: t('history'),
-            path: '/history',
-            requireAuth: true,
-        },
-        {
-            icon: <NotificationsIcon />,
-            text: t('notifications'),
-            path: '/notifications',
-            badge: notificationCount,
-            requireAuth: true,
-        },
-        { divider: true, icon: <></>, text: '' },
-        {
-            icon: <SettingsIcon />,
-            text: t('settings'),
-            path: '/settings',
-            requireAuth: true,
-        },
+        { divider: true } as MenuItem,
+        // Authentication section
+        ...(authStore.isLoggedIn
+            ? [
+                  {
+                      icon: (
+                          <Badge badgeContent={notificationCount} color="error">
+                              <NotificationsIcon />
+                          </Badge>
+                      ),
+                      text: t('notifications'),
+                      badge: notificationCount,
+                      path: '/notifications',
+                  },
+                  {
+                      icon: <FavoriteIcon />,
+                      text: t('favorites'),
+                      path: '/favorites',
+                  },
+                  {
+                      icon: <BookmarkIcon />,
+                      text: t('savedPosts'),
+                      path: '/saved',
+                  },
+                  {
+                      icon: <HistoryIcon />,
+                      text: t('history'),
+                      path: '/history',
+                  },
+                  {
+                      icon: <SettingsIcon />,
+                      text: t('settings'),
+                      path: '/settings',
+                  },
+                  { divider: true } as MenuItem,
+                  {
+                      icon: <LogoutIcon />,
+                      text: t('logout'),
+                      onClick: handleLogout,
+                  },
+              ]
+            : [
+                  {
+                      icon: <LoginIcon />,
+                      text: t('login'),
+                      onClick: handleLogin,
+                  },
+              ]),
+        { divider: true } as MenuItem,
+        // Help section
         {
             icon: <HelpIcon />,
             text: t('help'),
@@ -188,22 +211,9 @@ export default observer(function MobileNavDialog() {
             text: t('about'),
             path: '/about',
         },
-        { divider: true, icon: <></>, text: '' },
-        {
-            icon: <LoginIcon />,
-            text: t('login'),
-            onClick: handleLogin,
-            hideWhenAuth: true,
-        },
-        {
-            icon: <LogoutIcon />,
-            text: t('logout'),
-            onClick: handleLogout,
-            requireAuth: true,
-        },
     ];
 
-    const filteredMenuItems = menuItems.filter(item => {
+    const filteredMenuItems = menuItems.filter((item) => {
         if (item.requireAuth && !authStore.isLoggedIn) return false;
         if (item.hideWhenAuth && authStore.isLoggedIn) return false;
         return true;
@@ -211,123 +221,117 @@ export default observer(function MobileNavDialog() {
 
     return (
         <Dialog
-            fullScreen
             open={uiStore.isMobileMenuOpen}
             onClose={handleClose}
             TransitionComponent={Transition}
+            keepMounted
             PaperProps={{
                 sx: {
-                    background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.98)} 100%)`,
+                    width: '100%',
+                    maxWidth: 400,
+                    height: '100%',
+                    m: 0,
+                    position: 'fixed',
+                    right: 0,
+                    top: 0,
+                    borderRadius: '16px 0 0 16px',
+                    background: `linear-gradient(145deg, ${alpha(
+                        theme.palette.background.paper,
+                        0.95
+                    )}, ${alpha(theme.palette.background.default, 0.9)})`,
                     backdropFilter: 'blur(20px)',
-                }
+                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                },
+            }}
+            BackdropProps={{
+                sx: {
+                    backgroundColor: alpha(theme.palette.common.black, 0.5),
+                    backdropFilter: 'blur(4px)',
+                },
             }}
         >
-            <DialogContent sx={{ p: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <DialogContent
+                sx={{
+                    p: 0,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
                 {/* Header */}
                 <Box
                     sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        p: 2,
+                        p: 3,
                         borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                        background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                        color: theme.palette.primary.contrastText,
+                        background: `linear-gradient(135deg, ${theme.palette.primary.main}15, ${theme.palette.secondary.main}10)`,
                     }}
                 >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <Box
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Typography
+                            variant="h5"
+                            fontWeight="bold"
                             sx={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: '50%',
-                                background: 'rgba(255, 255, 255, 0.2)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: '1.2rem',
-                                backdropFilter: 'blur(10px)',
+                                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
                             }}
                         >
-                            B
-                        </Box>
-                        <Typography variant="h5" fontWeight="bold">
                             Barterly
                         </Typography>
+                        <IconButton
+                            onClick={handleClose}
+                            sx={{
+                                transition: 'all 0.2s ease',
+                                '&:hover': {
+                                    transform: 'rotate(90deg)',
+                                    backgroundColor: alpha(theme.palette.error.main, 0.1),
+                                },
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
                     </Box>
-                    <IconButton
-                        onClick={handleClose}
-                        sx={{
-                            color: 'inherit',
-                            '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                transform: 'rotate(90deg)',
-                            },
-                            transition: 'all 0.3s ease',
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </Box>
 
-                {/* User Section */}
-                {authStore.isLoggedIn && (
-                    <Box
-                        sx={{
-                            p: 3,
-                            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.secondary.main, 0.1)} 100%)`,
-                            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                        }}
-                    >
+                    {authStore.isLoggedIn && (
                         <Box display="flex" alignItems="center" gap={2} mb={2}>
-                            <Badge
-                                badgeContent={notificationCount}
-                                color="error"
-                                overlap="circular"
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
+                            <Avatar
+                                src={authStore.user?.profilePicturePath ?? undefined}
+                                sx={{
+                                    width: 48,
+                                    height: 48,
+                                    border: `2px solid ${theme.palette.primary.main}`,
                                 }}
                             >
-                                <Avatar
-                                    sx={{
-                                        width: 56,
-                                        height: 56,
-                                        border: `3px solid ${theme.palette.primary.main}`,
-                                    }}
-                                    src={authStore.user?.profilePicturePath ?? ""}
-                                    alt={authStore.user?.firstName}
-                                >
-                                    {authStore.user?.firstName?.charAt(0) || <PersonIcon />}
-                                </Avatar>
-                            </Badge>
+                                {authStore.user?.firstName?.charAt(0) || <PersonIcon />}
+                            </Avatar>
                             <Box>
-                                <Typography variant="h6" fontWeight="bold">
-                                    {authStore.user?.firstName} {authStore.user?.lastName}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {authStore.user?.email}
+                                <Typography variant="body1" fontWeight="600">
+                                    {t('hello')}, {authStore.user?.firstName || t('user')}!
                                 </Typography>
                                 <Chip
                                     label={authStore.user?.role || 'User'}
                                     size="small"
                                     color="primary"
                                     variant="outlined"
-                                    sx={{ mt: 0.5 }}
+                                    sx={{ fontSize: '0.7rem', height: 20 }}
                                 />
                             </Box>
                         </Box>
-                    </Box>
-                )}
+                    )}
 
-                {/* Search Section */}
-                <Box sx={{ p: 2, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
-                    <form onSubmit={handleSearch}>
+                    {/* Search */}
+                    <Box
+                        component="form"
+                        onSubmit={handleSearch}
+                        sx={{
+                            position: 'relative',
+                        }}
+                    >
                         <TextField
                             fullWidth
-                            placeholder={`${t('searchPlaceholder')}...`}
+                            size="small"
+                            placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             InputProps={{
@@ -336,115 +340,71 @@ export default observer(function MobileNavDialog() {
                                         <SearchIcon color="action" />
                                     </InputAdornment>
                                 ),
-                                endAdornment: searchQuery && (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => setSearchQuery('')}
-                                            edge="end"
-                                        >
-                                            <CloseIcon fontSize="small" />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
+                                sx: {
                                     borderRadius: 3,
-                                    backgroundColor: alpha(theme.palette.background.default, 0.5),
+                                    backgroundColor: alpha(theme.palette.background.paper, 0.8),
                                     '&:hover': {
-                                        backgroundColor: alpha(theme.palette.background.default, 0.8),
-                                    },
-                                    '&.Mui-focused': {
-                                        backgroundColor: alpha(theme.palette.background.default, 1),
-                                        boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
+                                        backgroundColor: alpha(theme.palette.background.paper, 0.9),
                                     },
                                 },
                             }}
                         />
-                    </form>
-                </Box>
-
-                {/* Settings Section */}
-                <Box sx={{ p: 2, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                        <Box display="flex" alignItems="center" gap={1}>
-                            {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
-                            <Typography variant="body1">{t('darkMode')}</Typography>
-                        </Box>
-                        <Switch
-                            checked={theme.palette.mode === 'dark'}
-                            onChange={toggleTheme}
-                            color="primary"
-                        />
-                    </Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Box display="flex" alignItems="center" gap={1}>
-                            <LanguageIcon />
-                            <Typography variant="body1">{t('language')}</Typography>
-                        </Box>
-                        <Chip
-                            label={t('currentLanguage') || 'EN'}
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                        />
                     </Box>
                 </Box>
 
-                {/* Navigation Menu */}
-                <Box sx={{ flex: 1, overflow: 'auto' }}>
-                    <List sx={{ py: 1 }}>
+                {/* Menu Items */}
+                <Box sx={{ flex: 1, overflowY: 'auto' }}>
+                    <List sx={{ p: 1 }}>
                         {filteredMenuItems.map((item, index) => {
                             if (item.divider) {
-                                return <Divider key={index} sx={{ my: 1 }} />;
+                                return (
+                                    <Divider
+                                        key={`divider-${index}`}
+                                        sx={{
+                                            my: 1,
+                                            mx: 2,
+                                            borderColor: alpha(theme.palette.divider, 0.1),
+                                        }}
+                                    />
+                                );
                             }
 
                             return (
-                                <ListItem key={index} disablePadding>
+                                <ListItem key={index} disablePadding sx={{ mb: 0.5 }}>
                                     <ListItemButton
-                                        onClick={() => {
-                                            if (item.onClick) {
-                                                item.onClick();
-                                            } else if (item.path) {
-                                                handleNavigate(item.path);
-                                            }
-                                        }}
+                                        onClick={item.onClick || (() => item.path && handleNavigate(item.path))}
                                         sx={{
-                                            py: 1.5,
-                                            px: 3,
                                             borderRadius: 2,
                                             mx: 1,
-                                            mb: 0.5,
                                             transition: 'all 0.2s ease',
                                             '&:hover': {
                                                 backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                                                transform: 'translateX(8px)',
+                                                transform: 'translateX(4px)',
                                             },
                                         }}
                                     >
-                                        <ListItemIcon sx={{ minWidth: 40, color: theme.palette.primary.main }}>
-                                            {item.badge ? (
-                                                <Badge badgeContent={item.badge} color="error">
-                                                    {item.icon}
-                                                </Badge>
-                                            ) : (
-                                                item.icon
-                                            )}
+                                        <ListItemIcon
+                                            sx={{
+                                                color: theme.palette.primary.main,
+                                                minWidth: 40,
+                                            }}
+                                        >
+                                            {item.icon}
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={item.text}
                                             primaryTypographyProps={{
                                                 fontWeight: 500,
-                                                fontSize: '1.1rem',
+                                                fontSize: '0.95rem',
                                             }}
                                         />
                                         {item.chip && (
                                             <Chip
                                                 label={item.chip}
                                                 size="small"
-                                                color="warning"
+                                                color="secondary"
                                                 variant="outlined"
+                                                sx={{ fontSize: '0.7rem', height: 24 }}
                                             />
                                         )}
                                     </ListItemButton>
@@ -454,18 +414,68 @@ export default observer(function MobileNavDialog() {
                     </List>
                 </Box>
 
-                {/* Footer */}
+                {/* Settings Footer */}
                 <Box
                     sx={{
                         p: 2,
                         borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                        background: alpha(theme.palette.background.default, 0.5),
-                        textAlign: 'center',
+                        background: alpha(theme.palette.background.paper, 0.5),
                     }}
                 >
-                    <Typography variant="body2" color="text.secondary">
-                        © 2024 Barterly. {t('allRightsReserved')}
+                    <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        mb={2}
+                        sx={{ fontWeight: 600 }}
+                    >
+                        {t('settings')}
                     </Typography>
+
+                    {/* Theme Toggle */}
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Box display="flex" alignItems="center" gap={1}>
+                            {uiStore.themeMode === 'dark' ? (
+                                <DarkModeIcon color="primary" />
+                            ) : (
+                                <LightModeIcon color="primary" />
+                            )}
+                            <Typography variant="body2" fontWeight={500}>
+                                {uiStore.themeMode === 'dark' ? t('switchToLight') : t('switchToDark')}
+                            </Typography>
+                        </Box>
+                        <Switch
+                            checked={uiStore.themeMode === 'dark'}
+                            onChange={handleThemeChange}
+                            color="primary"
+                            size="small"
+                        />
+                    </Box>
+
+                    {/* Language Toggle */}
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <LanguageIcon color="primary" />
+                            <Typography variant="body2" fontWeight={500}>
+                                {t('changeLanguage')}
+                            </Typography>
+                        </Box>
+                        <Chip
+                            label={i18n.language.toUpperCase()}
+                            onClick={handleLanguageChange}
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                '&:hover': {
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                                    transform: 'scale(1.05)',
+                                },
+                            }}
+                        />
+                    </Box>
                 </Box>
             </DialogContent>
         </Dialog>
