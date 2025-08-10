@@ -1,13 +1,13 @@
 import {observer} from "mobx-react-lite";
 import useStore from "../../app/stores/store";
-import PostItem from "../posts/PostItem";
 import {Box} from "@mui/material";
-import PostSmallItem from "../posts/PostSmallItem";
+import PostSmallItem from "../posts/components/PostSmallItem";
+import PostItem from "../posts/components/PostItem";
 
 export default observer(function FeedPostList() {
 
 
-    const {postStore, uiStore} = useStore();
+    const {uiStore} = useStore();
 
     return (
         <>

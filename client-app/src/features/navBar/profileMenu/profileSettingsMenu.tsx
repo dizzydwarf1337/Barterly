@@ -1,7 +1,6 @@
 import {alpha, Box, Button, Divider, IconButton, Menu, Typography,} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import useStore from "../../../app/stores/store";
-import {useTranslation} from "react-i18next";
 import ProfileDashboard from "./profileDashboard";
 import LoginForm from "./loginForm";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -10,9 +9,8 @@ import i18n from "../../../app/locales/i18n";
 
 export default observer(function ProfileSettingsMenu() {
 
-    const {uiStore, userStore} = useStore();
+    const {uiStore, authStore} = useStore();
     const {theme} = uiStore;
-    const {t} = useTranslation();
     const isOpen = uiStore.getUserSettingIsOpen();
 
     return (
@@ -27,7 +25,7 @@ export default observer(function ProfileSettingsMenu() {
         >
             <Box sx={{p: "10px", height: "100%"}} display="flex" flexDirection="column" gap="5px"
                  justifyContent="center" alignItems="center">
-                {userStore.isLoggedIn ?
+                {authStore.isLoggedIn ?
                     (
                         <ProfileDashboard/>
                     )

@@ -23,11 +23,11 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, A
 
     public async Task<ApiResponse<Unit>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.userMail);
-        var confirmResult = await _userManager.ConfirmEmailAsync(user!, request.token);
+        var user = await _userManager.FindByEmailAsync(request.UserMail);
+        var confirmResult = await _userManager.ConfirmEmailAsync(user!, request.Token);
         await _logService.CreateLogAsync($"User {user!.Email} confirmed email", cancellationToken,
             LogType.Information, userId: user.Id);
-        await _mediator.Publish(new EmailConfirmedEvent { Email = request.userMail });
+        await _mediator.Publish(new EmailConfirmedEvent { Email = request.UserMail });
         return ApiResponse<Unit>.Success(Unit.Value);
     }
 }

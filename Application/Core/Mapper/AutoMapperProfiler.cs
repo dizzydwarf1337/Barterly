@@ -24,17 +24,12 @@ public class AutoMapperProfiler : Profile
         CreateMap<Log, LogDto>();
         CreateMap<LogDto, Log>();
         CreateMap<Post, PostDto>()
-            .ForMember(x => x.Promotion, opt => opt.MapFrom(x => x.Promotion))
-            .ForMember(x => x.PostSettings, opt => opt.MapFrom(x => x.PostSettings))
-            .ForMember(x => x.PostOpinions, opt => opt.MapFrom(x => x.PostOpinions))
             .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
             .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
         CreateMap<WorkPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<RentPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<CommonPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<PostDto, Post>()
-            .ForMember(x => x.Promotion, opt => opt.MapFrom(x => x.Promotion))
-            .ForMember(x => x.PostSettings, opt => opt.MapFrom(x => x.PostSettings))
             .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
             .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
 
@@ -52,8 +47,6 @@ public class AutoMapperProfiler : Profile
         CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<PostDto, Post>()
-            .ForMember(x => x.Promotion, opt => opt.MapFrom(x => x.Promotion))
-            .ForMember(x => x.PostSettings, opt => opt.MapFrom(x => x.PostSettings))
             .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
             .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
 

@@ -1,12 +1,16 @@
 import {observer} from "mobx-react-lite";
-import useStore from "../../app/stores/store";
-import PostSmallItem from "../posts/PostSmallItem";
 import {Box} from "@mui/material";
+import PostSmallItem from "../posts/components/PostSmallItem";
+import { useEffect, useState } from "react";
+import { PostPreview } from "../posts/types/postTypes";
 
 export default observer(function PopularPostList() {
 
+    const [posts,setPosts] = useState<PostPreview[]>([]);
 
-    const {postStore} = useStore();
+    useEffect(() => {
+        setPosts(postStore.popularPosts);
+    }, [postStore.popularPosts]);
 
     return (
         <>

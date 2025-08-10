@@ -7,12 +7,12 @@ import {observer} from "mobx-react-lite";
 
 export default observer(function ProfileDashboard() {
 
-    const {uiStore, userStore} = useStore();
+    const {uiStore, authStore} = useStore();
     const {t} = useTranslation();
-    const user = userStore.getUser();
+    const user = authStore.getUser();
     const handleLogout = () => {
         uiStore.setUserSettingIsOpen(false);
-        userStore.logout()
+        authStore.logout()
             .then(() => {
                 uiStore.showSnackbar(t("logoutSuccess"), "success", "right")
             })

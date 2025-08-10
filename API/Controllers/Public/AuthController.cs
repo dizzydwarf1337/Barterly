@@ -1,4 +1,5 @@
-﻿using Application.Commands.Public.Accounts.CreateUser;
+﻿using Application.Commands.Public.Accounts.ConfirmEmail;
+using Application.Commands.Public.Accounts.CreateUser;
 using Application.Commands.Public.Accounts.ResendEmailConfirm;
 using Application.Commands.Public.Auth.Login;
 using Application.Commands.Public.Auth.LoginWithGoogle;
@@ -35,6 +36,13 @@ public class AuthController : BaseController
     [HttpPost]
     [Route("resend-email-confirm")]
     public async Task<IActionResult> ResendEmailConfirm(ResendEmailConfirmCommand command)
+    {
+        return HandleResponse(await Mediator.Send(command));
+    }
+
+    [HttpPost]
+    [Route("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
     {
         return HandleResponse(await Mediator.Send(command));
     }

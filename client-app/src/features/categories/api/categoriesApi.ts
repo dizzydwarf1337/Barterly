@@ -1,4 +1,11 @@
+import apiClient from "../../../app/API/apiClient";
+import { GetCategoriesResponseDTO } from "../dto/categoryDto";
 
 
 
-export 
+const categoryApi = {
+  getCategories: async () =>
+    apiClient.get<GetCategoriesResponseDTO>("public/categories/", true),
+};
+
+export default categoryApi;

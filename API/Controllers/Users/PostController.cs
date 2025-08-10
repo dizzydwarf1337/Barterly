@@ -10,7 +10,7 @@ using Application.Queries.Users.Posts.GetPopularPosts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers.Public;
+namespace API.Controllers.Users;
 
 [Route("user/posts")]
 [Authorize(Policy = "User")]
@@ -30,12 +30,6 @@ public class UserPostController : BaseController
         return HandleResponse(await Mediator.Send(new GetPostImagesCommand { PostId = postId }));
     }
 
-    [HttpGet]
-    [Route("feed")]
-    public async Task<IActionResult> GetFeed([FromQuery] int PageNumber, [FromQuery] int PageSize)
-    {
-        return HandleResponse(await Mediator.Send(new GetFeedQuery { PageNumber = PageNumber, PageSize = PageSize }));
-    }
 
     [HttpPost]
     [Route("search")]

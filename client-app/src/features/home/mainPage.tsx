@@ -1,7 +1,7 @@
 import {Box} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import CategoriesDashboard from "../categories/categoriesDashboard";
-import FeedDashboard from "./FeedDashboard";
+import FeedDashboard from "../posts/pages/FeedDashboard";
 import PopularDashboard from "./PopularDashboard";
 import useStore from "../../app/stores/store";
 

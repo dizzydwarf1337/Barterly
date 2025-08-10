@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.Public.Posts.GetFeed;
 
-public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<ICollection<PostPreviewDto>>>
+public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<GetFeedQuery.Result>>
 {
     private readonly IMapper _mapper;
     private readonly IPostQueryRepository _postRepository;
@@ -20,14 +20,32 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<ICo
         _mapper = mapper;
     }
 
-    public async Task<ApiResponse<ICollection<PostPreviewDto>>> Handle(GetFeedQuery request,
+    public async Task<ApiResponse<GetFeedQuery.Result>> Handle(GetFeedQuery request,
         CancellationToken cancellationToken)
     {
-        return ApiResponse<ICollection<PostPreviewDto>>.Success(
-            ShufflePosts(
-                await GetPosts(request.PageSize, request.PageNumber, cancellationToken),
-                await GetPromotedPosts((int)(request.PageSize * (1.0 / 3)), request.PageNumber,
-                    cancellationToken)));
+        var posts = await GetPosts(request.FilterBy.PageSize, request.FilterBy.PageNumber, cancellationToken);
+        var promotedPosts = await GetPromotedPosts((int)(request.FilterBy.PageSize / 3.0), request.FilterBy.PageNumber, cancellationToken);
+
+        var shuffledPosts = ShufflePosts(posts, promotedPosts);
+
+        // Получаем общее количество постов (без промо)
+        var totalCount = await _postRepository.GetAllPosts()
+            .Where(p =>
+                p.PostSettings.postStatusType == PostStatusType.Published &&
+                !p.PostSettings.IsDeleted &&
+                p.Promotion.Type == PostPromotionType.None)
+            .CountAsync(cancellationToken);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.FilterBy.PageSize);
+
+        var result = new GetFeedQuery.Result
+        {
+            Posts = shuffledPosts,
+            TotalCount = totalCount,
+            TotalPages = totalPages
+        };
+
+        return ApiResponse<GetFeedQuery.Result>.Success(result);
     }
 
     private async Task<ICollection<Post>> GetPosts(int PageSize, int pageNumber, CancellationToken token)
@@ -112,6 +130,6 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<ICo
             }
         }
 
-        return _mapper.Map<List<PostPreviewDto>>(result);
+        return _mapper.Map<ICollection<PostPreviewDto>>(result);
     }
 }

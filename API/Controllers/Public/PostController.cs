@@ -25,11 +25,11 @@ public class PostController : BaseController
         return HandleResponse(await Mediator.Send(new GetPostImagesCommand { PostId = postId }));
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("feed")]
-    public async Task<IActionResult> GetFeed([FromQuery] int PageNumber, [FromQuery] int PageSize)
+    public async Task<IActionResult> GetFeed(GetFeedQuery query)
     {
-        return HandleResponse(await Mediator.Send(new GetFeedQuery { PageNumber = PageNumber, PageSize = PageSize }));
+        return HandleResponse(await Mediator.Send(query));
     }
 
     [HttpPost]
