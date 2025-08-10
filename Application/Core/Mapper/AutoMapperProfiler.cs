@@ -42,7 +42,9 @@ public class AutoMapperProfiler : Profile
             .ForMember(x => x.PostType, opt => opt.MapFrom(x =>
                 x is WorkPost ? "Work" :
                 x is RentPost ? "Rent" :
-                "Common"));
+                "Common"))
+            .ForMember(x => x.CreatedAt, opt => opt.MapFrom(y => y.CreatedAt))
+            .ForMember(x => x.OwnerName, opt => opt.MapFrom((x => x.Owner.FirstName)));
         CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
@@ -52,6 +54,8 @@ public class AutoMapperProfiler : Profile
 
         CreateMap<PostPreviewDto, Post>();
         CreateMap<PostImage, PostImageDto>();
+        CreateMap<ICollection<PostImage>, ICollection<PostPreviewDto>>();
+        CreateMap<PostImageDto, PostImage>();
         CreateMap<Promotion, PromotionDto>();
         CreateMap<PostOpinion, PostOpinionDto>();
         CreateMap<CreatePostDto, Post>();

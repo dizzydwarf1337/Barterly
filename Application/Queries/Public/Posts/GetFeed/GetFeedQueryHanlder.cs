@@ -87,7 +87,8 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
                 x.Promotion.Type == PostPromotionType.Top &&
                 x.PostSettings.postStatusType == PostStatusType.Published &&
                 !x.PostSettings.IsDeleted)
-            .OrderByDescending(_ => Guid.NewGuid())
+            .Include(x=>x.Owner)
+            .OrderByDescending(x=>x.Id)
             .Skip((pageNumber - 1) * topPostsCount)
             .Take(topPostsCount)
             .ToListAsync(token);
@@ -97,6 +98,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
                 x.Promotion.Type == PostPromotionType.Highlight &&
                 x.PostSettings.postStatusType == PostStatusType.Published &&
                 !x.PostSettings.IsDeleted)
+            .Include(x=>x.Owner)
             .OrderByDescending(x => x.ViewsCount)
             .Skip((pageNumber - 1) * highlightPostsCount)
             .Take(highlightPostsCount)

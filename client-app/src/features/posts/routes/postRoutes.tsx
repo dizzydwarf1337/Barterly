@@ -3,7 +3,7 @@ import PostDetails from "../pages/postDetails";
 
 export const postRoutes: RouteObject[] = [
   {
-    path: "posts/:postId",
+    path: "/posts/:postId",
     element: <PostDetails />,
   },
 ];

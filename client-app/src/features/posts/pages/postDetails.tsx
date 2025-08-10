@@ -230,10 +230,10 @@ export default observer(function PostDetails() {
                                 <Typography>{t(ContractType[currentPost.contract])}</Typography>
                             </Box>
                         )}
-                        {currentPost.workLoad && (
+                        {currentPost.workload && (
                             <Box display="flex" alignItems="center" gap={1}>
                                 <EventNoteIcon fontSize="small" color="action" />
-                                <Typography>{t(WorkloadType[currentPost.workLoad])}</Typography>
+                                <Typography>{t(WorkloadType[currentPost.workload])}</Typography>
                             </Box>
                         )}
                         {currentPost.workLocation && (

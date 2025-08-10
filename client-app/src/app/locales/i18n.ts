@@ -202,6 +202,33 @@ i18n
             or: "OR",
           },
 
+          postImage: "Post image",
+          viewAllPhotos: "View all photos",
+          imageGallery: "Image Gallery",
+          of: "of",
+          loadingImages: "Loading images",
+          noImagesAvailable: "No images available",
+          imageLoadError: "Failed to load image",
+          image: "Image",
+          fullscreen: "Fullscreen",
+
+          // Post interactions
+          share: "Share",
+          favorite: "Add to favorites",
+          views: "views",
+          anonymous: "Anonymous",
+          trending: "Trending",
+          posts: "posts",
+          posts_one: "post",
+          posts_other: "posts",
+
+          // Work and service types
+          work: "Work",
+          rent: "Rent",
+          service: "Service",
+
+          // Enhanced UI
+          noPostsDescription: "Check back later for new posts",
           // Promotion types
           promotion: {
             Highlight: "Highlighted",
@@ -422,6 +449,35 @@ i18n
             Highlight: "Wyróżnione",
             Top: "Top Ogłoszenie",
           },
+
+          postImage: "Zdjęcie ogłoszenia",
+          viewAllPhotos: "Zobacz wszystkie zdjęcia",
+          imageGallery: "Galeria Zdjęć",
+          of: "z",
+          loadingImages: "Ładowanie zdjęć",
+          noImagesAvailable: "Brak dostępnych zdjęć",
+          imageLoadError: "Nie udało się załadować zdjęcia",
+          image: "Zdjęcie",
+          fullscreen: "Pełny ekran",
+
+          // Post interactions
+          share: "Udostępnij",
+          favorite: "Dodaj do ulubionych",
+          views: "wyświetleń",
+          anonymous: "Anonim",
+          trending: "Na czasie",
+          posts: "ogłoszeń",
+          posts_one: "ogłoszenie",
+          posts_other: "ogłoszeń",
+
+          // Work and service types
+          work: "Praca",
+          rent: "Wynajem",
+          service: "Usługa",
+
+          // Enhanced UI
+          noPostsDescription:
+            "Sprawdź ponownie później, aby zobaczyć nowe ogłoszenia",
 
           // Validation translations
           validation: {

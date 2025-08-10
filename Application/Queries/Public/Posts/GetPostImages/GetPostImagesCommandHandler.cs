@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Queries.Public.Posts.GetPostImages;
 
-public class GetPostImagesCommandHandler : IRequestHandler<GetPostImagesCommand, ApiResponse<PostImagesDto>>
+public class GetPostImagesCommandHandler : IRequestHandler<GetPostImagesCommand, ApiResponse<ICollection<PostImagesDto>>>
 {
     private readonly IMapper _mapper;
     private readonly IPostImageQueryRepository _postImageQueryRepository;
@@ -17,11 +17,11 @@ public class GetPostImagesCommandHandler : IRequestHandler<GetPostImagesCommand,
         _postImageQueryRepository = postImageQueryRepository;
     }
 
-    public async Task<ApiResponse<PostImagesDto>> Handle(GetPostImagesCommand request,
+    public async Task<ApiResponse<ICollection<PostImagesDto>>> Handle(GetPostImagesCommand request,
         CancellationToken cancellationToken)
     {
         var postImages =
             await _postImageQueryRepository.GetPostImagesByPostIdAsync(request.PostId, cancellationToken);
-        return ApiResponse<PostImagesDto>.Success(_mapper.Map<PostImagesDto>(postImages));
+        return ApiResponse<ICollection<PostImagesDto>>.Success(_mapper.Map<ICollection<PostImagesDto>>(postImages));
     }
 }
