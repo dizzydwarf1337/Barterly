@@ -2,29 +2,38 @@ import {Box, Typography} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import useStore from "../../../app/stores/store";
 import {useEffect, useState} from "react";
-import FeedPostList from "../../home/FeedPostList";
 import {useTranslation} from "react-i18next";
 import { PostPreview } from "../types/postTypes";
 import postApi from "../api/postApi";
+import FeedPostList from "../components/feedPostList";
 
-
-export default observer(function FeedPage() {
-
+export default observer(function FeedDashboard() {
     const { uiStore } = useStore();
     const {t} = useTranslation();
-    const [posts,setPosts] = useState<PostPreview[]>([]);
+    const [posts, setPosts] = useState<PostPreview[]>([]);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
-        try {
-            postApi.getFeed({filterBy:{
-                pageNumber:'1',
-                pageSize:'10',
-            }}).then(response => {
+        const fetchFeedPosts = async () => {
+            try {
+                setLoading(true);
+                const response = await postApi.getFeed({
+                    filterBy: {
+                        pageNumber: '1',
+                        pageSize: '10',
+                    }
+                });
                 setPosts(response.value.items);
-            });
-        } catch {
-            
-        }
-    }, [])
+            } catch (error) {
+                console.error("Failed to fetch feed posts:", error);
+                uiStore.showSnackbar(t("failedToLoadPosts"), "error", "right");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFeedPosts();
+    }, [t, uiStore]);
 
     return (
         <Box width="100%" display="flex" flexDirection="column" gap="20px">
@@ -40,9 +49,12 @@ export default observer(function FeedPage() {
                 </Typography>
             </Box>
             <Box>
-                <FeedPostList/>
+                {loading ? (
+                    <Typography>{t('loading')}...</Typography>
+                ) : (
+                    <FeedPostList posts={posts}/>
+                )}
             </Box>
         </Box>
     )
 })
-

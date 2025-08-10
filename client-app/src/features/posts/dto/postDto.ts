@@ -1,6 +1,6 @@
 import ApiResponse from "../../../app/API/apiResponse";
 import { PaginationRequest, PaginationResponse } from "../../../app/API/pagination";
-import { PostDetails, PostPreview } from "../types/postTypes";
+import { PostDetails, PostImagesModal, PostPreview } from "../types/postTypes";
 
 
 export interface GetPostsResponseDTO extends PaginationResponse<PostPreview>{}
@@ -12,3 +12,9 @@ export interface GetPostRequestDTO {
 }
 
 export interface GetPostResponseDTO extends ApiResponse<PostDetails>{}
+
+export interface GetPostImagesRequestDTO {
+    postId:string;
+}
+
+export interface GetPostImagesResponseDTO extends ApiResponse<PostImagesModal> {}

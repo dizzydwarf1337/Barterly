@@ -1,34 +1,67 @@
-import {observer} from "mobx-react-lite";
-import {Box, Typography} from "@mui/material";
+import { observer } from "mobx-react-lite";
+import { Typography, Card, CardContent } from "@mui/material";
 import useStore from "../../../app/stores/store";
 import { Category } from "../types/categoryTypes";
 
 interface Props {
-    category: Category
+    category: Category;
 }
 
+export default observer(function CategoryListItem({ category }: Props) {
+    const { uiStore } = useStore();
 
-export default observer(function CategoryListItem({category}: Props) {
-
-    const {uiStore} = useStore();
+    const handleClick = () => {
+        console.log("Navigate to category:", category.id);
+        // navigate(`/categories/${category.id}`);
+    };
 
     return (
-        <Box display="flex"
-             sx={{
-                 backgroundColor: "background.default", width: "150px", height: "40px",
-                 alignItems: "center", justifyContent: "center", borderRadius: "10px",
-                 transition: "0.15s ease-out",
-                 ':hover': {
-                     boxShadow: `0px 2px 4px ${uiStore.theme.palette.primary.contrastText}`,
-                     translate: '0px -2px'
-                 },
-                 cursor: "pointer",
-
-             }}>
-            <Typography>
-                {uiStore.lang === "en" ? category.nameEN : category.namePL}
-            </Typography>
-        </Box>
-
-    )
-})
+        <Card
+            onClick={handleClick}
+            sx={{
+                minWidth: uiStore.isMobile ? "120px" : "150px",
+                minHeight: "80px",
+                cursor: "pointer",
+                transition: "all 0.2s ease-in-out",
+                backgroundColor: "background.paper",
+                '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: (theme) => theme.shadows[8],
+                    backgroundColor: (theme) => theme.palette.action.hover,
+                },
+                '&:active': {
+                    transform: 'translateY(-2px)',
+                },
+            }}
+        >
+            <CardContent
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    height: "100%",
+                    p: 2,
+                    '&:last-child': {
+                        pb: 2,
+                    },
+                }}
+            >
+                <Typography
+                    variant={uiStore.isMobile ? "body2" : "body1"}
+                    fontWeight="medium"
+                    color="text.primary"
+                    sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {uiStore.lang === "en" ? category.nameEN : category.namePL}
+                </Typography>
+            </CardContent>
+        </Card>
+    );
+});

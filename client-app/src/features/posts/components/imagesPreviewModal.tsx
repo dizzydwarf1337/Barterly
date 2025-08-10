@@ -1,9 +1,9 @@
 import {Box, Modal} from "@mui/material";
 import {useEffect, useState} from "react";
-import useStore from "../../app/stores/store";
 
 import {Carousel} from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import postApi from "../api/postApi";
 
 interface Props {
     postId: string;
@@ -14,17 +14,17 @@ interface Props {
 export default function ImagesPreviewModal({postId, isOpen, onClose}: Props) {
 
     const [images, setImages] = useState<string[]>([]);
-    const {postStore} = useStore();
+
     useEffect(() => {
-        let res = postStore.getPostImages(postId);
+        const res = postApi.getPostImages({ postId });
         res.then(imageDto => {
             setImages([imageDto?.value.mainImageUrl, ...(imageDto?.value.secondaryImagesUrl || [])])
         })
-    })
+    }, [postId])
 
 
     return (
-        <Modal open={isOpen} onClose={(e) => {
+        <Modal open={isOpen} onClose={(e: React.MouseEvent) => {
             setImages([]);
             e.stopPropagation();
             onClose();

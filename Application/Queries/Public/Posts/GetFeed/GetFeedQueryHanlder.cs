@@ -23,12 +23,11 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
     public async Task<ApiResponse<GetFeedQuery.Result>> Handle(GetFeedQuery request,
         CancellationToken cancellationToken)
     {
-        var posts = await GetPosts(request.FilterBy.PageSize, request.FilterBy.PageNumber, cancellationToken);
+        var posts = await GetPosts(request.FilterBy.PageSize, request.FilterBy.PageNumber, request.SortBy, cancellationToken);
         var promotedPosts = await GetPromotedPosts((int)(request.FilterBy.PageSize / 3.0), request.FilterBy.PageNumber, cancellationToken);
 
         var shuffledPosts = ShufflePosts(posts, promotedPosts);
-
-        // Получаем общее количество постов (без промо)
+        
         var totalCount = await _postRepository.GetAllPosts()
             .Where(p =>
                 p.PostSettings.postStatusType == PostStatusType.Published &&
@@ -48,18 +47,34 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
         return ApiResponse<GetFeedQuery.Result>.Success(result);
     }
 
-    private async Task<ICollection<Post>> GetPosts(int PageSize, int pageNumber, CancellationToken token)
+    private async Task<ICollection<Post>> GetPosts(int pageSize, int pageNumber, GetFeedQuery.SortSpecification? sortBy, CancellationToken token)
     {
-        var postsQuery = _postRepository.GetAllPosts()
+        var query = _postRepository.GetAllPosts()
             .Where(x =>
                 x.PostSettings.postStatusType == PostStatusType.Published &&
-                !x.PostSettings.IsDeleted
-                && x.Promotion.Type == PostPromotionType.None)
-            .OrderByDescending(x => x.CreatedAt)
-            .Skip((pageNumber - 1) * PageSize)
-            .Take(PageSize);
-        var posts = await postsQuery.ToListAsync(token);
-        return posts;
+                !x.PostSettings.IsDeleted &&
+                x.Promotion.Type == PostPromotionType.None);
+
+        if (sortBy != null && !string.IsNullOrEmpty(sortBy.SortBy))
+        {
+            query = (sortBy.SortBy.ToLower()) switch
+            {
+                "createdat" => sortBy.IsDescending ? query.OrderByDescending(x => x.CreatedAt) : query.OrderBy(x => x.CreatedAt),
+                "title" => sortBy.IsDescending ? query.OrderByDescending(x => x.Title) : query.OrderBy(x => x.Title),
+                "viewscount" => sortBy.IsDescending ? query.OrderByDescending(x => x.ViewsCount) : query.OrderBy(x => x.ViewsCount),
+                _ => query.OrderByDescending(x => x.CreatedAt) 
+            };
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.CreatedAt);
+        }
+
+        query = query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+
+        return await query.ToListAsync(token);
     }
 
     private async Task<ICollection<Post>> GetPromotedPosts(int count, int pageNumber, CancellationToken token)
@@ -67,7 +82,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
         var topPostsCount = (int)Math.Ceiling(count * 2 / 3.0);
         var highlightPostsCount = count - topPostsCount;
 
-        var topPostsQuery = _postRepository.GetAllPosts()
+        var topPosts = await _postRepository.GetAllPosts()
             .Where(x =>
                 x.Promotion.Type == PostPromotionType.Top &&
                 x.PostSettings.postStatusType == PostStatusType.Published &&
@@ -77,7 +92,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
             .Take(topPostsCount)
             .ToListAsync(token);
 
-        var highlightPostsQuery = _postRepository.GetAllPosts()
+        var highlightPosts = await _postRepository.GetAllPosts()
             .Where(x =>
                 x.Promotion.Type == PostPromotionType.Highlight &&
                 x.PostSettings.postStatusType == PostStatusType.Published &&
@@ -86,9 +101,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
             .Skip((pageNumber - 1) * highlightPostsCount)
             .Take(highlightPostsCount)
             .ToListAsync(token);
-
-        var topPosts = await topPostsQuery;
-        var highlightPosts = await highlightPostsQuery;
+        
 
         return topPosts.Concat(highlightPosts).ToList();
     }

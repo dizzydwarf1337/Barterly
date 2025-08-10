@@ -1,5 +1,5 @@
 import apiClient from "../../../app/API/apiClient";
-import { GetPostRequestDTO, GetPostResponseDTO, GetPostsRequestDTO, GetPostsResponseDTO } from "../dto/postDto";
+import { GetPostImagesRequestDTO, GetPostImagesResponseDTO, GetPostRequestDTO, GetPostResponseDTO, GetPostsRequestDTO, GetPostsResponseDTO } from "../dto/postDto";
 
 
 
@@ -9,7 +9,9 @@ const postApi = {
   getPost: async ({postId}:GetPostRequestDTO) =>
     apiClient.get<GetPostResponseDTO>(`public/posts/${postId}`),
   getFeed: async (body:GetPostsRequestDTO) =>
-    apiClient.post<GetPostsResponseDTO>("public/posts/feed", body, true)
+    apiClient.post<GetPostsResponseDTO>("public/posts/feed", body, true),
+  getPostImages: async(body:GetPostImagesRequestDTO) =>
+    apiClient.get<GetPostImagesResponseDTO>(`public/posts/images/${body.postId}`, true)
 };
 
 export default postApi;

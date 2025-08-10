@@ -113,3 +113,8 @@ export interface PostImage {
     imageUrl?:string | null;
 }
 
+export interface PostImagesModal {
+    postId:string;
+    mainImageUrl:string;
+    secondaryImagesUrl:string[];
+}

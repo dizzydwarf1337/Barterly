@@ -1,5 +1,9 @@
 import {Box, Typography} from "@mui/material";
 import MoneyIcon from '@mui/icons-material/Money'; // Example: using an icon
+import useStore from "../../../app/stores/store";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
+import { PostCurrency, PostPreview, PostPriceType, PostType } from "../types/postTypes";
 
 interface Props {
     post: PostPreview;
