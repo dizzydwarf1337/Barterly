@@ -39,7 +39,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
 
         var result = new GetFeedQuery.Result
         {
-            Posts = shuffledPosts,
+            Items = shuffledPosts,
             TotalCount = totalCount,
             TotalPages = totalPages
         };

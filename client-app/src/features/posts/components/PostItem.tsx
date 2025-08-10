@@ -213,7 +213,7 @@ export default observer(function PostItem({ post }: Props) {
             {post.postType === PostType.Work && (
               <>
                 <Typography>{t(ContractType[post.contract!])}</Typography>
-                <Typography>{t(WorkloadType[post.workLoad!])}</Typography>
+                <Typography>{t(WorkloadType[post.workload!])}</Typography>
               </>
             )}
             {renderPriceAndType()}

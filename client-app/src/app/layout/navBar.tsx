@@ -5,7 +5,6 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  InputBase,
   Badge,
   Avatar,
   Chip,
@@ -23,22 +22,19 @@ import { useState, ReactElement } from "react";
 // Icons
 import ReorderIcon from "@mui/icons-material/Reorder";
 import SettingsIcon from "@mui/icons-material/Settings";
-import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PersonIcon from "@mui/icons-material/Person";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
-import HomeIcon from "@mui/icons-material/Home";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LanguageIcon from "@mui/icons-material/Language";
 
 import ProfileSettingsMenu from "../../features/navBar/profileMenu/profileSettingsMenu";
 import useStore from "../stores/store";
 import MobileNavDialog from "./MobileNavDialog";
-import { Link, useLocation, useNavigate } from "react-router";
-import darkTheme from "../theme/DarkTheme";
-import lightTheme from "../theme/LightTheme";
+import { Link, useNavigate } from "react-router";
 
 // Styled Components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -49,57 +45,6 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
     easing: theme.transitions.easing.easeInOut,
     duration: theme.transitions.duration.standard,
   }),
-}));
-
-const SearchContainer = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius * 2,
-  backgroundColor: alpha(theme.palette.common.black, 0.05),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.black, 0.1),
-  },
-  "&:focus-within": {
-    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-    boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.2)}`,
-  },
-  marginLeft: 0,
-  width: "100%",
-  maxWidth: "400px",
-  transition: theme.transitions.create(["background-color", "box-shadow"], {
-    easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.short,
-  }),
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: theme.palette.text.secondary,
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "20ch",
-      "&:focus": {
-        width: "30ch",
-      },
-    },
-  },
 }));
 
 const LogoContainer = styled(Box)(({ theme }) => ({
@@ -173,23 +118,14 @@ export default observer(function NavBar() {
   const { t, i18n } = useTranslation();
   const { uiStore, authStore } = useStore();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [notificationCount] = useState(3); // Mock notification count
+  const [notificationCount] = useState(3);
 
   const theme = uiStore.getTheme();
 
   const handleOpenUserSettings = (element: HTMLElement) => {
     uiStore.setUserSettingIsOpen(true);
     uiStore.setMenuElement(element);
-  };
-
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
   };
 
   const handleAddPost = () => {
@@ -216,66 +152,18 @@ export default observer(function NavBar() {
   };
 
   const handleLanguageChange = () => {
-    const newLanguage = i18n.language === 'en' ? 'pl' : 'en';
+    const newLanguage = i18n.language === "en" ? "pl" : "en";
     i18n.changeLanguage(newLanguage);
-    localStorage.setItem('brt_lng', newLanguage);
+    localStorage.setItem("brt_lng", newLanguage);
+    uiStore.setLanguage(newLanguage);
   };
 
   const handleThemeChange = () => {
-    uiStore.setTheme(uiStore.themeMode == "dark" ? lightTheme : darkTheme);
+    uiStore.changeTheme();
   };
-
-  const isActiveRoute = (path: string) => location.pathname === path;
 
   const renderDesktopContent = () => (
     <Box display="flex" flexDirection="row" gap={2} alignItems="center">
-      {/* Navigation Links */}
-      <Box display="flex" gap={1}>
-        <Tooltip title={t("home")}>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <NavButton
-              variant={isActiveRoute("/") ? "contained" : "text"}
-              size="small"
-              startIcon={<HomeIcon />}
-            >
-              {t("home")}
-            </NavButton>
-          </Link>
-        </Tooltip>
-      </Box>
-
-      <Divider orientation="vertical" flexItem />
-
-      {/* Theme Toggle */}
-      <Tooltip title={uiStore.themeMode == "dark"? t("switchToLight") : t("switchToDark")}>
-        <IconButton
-          onClick={handleThemeChange}
-          sx={{
-            color: theme.palette.text.primary,
-            transition: "transform 0.3s ease",
-            "&:hover": {
-              transform: "rotate(180deg)",
-            },
-          }}
-        >
-          {uiStore.themeMode == "dark" ? <LightModeIcon /> : <DarkModeIcon />}
-        </IconButton>
-      </Tooltip>
-
-      {/* Language Toggle */}
-      <Tooltip title={t("changeLanguage")}>
-        <NavButton
-          variant="text"
-          size="small"
-          onClick={handleLanguageChange}
-          sx={{ minWidth: 'auto', px: 1 }}
-        >
-          {i18n.language.toUpperCase()}
-        </NavButton>
-      </Tooltip>
-
-      <Divider orientation="vertical" flexItem />
-
       {/* Add Post Button */}
       <Tooltip
         title={authStore.isLoggedIn ? t("addPost") : t("loginToAddPost")}
@@ -291,6 +179,7 @@ export default observer(function NavBar() {
         </NavButton>
       </Tooltip>
 
+      {/* Login/Logout Button */}
       {authStore.isLoggedIn ? (
         <>
           {/* Notifications */}
@@ -349,7 +238,7 @@ export default observer(function NavBar() {
         </>
       ) : (
         <Tooltip title={t("login")}>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
+          <Link to="/login" style={{ textDecoration: "none" }}>
             <NavButton
               variant="outlined"
               color="primary"
@@ -360,37 +249,59 @@ export default observer(function NavBar() {
           </Link>
         </Tooltip>
       )}
-    </Box>
-  );
 
-  const renderMobileContent = () => (
-    <Box display="flex" alignItems="center" gap={1}>
-      {/* Language Toggle - Mobile */}
+      <Divider orientation="vertical" flexItem />
+
+      {/* Theme Toggle */}
+      <Tooltip
+        title={
+          uiStore.themeMode === "dark" ? t("switchToLight") : t("switchToDark")
+        }
+      >
+        <IconButton
+          onClick={handleThemeChange}
+          sx={{
+            color: theme.palette.text.primary,
+            transition: "transform 0.3s ease",
+            "&:hover": {
+              transform: "rotate(180deg)",
+            },
+          }}
+        >
+          {uiStore.themeMode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        </IconButton>
+      </Tooltip>
+
+      {/* Language Toggle */}
       <Tooltip title={t("changeLanguage")}>
         <IconButton
           onClick={handleLanguageChange}
           sx={{
             color: theme.palette.text.primary,
-            fontSize: '0.8rem',
-            fontWeight: 'bold',
-            minWidth: 32,
-            minHeight: 32,
+            transition: "transform 0.2s ease",
+            "&:hover": {
+              transform: "scale(1.1)",
+            },
           }}
         >
-          {i18n.language.toUpperCase()}
+          <LanguageIcon />
+          <Typography
+            variant="caption"
+            sx={{
+              ml: 0.5,
+              fontWeight: "bold",
+              fontSize: "0.7rem",
+            }}
+          >
+            {i18n.language.toUpperCase()}
+          </Typography>
         </IconButton>
       </Tooltip>
+    </Box>
+  );
 
-      {/* Mobile Search */}
-      <Tooltip title={t("search")}>
-        <IconButton
-          onClick={() => navigate("/search")}
-          sx={{ color: theme.palette.text.primary }}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Tooltip>
-
+  const renderMobileContent = () => (
+    <Box display="flex" alignItems="center" gap={1}>
       {/* Add Post Button - Mobile */}
       <Tooltip title={t("addPost")}>
         <IconButton
@@ -482,82 +393,51 @@ export default observer(function NavBar() {
           elevation={0}
           sx={{
             height: { xs: 64, sm: 70 },
-            zIndex: (theme) => theme.zIndex.appBar,
+            zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         >
           <Toolbar
             sx={{
-              justifyContent: "space-between",
-              minHeight: { xs: 64, sm: 70 },
+              height: "100%",
               px: { xs: 2, sm: 3 },
+              justifyContent: "space-between",
             }}
           >
-            {/* Logo Section */}
-            <Box display="flex" alignItems="center" gap={2}>
-              <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <LogoContainer>
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      background:
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: "1.2rem",
-                    }}
-                  >
-                    B
-                  </Box>
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    sx={{
-                      fontWeight: 700,
-                      background:
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      backgroundClip: "text",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      display: { xs: "none", sm: "block" },
-                    }}
-                  >
-                    Barterly
-                  </Typography>
-                </LogoContainer>
-              </Link>
+            {/* Logo */}
+            <LogoContainer onClick={() => navigate("/")}>
+              <Typography
+                variant="h5"
+                component="div"
+                sx={{
+                  fontWeight: "bold",
+                  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Barterly
+              </Typography>
+            </LogoContainer>
 
-              {/* Search Bar - Desktop only */}
-              {!uiStore.isMobile && (
-                <SearchContainer>
-                  <form onSubmit={handleSearch}>
-                    <SearchIconWrapper>
-                      <SearchIcon />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                      placeholder={`${t("searchPlaceholder")}...`}
-                      inputProps={{ "aria-label": "search" }}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </form>
-                </SearchContainer>
-              )}
+            {/* Desktop Content */}
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+              {renderDesktopContent()}
             </Box>
 
-            {/* Navigation Content */}
-            {uiStore.isMobile ? renderMobileContent() : renderDesktopContent()}
+            {/* Mobile Content */}
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              {renderMobileContent()}
+            </Box>
           </Toolbar>
         </StyledAppBar>
       </HideOnScroll>
 
-      {/* Dialogs and Menus */}
+      {/* Profile Settings Menu */}
       <ProfileSettingsMenu />
-      {uiStore.isMobile && <MobileNavDialog />}
+
+      {/* Mobile Navigation Dialog */}
+      <MobileNavDialog />
     </>
   );
 });

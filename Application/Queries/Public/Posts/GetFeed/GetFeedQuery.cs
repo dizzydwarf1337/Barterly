@@ -22,7 +22,7 @@ public class GetFeedQuery : PublicRequest<GetFeedQuery.Result>
 
     public class Result
     {
-        public ICollection<PostPreviewDto> Posts { get; set; }
+        public ICollection<PostPreviewDto> Items { get; set; }
         public int TotalCount { get; set; }
         public int TotalPages { get; set; }
     }
