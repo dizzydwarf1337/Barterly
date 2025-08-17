@@ -12,9 +12,9 @@ public class UserFavPostQueryRepository : BaseQueryRepository<BarterlyDbContext>
     {
     }
 
-    public async Task<UserFavouritePost> GetUserFavPostByIdAsync(Guid id, CancellationToken token)
+    public async Task<UserFavouritePost> GetUserFavPostByIdAsync(Guid postId, Guid userId, CancellationToken token)
     {
-        return await _context.UserFavouritePosts.FindAsync(id, token) ??
+        return await _context.UserFavouritePosts.Where(x=>x.PostId == postId && x.UserId == userId).FirstOrDefaultAsync(token) ??
                throw new EntityNotFoundException("User favourite post");
     }
 

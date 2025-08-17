@@ -3,20 +3,27 @@ import App from "../../App";
 import HomePage from "../../pages/homePage";
 import { authRoutes } from "../../features/auth/routes/authRoutes";
 import { postRoutes } from "../../features/posts/routes/postRoutes";
+import { UserWrapper } from "../wrappers/userWrapper";
 
 const routes: RouteObject[] = [
-    {
-        path: '/',
-        element: <App/>,
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <UserWrapper />,
         children: [
-            {
-                index: true, 
-                element: <HomePage/>,
-            },
-            ...authRoutes,
-            ...postRoutes
+          {
+            index: true,
+            element: <HomePage />,
+          },
+          ...postRoutes,
+          ...authRoutes,
         ],
-    },
+      },
+    ],
+  },
 ];
 
 export const router = createBrowserRouter(routes);

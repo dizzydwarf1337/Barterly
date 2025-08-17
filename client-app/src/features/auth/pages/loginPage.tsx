@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -13,25 +13,25 @@ import {
   Tabs,
   Tab,
   Container,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
   Google as GoogleIcon,
   Email as EmailIcon,
   Lock as LockIcon,
-} from '@mui/icons-material';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { useGoogleLogin } from '@react-oauth/google';
-import { observer } from 'mobx-react-lite';
-import { LoginRequestDTO, LoginWithGoogleRequestDTO } from '../dto/authDto';
-import authApi from '../api/authApi';
-import { useNavigate } from 'react-router';
-import useStore from '../../../app/stores/store';
-import RegistrationForm from '../components/registrationForm';
+} from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
+import { useGoogleLogin } from "@react-oauth/google";
+import { observer } from "mobx-react-lite";
+import { LoginRequestDTO, LoginWithGoogleRequestDTO } from "../dto/authDto";
+import authApi from "../api/authApi";
+import { useNavigate } from "react-router";
+import useStore from "../../../app/stores/store";
+import RegistrationForm from "../components/registrationForm";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,8 +43,6 @@ interface LoginFormData {
   email: string;
   password: string;
 }
-
-
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -71,34 +69,31 @@ const LoginPage: React.FC = observer(() => {
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Редирект если пользователь уже залогинен
   useEffect(() => {
     if (authStore.isLoggedIn) {
-      navigate('/');
+      navigate("/");
     }
   }, [authStore.isLoggedIn, navigate]);
 
-  // Схема валидации для логина
   const loginSchema = Yup.object({
     email: Yup.string()
-      .email(t('validation.invalidEmail'))
-      .required(t('validation.required')),
+      .email(t("validation.invalidEmail"))
+      .required(t("validation.required")),
     password: Yup.string()
-      .min(6, t('validation.passwordMinLength'))
-      .required(t('validation.required')),
+      .min(6, t("validation.passwordMinLength"))
+      .required(t("validation.required")),
   });
 
-  // Форма логина
   const {
     control: loginControl,
     handleSubmit: handleLoginSubmit,
     reset: resetLogin,
-    formState: { errors: loginErrors }
+    formState: { errors: loginErrors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -110,29 +105,27 @@ const LoginPage: React.FC = observer(() => {
         email: data.email,
         password: data.password,
       };
-      
+
       const response = await authApi.login(loginData);
-      
-      if (response.isSuccess) {
-        // Диспатчим логин в authStore
-        await authStore.login(response.value);
-        setSuccess(t('auth.loginSuccess'));
-        uiStore.showSnackbar(t('auth.loginSuccess'), 'success', 'center');
-        navigate('/');
+
+      if (response.isSuccess && response.value) {
+        await authStore.login(response.value.token, response.value.roles);
+        setSuccess(t("auth.loginSuccess"));
+        uiStore.showSnackbar(t("auth.loginSuccess"), "success", "center");
+        navigate("/");
       } else {
-        setError(response.error || t('auth.loginError'));
+        setError(response.error || t("auth.loginError"));
       }
-    } catch (err: any) {
-      setError(err.message || t('auth.loginError'));
+    } catch {
+      setError(t("auth.loginError"));
     } finally {
       setLoading(false);
     }
   };
 
-  // Обработчики успеха и ошибок для регистрации
-  const handleRegistrationSuccess = (email:string) => {
+  const handleRegistrationSuccess = (email: string) => {
     navigate(`resend-email-confirmation/${email}`);
-    setSuccess(t('auth.registerSuccess'));
+    setSuccess(t("auth.registerSuccess"));
   };
 
   const handleRegistrationError = (errorMessage: string) => {
@@ -148,27 +141,30 @@ const LoginPage: React.FC = observer(() => {
         const googleLoginData: LoginWithGoogleRequestDTO = {
           token: codeResponse.code,
         };
-        
+
         const response = await authApi.loginWithGoogle(googleLoginData);
-        
+
         if (response.isSuccess) {
-          // Диспатчим логин в authStore
-          await authStore.loginWithGoogle(response.value);
-          setSuccess(t('auth.googleLoginSuccess'));
-          uiStore.showSnackbar(t('auth.googleLoginSuccess'), 'success', 'center');
-          navigate('/');
+          authStore.loginWithGoogle(response.value.token, response.value.roles);
+          setSuccess(t("auth.googleLoginSuccess"));
+          uiStore.showSnackbar(
+            t("auth.googleLoginSuccess"),
+            "success",
+            "center"
+          );
+          navigate("/");
         } else {
-          setError(response.error || t('auth.googleLoginError'));
+          setError(response.error || t("auth.googleLoginError"));
         }
       } catch (err: any) {
-        setError(err.message || t('auth.googleLoginError'));
+        setError(err.message || t("auth.googleLoginError"));
       } finally {
         setLoading(false);
       }
     },
     onError: (error) => {
-      console.log('Google Login Failed:', error);
-      setError(t('auth.googleLoginError'));
+      console.log("Google Login Failed:", error);
+      setError(t("auth.googleLoginError"));
     },
     flow: "auth-code",
   });
@@ -189,40 +185,46 @@ const LoginPage: React.FC = observer(() => {
     <Container maxWidth="sm">
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 3,
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Paper
           elevation={3}
           sx={{
             p: 4,
-            width: '100%',
+            width: "100%",
             maxWidth: 480,
             borderRadius: 3,
           }}
         >
-          {/* Заголовок */}
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Box sx={{ textAlign: "center", mb: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-              {t('auth.welcome')}
+              {t("auth.welcome")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {t('auth.subtitle')}
+              {t("auth.subtitle")}
             </Typography>
           </Box>
 
           {/* Уведомления */}
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+            <Alert
+              severity="error"
+              sx={{ mb: 2 }}
+              onClose={() => setError(null)}
+            >
               {error}
             </Alert>
           )}
           {success && (
-            <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
+            <Alert
+              severity="success"
+              sx={{ mb: 2 }}
+              onClose={() => setSuccess(null)}
+            >
               {success}
             </Alert>
           )}
@@ -234,8 +236,8 @@ const LoginPage: React.FC = observer(() => {
             centered
             sx={{ mb: 2 }}
           >
-            <Tab label={t('auth.login')} />
-            <Tab label={t('auth.register')} />
+            <Tab label={t("auth.login")} />
+            <Tab label={t("auth.register")} />
           </Tabs>
 
           {/* Панель логина */}
@@ -248,7 +250,7 @@ const LoginPage: React.FC = observer(() => {
                   <TextField
                     {...field}
                     fullWidth
-                    label={t('auth.email')}
+                    label={t("auth.email")}
                     type="email"
                     error={!!loginErrors.email}
                     helperText={loginErrors.email?.message}
@@ -271,8 +273,8 @@ const LoginPage: React.FC = observer(() => {
                   <TextField
                     {...field}
                     fullWidth
-                    label={t('auth.password')}
-                    type={showPassword ? 'text' : 'password'}
+                    label={t("auth.password")}
+                    type={showPassword ? "text" : "password"}
                     error={!!loginErrors.password}
                     helperText={loginErrors.password?.message}
                     InputProps={{
@@ -305,14 +307,14 @@ const LoginPage: React.FC = observer(() => {
                 disabled={loading}
                 sx={{ mb: 2 }}
               >
-                {loading ? <CircularProgress size={24} /> : t('auth.login')}
+                {loading ? <CircularProgress size={24} /> : t("auth.login")}
               </Button>
             </Box>
           </TabPanel>
 
           {/* Панель регистрации */}
           <TabPanel value={tabValue} index={1}>
-            <RegistrationForm 
+            <RegistrationForm
               onSuccess={(email) => handleRegistrationSuccess(email)}
               onError={handleRegistrationError}
             />
@@ -321,7 +323,7 @@ const LoginPage: React.FC = observer(() => {
           {/* Разделитель */}
           <Divider sx={{ my: 3 }}>
             <Typography variant="body2" color="text.secondary">
-              {t('auth.or')}
+              {t("auth.or")}
             </Typography>
           </Divider>
 
@@ -334,15 +336,15 @@ const LoginPage: React.FC = observer(() => {
             onClick={() => googleLogin()}
             disabled={loading}
             sx={{
-              borderColor: '#4285f4',
-              color: '#4285f4',
-              '&:hover': {
-                borderColor: '#3367d6',
-                backgroundColor: 'rgba(66, 133, 244, 0.04)',
+              borderColor: "#4285f4",
+              color: "#4285f4",
+              "&:hover": {
+                borderColor: "#3367d6",
+                backgroundColor: "rgba(66, 133, 244, 0.04)",
               },
             }}
           >
-            {t('auth.continueWithGoogle')}
+            {t("auth.continueWithGoogle")}
           </Button>
         </Paper>
       </Box>

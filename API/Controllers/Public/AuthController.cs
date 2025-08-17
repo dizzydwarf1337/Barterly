@@ -3,6 +3,8 @@ using Application.Commands.Public.Accounts.CreateUser;
 using Application.Commands.Public.Accounts.ResendEmailConfirm;
 using Application.Commands.Public.Auth.Login;
 using Application.Commands.Public.Auth.LoginWithGoogle;
+using Application.Commands.Public.Auth.Logout;
+using Application.Queries.Public.Users.GetMe;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,4 +48,15 @@ public class AuthController : BaseController
     {
         return HandleResponse(await Mediator.Send(command));
     }
+
+    [HttpPost]
+    [Route("logout")]
+    public async Task<IActionResult> Logout()
+        =>  HandleResponse(await Mediator.Send(new LogoutCommand()));
+
+    [HttpGet]
+    [Route("get-me")]
+    public async Task<IActionResult> GetMe()
+        => HandleResponse(await Mediator.Send(new GetMeQuery()));
+
 }

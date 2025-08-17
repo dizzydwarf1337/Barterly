@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.Users;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
 namespace Persistence.Repositories.Commands.Users;
@@ -17,10 +18,12 @@ public class UserFavPostCommandRepository : BaseCommandRepository<BarterlyDbCont
         await _context.SaveChangesAsync(token);
     }
 
-    public async Task DeleteUserFavPostAsync(Guid id, CancellationToken token)
+    public async Task DeleteUserFavPostAsync(Guid postId, Guid userId, CancellationToken token)
     {
-        var userFavPost = await _context.UserFavouritePosts.FindAsync(id, token) ??
-                          throw new EntityNotFoundException("UserFavPost");
+        var userFavPost = await _context.UserFavouritePosts
+                              .Where(x=>x.UserId == userId && x.PostId == postId)
+                              .FirstOrDefaultAsync(token) 
+                                ?? throw new EntityNotFoundException("UserFavPost");
         _context.UserFavouritePosts.Remove(userFavPost);
         await _context.SaveChangesAsync(token);
     }

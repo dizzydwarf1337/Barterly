@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using Application.Core.ApiResponse;
 using Application.Core.MediatR.Requests;
 using Domain.Enums.Users;
 using Domain.Exceptions.BusinessExceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -39,8 +41,7 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
         var endpoint = _httpContextAccessor.HttpContext?.GetEndpoint() ??
                        throw new AccessForbiddenException("Authorization behavior", userIdStr,
                            "Endpoint not found");
-        request.AuthorizeData = new AuthorizeData(Guid.Parse(userIdStr), userRoles,
-            _httpContextAccessor.HttpContext.User.ToString(), endpoint);
+        request.AuthorizeData = new AuthorizeData(Guid.Parse(userIdStr), userRoles,_httpContextAccessor.HttpContext.User.ToString(),endpoint);
         return await next(cancellationToken);
     }
 }

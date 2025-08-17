@@ -23,7 +23,6 @@ public static class InfrastructureConfig
             cfg.AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
             cfg.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            cfg.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             cfg.AddOpenBehavior(typeof(MessagesValidationBehavior<,>));
 
         });

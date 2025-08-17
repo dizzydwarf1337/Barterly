@@ -16,7 +16,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { observer } from "mobx-react-lite";
-import { useState, ReactElement } from "react";
+import { ReactElement } from "react";
 
 // Icons
 import ReorderIcon from "@mui/icons-material/Reorder";
@@ -28,11 +28,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LanguageIcon from "@mui/icons-material/Language";
+import { Favorite } from "@mui/icons-material";
 import useStore from "../stores/store";
 import MobileNavDialog from "./MobileNavDialog";
 import { Link, useNavigate } from "react-router";
+import authApi from "../../features/auth/api/authApi";
 
-// Styled Components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.95),
   backdropFilter: "blur(10px)",
@@ -93,7 +94,6 @@ const UserInfo = styled(Box)(({ theme }) => ({
   },
 }));
 
-// Hide on scroll component
 interface HideOnScrollProps {
   children: ReactElement;
 }
@@ -114,8 +114,6 @@ export default observer(function NavBar() {
   const { t, i18n } = useTranslation();
   const { uiStore, authStore } = useStore();
   const navigate = useNavigate();
-
-  const [notificationCount] = useState(3);
 
   const theme = uiStore.getTheme();
 
@@ -139,6 +137,7 @@ export default observer(function NavBar() {
 
   const handleLogout = async () => {
     try {
+      await authApi.logout();
       await authStore.logout();
       uiStore.showSnackbar(t("logoutSuccess"), "success", "center");
       navigate("/");
@@ -160,7 +159,6 @@ export default observer(function NavBar() {
 
   const renderDesktopContent = () => (
     <Box display="flex" flexDirection="row" gap={2} alignItems="center">
-      {/* Add Post Button */}
       <Tooltip
         title={authStore.isLoggedIn ? t("addPost") : t("loginToAddPost")}
       >
@@ -175,27 +173,40 @@ export default observer(function NavBar() {
         </NavButton>
       </Tooltip>
 
-      {/* Login/Logout Button */}
       {authStore.isLoggedIn ? (
         <>
-          {/* Notifications */}
           <Tooltip title={t("notifications")}>
             <IconButton color="inherit">
-              <Badge badgeContent={notificationCount} color="error">
+              <Badge
+                badgeContent={authStore.user?.notificationCount}
+                color="error"
+              >
                 <NotificationsIcon />
               </Badge>
             </IconButton>
           </Tooltip>
 
-          {/* User Info */}
+          <Tooltip title={t("favorites")}>
+            <IconButton color="inherit">
+              <Badge
+                badgeContent={authStore.user?.favPostIds?.length}
+                color="error"
+              >
+                <Favorite />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+
           <UserInfo>
             <Avatar
-              sx={{ width: 32, height: 32 }}
-              src={authStore.user?.profilePicturePath ?? ""}
-              alt={authStore.user?.firstName}
+              src={authStore.user?.profilePicturePath ?? undefined}
+              sx={{
+                width: 32,
+                height: 32,
+                border: `2px solid ${theme.palette.primary.main}`,
+              }}
             >
-              <img src={authStore.user?.profilePicturePath || authStore.user?.firstName?.charAt(0)} alt={authStore.user?.firstName} />
-              {authStore.user?.profilePicturePath || <PersonIcon />}
+              {authStore.user?.firstName?.charAt(0) || <PersonIcon />}
             </Avatar>
             <Box display="flex" flexDirection="column" alignItems="flex-start">
               <Typography variant="body2" fontWeight="600" noWrap>
@@ -204,8 +215,6 @@ export default observer(function NavBar() {
             </Box>
           </UserInfo>
 
-
-          {/* Logout */}
           <Tooltip title={t("logout")}>
             <IconButton onClick={handleLogout} color="error">
               <LogoutIcon />
@@ -228,7 +237,6 @@ export default observer(function NavBar() {
 
       <Divider orientation="vertical" flexItem />
 
-      {/* Theme Toggle */}
       <Tooltip
         title={
           uiStore.themeMode === "dark" ? t("switchToLight") : t("switchToDark")
@@ -247,8 +255,6 @@ export default observer(function NavBar() {
           {uiStore.themeMode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
       </Tooltip>
-
-      {/* Language Toggle */}
       <Tooltip title={t("changeLanguage")}>
         <IconButton
           onClick={handleLanguageChange}
@@ -278,7 +284,6 @@ export default observer(function NavBar() {
 
   const renderMobileContent = () => (
     <Box display="flex" alignItems="center" gap={1}>
-      {/* Add Post Button - Mobile */}
       <Tooltip title={t("addPost")}>
         <IconButton
           onClick={handleAddPost}
@@ -296,7 +301,6 @@ export default observer(function NavBar() {
         </IconButton>
       </Tooltip>
 
-      {/* User Avatar or Login - Mobile */}
       {authStore.isLoggedIn ? (
         <Tooltip title={`${t("hello")}, ${authStore.user?.firstName}`}>
           <IconButton
@@ -304,7 +308,7 @@ export default observer(function NavBar() {
             sx={{ p: 0.5 }}
           >
             <Badge
-              badgeContent={notificationCount}
+              badgeContent={authStore.user?.notificationCount}
               color="error"
               max={9}
               overlap="circular"
@@ -344,7 +348,6 @@ export default observer(function NavBar() {
         </Tooltip>
       )}
 
-      {/* Mobile Menu Button */}
       <Tooltip title={t("menu")}>
         <IconButton
           onClick={() => uiStore.setIsMobileMenuOpen(true)}
@@ -379,7 +382,6 @@ export default observer(function NavBar() {
               justifyContent: "space-between",
             }}
           >
-            {/* Logo */}
             <LogoContainer onClick={() => navigate("/")}>
               <Typography
                 variant="h5"
@@ -396,12 +398,10 @@ export default observer(function NavBar() {
               </Typography>
             </LogoContainer>
 
-            {/* Desktop Content */}
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {renderDesktopContent()}
             </Box>
 
-            {/* Mobile Content */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               {renderMobileContent()}
             </Box>
@@ -409,7 +409,6 @@ export default observer(function NavBar() {
         </StyledAppBar>
       </HideOnScroll>
 
-      {/* Mobile Navigation Dialog */}
       <MobileNavDialog />
     </>
   );

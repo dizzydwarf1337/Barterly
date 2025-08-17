@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-    Box, 
+    Box,  
     Typography, 
     Skeleton, 
     Alert,
@@ -88,7 +88,7 @@ export default observer(function PostDetails() {
         };
 
         fetchPost();
-    }, [postId, t]);
+    }, [postId]);
 
     useEffect(() => {
         const fetchOwner = async () => {
@@ -446,7 +446,7 @@ export default observer(function PostDetails() {
         );
     }
 
-    const isPromoted = currentPost.postPromotionType && PostPromotionType[currentPost.postPromotionType] !== PostPromotionType.None;
+    const isPromoted = currentPost.postPromotionType !== null && currentPost.postPromotionType !== PostPromotionType.None;
 
     return (
         <Fade in timeout={600}>
@@ -626,7 +626,7 @@ export default observer(function PostDetails() {
                                             {currentPost.tags.map((tag, index) => (
                                                 <Chip
                                                     key={index}
-                                                    label={`#${tag}`}
+                                                    label={`#${tag.trim()}`}
                                                     size="small"
                                                     color="primary"
                                                     variant="filled"

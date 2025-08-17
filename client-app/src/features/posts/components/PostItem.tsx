@@ -8,7 +8,16 @@ import {
   PostPromotionType,
   PostType,
 } from "../types/postTypes";
-import { Box, Typography, Chip, Divider, Avatar, alpha, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Chip,
+  Divider,
+  Avatar,
+  alpha,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import ImagesPreview from "./imagesPreview";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -21,6 +30,8 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import WorkIcon from "@mui/icons-material/Work";
 import BusinessIcon from "@mui/icons-material/Business";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import postApi from "../api/postApi";
+import useStore from "../../../app/stores/store";
 
 interface Props {
   post: PostPreview;
@@ -29,10 +40,11 @@ interface Props {
 export default observer(function PostItem({ post }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const { uiStore } = useStore();
   const renderPriceAndType = () => {
     const currencySymbol = post.currency ? PostCurrency[post.currency] : "";
-    const priceTypeTranslation = post.priceType != null ? t(PostPriceType[post.priceType]) : "";
+    const priceTypeTranslation =
+      post.priceType != null ? t(PostPriceType[post.priceType]) : "";
 
     let priceText = "";
     let icon = MoneyIcon;
@@ -52,7 +64,11 @@ export default observer(function PostItem({ post }: Props) {
     } else if (post.postType === PostType.Rent) {
       priceText = post.price != null ? `${post.price}` : t("negotiable");
     } else {
-      if (post.price != null && post.price > 0 && post.priceType !== PostPriceType.Free) {
+      if (
+        post.price != null &&
+        post.price > 0 &&
+        post.priceType !== PostPriceType.Free
+      ) {
         priceText = `${post.price}`;
       } else {
         priceText = t("Free");
@@ -63,32 +79,36 @@ export default observer(function PostItem({ post }: Props) {
     const IconComponent = icon;
 
     return (
-      <Box 
-        display="flex" 
-        flexDirection="row" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
         gap={1}
         sx={{
-          backgroundColor: isSuccessColor ? alpha('#4CAF50', 0.1) : alpha('#2196F3', 0.1),
-          borderRadius: '12px',
+          backgroundColor: isSuccessColor
+            ? alpha("#4CAF50", 0.1)
+            : alpha("#2196F3", 0.1),
+          borderRadius: "12px",
           px: 2,
-          py: 1
+          py: 1,
         }}
       >
-        <IconComponent 
-          color={isSuccessColor ? "success" : "primary"} 
+        <IconComponent
+          color={isSuccessColor ? "success" : "primary"}
           sx={{ fontSize: 20 }}
         />
         <Box>
-          <Typography 
-            variant="body1" 
-            sx={{ 
+          <Typography
+            variant="body1"
+            sx={{
               fontWeight: 700,
-              color: isSuccessColor ? 'success.main' : 'primary.main'
+              color: isSuccessColor ? "success.main" : "primary.main",
             }}
           >
             {priceText} {priceText !== t("Free") ? currencySymbol : ""}
-            {priceTypeTranslation && priceText !== t("Free") && ` / ${priceTypeTranslation}`}
+            {priceTypeTranslation &&
+              priceText !== t("Free") &&
+              ` / ${priceTypeTranslation}`}
           </Typography>
         </Box>
       </Box>
@@ -98,61 +118,64 @@ export default observer(function PostItem({ post }: Props) {
   const getPostTypeInfo = () => {
     switch (post.postType) {
       case PostType.Work:
-        return { icon: WorkIcon, label: t("work"), color: 'primary' };
+        return { icon: WorkIcon, label: t("work"), color: "primary" };
       case PostType.Rent:
-        return { icon: HomeIcon, label: t("rent"), color: 'secondary' };
+        return { icon: HomeIcon, label: t("rent"), color: "secondary" };
       default:
-        return { icon: BusinessIcon, label: t("service"), color: 'info' };
+        return { icon: BusinessIcon, label: t("service"), color: "info" };
     }
   };
 
   const postTypeInfo = getPostTypeInfo();
-  const isPromoted = post.postPromotionType !== null && post.postPromotionType !== PostPromotionType.None;
+  const isPromoted =
+    post.postPromotionType !== null &&
+    post.postPromotionType !== PostPromotionType.None;
 
   return (
     <Box
       onClick={() => navigate(`posts/${post.id}`)}
       sx={{
-        display: 'flex',
-        flexDirection: 'row',
+        display: "flex",
+        flexDirection: "row",
         gap: 3,
         p: 3,
-        backgroundColor: 'background.paper',
-        borderRadius: '20px',
-        border: '1px solid',
-        borderColor: isPromoted ? 'primary.main' : 'divider',
-        cursor: 'pointer',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        '&:hover': {
-          transform: 'translateY(-6px)',
-          boxShadow: (theme) => `0 20px 40px ${alpha(theme.palette.primary.main, 0.15)}`,
-          borderColor: 'primary.main',
-          '& .post-image': {
-            transform: 'scale(1.05)',
+        backgroundColor: "background.paper",
+        borderRadius: "20px",
+        border: "1px solid",
+        borderColor: isPromoted ? "primary.main" : "divider",
+        cursor: "pointer",
+        position: "relative",
+        overflow: "hidden",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        "&:hover": {
+          transform: "translateY(-6px)",
+          boxShadow: (theme) =>
+            `0 20px 40px ${alpha(theme.palette.primary.main, 0.15)}`,
+          borderColor: "primary.main",
+          "& .post-image": {
+            transform: "scale(1.05)",
           },
-          '& .post-actions': {
+          "& .post-actions": {
             opacity: 1,
-            transform: 'translateY(0)',
-          }
+            transform: "translateY(0)",
+          },
         },
-        '&:active': {
-          transform: 'translateY(-3px)',
-          transition: 'all 0.1s ease'
-        }
+        "&:active": {
+          transform: "translateY(-3px)",
+          transition: "all 0.1s ease",
+        },
       }}
     >
       {/* Promotion Badge */}
       {isPromoted && (
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
-            height: '4px',
-            background: (theme) => 
+            height: "4px",
+            background: (theme) =>
               `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
             zIndex: 2,
           }}
@@ -165,9 +188,9 @@ export default observer(function PostItem({ post }: Props) {
           className="post-image"
           sx={{
             flexShrink: 0,
-            overflow: 'hidden',
-            borderRadius: '16px',
-            transition: 'transform 0.3s ease',
+            overflow: "hidden",
+            borderRadius: "16px",
+            transition: "transform 0.3s ease",
           }}
         >
           <ImagesPreview mainImageUrl={post.mainImageUrl} postId={post.id} />
@@ -177,7 +200,11 @@ export default observer(function PostItem({ post }: Props) {
       {/* Content Section */}
       <Box display="flex" flexDirection="column" flex={1} gap={2}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
           <Box flex={1}>
             <Box display="flex" alignItems="center" gap={2} mb={1}>
               <Chip
@@ -186,38 +213,40 @@ export default observer(function PostItem({ post }: Props) {
                 color={postTypeInfo.color as any}
                 size="small"
                 variant="outlined"
-                sx={{ 
+                sx={{
                   fontWeight: 600,
-                  fontSize: '0.75rem'
+                  fontSize: "0.75rem",
                 }}
               />
               {isPromoted && (
                 <Chip
                   icon={<TrendingUpIcon />}
-                  label={t(`promotion.${PostPromotionType[post.postPromotionType!]}`)}
+                  label={t(
+                    `promotion.${PostPromotionType[post.postPromotionType!]}`
+                  )}
                   color="primary"
                   size="small"
-                  sx={{ 
+                  sx={{
                     fontWeight: 700,
-                    fontSize: '0.7rem',
-                    textTransform: 'uppercase'
+                    fontSize: "0.7rem",
+                    textTransform: "uppercase",
                   }}
                 />
               )}
             </Box>
-            
+
             <Typography
               variant="h5"
               sx={{
                 fontWeight: 700,
-                fontSize: '1.5rem',
+                fontSize: "1.5rem",
                 lineHeight: 1.3,
                 mb: 1,
-                display: '-webkit-box',
+                display: "-webkit-box",
                 WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                color: 'text.primary'
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                color: "text.primary",
               }}
             >
               {post.title}
@@ -225,10 +254,7 @@ export default observer(function PostItem({ post }: Props) {
 
             {/* Location */}
             <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <LocationOnIcon 
-                color="primary" 
-                sx={{ fontSize: 18 }}
-              />
+              <LocationOnIcon color="primary" sx={{ fontSize: 18 }} />
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -247,23 +273,31 @@ export default observer(function PostItem({ post }: Props) {
             gap={1}
             sx={{
               opacity: 0,
-              transform: 'translateY(-10px)',
-              transition: 'all 0.3s ease',
+              transform: "translateY(-10px)",
+              transition: "all 0.3s ease",
             }}
           >
             <Tooltip title={t("favorite")}>
               <IconButton
                 size="small"
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
-                  // Favorite functionality would go here
+                  try {
+                    await postApi.addFavPost({ id: post.id });
+                    uiStore.showSnackbar(t("postAddedToFavorites"), "success");
+                  } catch (error) {
+                    uiStore.showSnackbar(
+                      t("errorAddingPostToFavorites"),
+                      "error"
+                    );
+                  }
                 }}
                 sx={{
-                  backgroundColor: alpha('#000', 0.04),
-                  '&:hover': {
-                    backgroundColor: alpha('#000', 0.08),
-                    transform: 'scale(1.1)'
-                  }
+                  backgroundColor: alpha("#000", 0.04),
+                  "&:hover": {
+                    backgroundColor: alpha("#000", 0.08),
+                    transform: "scale(1.1)",
+                  },
                 }}
               >
                 <FavoriteIcon fontSize="small" />
@@ -277,12 +311,12 @@ export default observer(function PostItem({ post }: Props) {
           variant="body1"
           color="text.secondary"
           sx={{
-            display: '-webkit-box',
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
             lineHeight: 1.6,
-            fontSize: '0.95rem'
+            fontSize: "0.95rem",
           }}
         >
           {post.shortDescription}
@@ -298,34 +332,34 @@ export default observer(function PostItem({ post }: Props) {
           {/* Meta Info */}
           <Box display="flex" alignItems="center" gap={3}>
             <Box display="flex" alignItems="center" gap={0.5}>
-              <VisibilityIcon 
-                sx={{ 
-                  fontSize: 16, 
-                  color: 'text.secondary',
-                  opacity: 0.7 
-                }} 
+              <VisibilityIcon
+                sx={{
+                  fontSize: 16,
+                  color: "text.secondary",
+                  opacity: 0.7,
+                }}
               />
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ fontSize: '0.75rem' }}
+                sx={{ fontSize: "0.75rem" }}
               >
                 {post.viewsCount || 0} {t("views")}
               </Typography>
             </Box>
-            
+
             <Box display="flex" alignItems="center" gap={0.5}>
-              <ScheduleIcon 
-                sx={{ 
-                  fontSize: 16, 
-                  color: 'text.secondary',
-                  opacity: 0.7 
-                }} 
+              <ScheduleIcon
+                sx={{
+                  fontSize: 16,
+                  color: "text.secondary",
+                  opacity: 0.7,
+                }}
               />
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ fontSize: '0.75rem' }}
+                sx={{ fontSize: "0.75rem" }}
               >
                 {new Date(post.createdAt ?? "").toLocaleDateString()}
               </Typography>
@@ -333,11 +367,11 @@ export default observer(function PostItem({ post }: Props) {
 
             <Box display="flex" alignItems="center" gap={0.5}>
               <Avatar
-                sx={{ 
-                  width: 24, 
+                sx={{
+                  width: 24,
                   height: 24,
-                  backgroundColor: 'primary.main',
-                  fontSize: '0.75rem'
+                  backgroundColor: "primary.main",
+                  fontSize: "0.75rem",
                 }}
               >
                 <PersonIcon sx={{ fontSize: 14 }} />
@@ -345,7 +379,7 @@ export default observer(function PostItem({ post }: Props) {
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ fontSize: '0.75rem' }}
+                sx={{ fontSize: "0.75rem" }}
               >
                 {post.ownerName || t("anonymous")}
               </Typography>

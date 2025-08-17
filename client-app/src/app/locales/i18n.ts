@@ -133,7 +133,15 @@ i18n
           loginRequired: "Login required",
           allRightsReserved: "All rights reserved",
           invalidConfirmationLink: "Invalid confirmation link",
-
+          footerDescription:
+            "Your trusted platform for finding everything you need - from jobs and housing to services and products.",
+          quickLinks: "Quick Links",
+          moreInfo: "More Info",
+          contact: "Contact",
+          privacy: "Privacy Policy",
+          terms: "Terms of Service",
+          availableLanguages: "Available Languages",
+          madeWithLove: "Made with love by Anton Krymouski",
           // Categories translations
           failedToLoadCategories: "Failed to load categories",
           noCategoriesFound: "No categories found",
@@ -203,7 +211,8 @@ i18n
             continueWithGoogle: "Continue with Google",
             or: "OR",
           },
-
+          description: "Description",
+          tags: "Tags",
           postImage: "Post image",
           viewAllPhotos: "View all photos",
           imageGallery: "Image Gallery",
@@ -248,8 +257,6 @@ i18n
 
           // Details sections
           workDetails: "Work Details",
-          description: "Description",
-          tags: "Tags",
 
           // Property fields
           propertyType: "Property Type",
@@ -485,7 +492,8 @@ i18n
             Highlight: "Wyróżnione",
             Top: "Top Ogłoszenie",
           },
-
+          description: "Opis",
+          tags: "Tagi",
           postImage: "Zdjęcie ogłoszenia",
           viewAllPhotos: "Zobacz wszystkie zdjęcia",
           imageGallery: "Galeria Zdjęć",
@@ -496,6 +504,7 @@ i18n
           image: "Zdjęcie",
           fullscreen: "Pełny ekran",
 
+          price: "Cena",
           // Post interactions
           share: "Udostępnij",
           favorite: "Dodaj do ulubionych",
@@ -514,7 +523,21 @@ i18n
           // Enhanced UI
           noPostsDescription:
             "Sprawdź ponownie później, aby zobaczyć nowe ogłoszenia",
+          postOwner: "Właściciel Ogłoszenia",
 
+          contactOwner: "Napisz do Właściciela",
+          memberSince: "Członek od",
+          goBack: "Wróć",
+          footerDescription:
+            "Twoja zaufana platforma do znajdowania wszystkiego czego potrzebujesz - od pracy i mieszkań po usługi i produkty.",
+          quickLinks: "Szybkie Linki",
+          moreInfo: "Dodatkowe Informacje",
+          contact: "Kontakt",
+          privacy: "Polityka Prywatności",
+          terms: "Regulamin",
+          availableLanguages: "Dostępne Języki",
+
+          madeWithLove: "Stworzono z miłością przez Anton Krymouski",
           // Validation translations
           validation: {
             required: "To pole jest wymagane",
@@ -522,13 +545,10 @@ i18n
             passwordMinLength: "Hasło musi mieć co najmniej 6 znaków",
             nameMinLength: "Imię musi mieć co najmniej 2 znaki",
             passwordsDoNotMatch: "Hasła się nie zgadzają",
-            postOwner: "Właściciel Ogłoszenia",
-            contactOwner: "Napisz do Właściciela",
-            memberSince: "Członek od",
+
             userNotAvailable: "Informacje o użytkowniku niedostępne",
 
             // Navigation
-            goBack: "Wróć",
 
             // Details sections
             propertyDetails: "Szczegóły Nieruchomości",
@@ -579,7 +599,6 @@ i18n
             B2B: "Umowa B2B",
             "Volunteer Contract": "Umowa Wolontariacka",
 
-            price: "Cena",
             salary: "Wynagrodzenie",
           },
         },

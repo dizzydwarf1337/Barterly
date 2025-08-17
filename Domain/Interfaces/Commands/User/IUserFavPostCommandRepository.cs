@@ -5,5 +5,5 @@ namespace Domain.Interfaces.Commands.User;
 public interface IUserFavPostCommandRepository
 {
     Task CreateUserFavPostAsync(UserFavouritePost userFavPost, CancellationToken token);
-    Task DeleteUserFavPostAsync(Guid id, CancellationToken token);
+    Task DeleteUserFavPostAsync(Guid postId, Guid userId, CancellationToken token);
 }
