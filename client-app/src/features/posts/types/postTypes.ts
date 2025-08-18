@@ -75,7 +75,7 @@ export interface PostPreview {
   maxSalary?: number | null;
   priceType: PostPriceType;
   mainImageUrl?: string | null;
-  postPromotionType: PostPromotionType;
+  promotionType: PostPromotionType;
   workload?: WorkloadType | null;
   workLocation?: WorkLocationType | null;
   contract?: ContractType | null;
@@ -118,4 +118,32 @@ export interface PostImagesModal {
   postId: string;
   mainImageUrl: string;
   secondaryImagesUrl: string[];
+}
+
+export interface PostFormData {
+  subCategoryId: string;
+  postType: PostType;
+  title: string;
+  city?: string | undefined;
+  region?: string | undefined;
+  country?: string | undefined;
+  street?: string | undefined;
+  fullDescription: string;
+  shortDescription: string;
+  price: number | null;
+  postPriceType: PostPriceType | null;
+  currency: PostCurrency;
+  tags: string[];
+  mainImage?: File | null;
+  secondaryImages: File[];
+  rentObjectType?: RentObjectType | null;
+  numberOfRooms?: number | null;
+  area?: number | null;
+  floor?: number | null;
+  workload?: WorkloadType | null;
+  workLocation?: WorkLocationType | null;
+  minSalary?: number | null;
+  maxSalary?: number | null;
+  buildingNumber?: string | undefined;
+  experienceRequired?: boolean;
 }

@@ -19,7 +19,6 @@ export default function ImagesPreview({ mainImageUrl, postId }: Props) {
     const [imageError, setImageError] = useState<boolean>(false);
 
     useEffect(() => {
-        // Get total image count for this post
         const fetchImageCount = async () => {
             try {
                 const response = await postApi.getPostImages({ postId });
@@ -79,7 +78,7 @@ export default function ImagesPreview({ mainImageUrl, postId }: Props) {
             {/* Main Image */}
             <img
                 className="main-image"
-                src={import.meta.env.VITE_API_URL.replace("api", "") + mainImageUrl}
+                src={import.meta.env.VITE_API_URL + "/" + mainImageUrl}
                 alt={t("postImage")}
                 onLoad={handleImageLoad}
                 onError={handleImageError}

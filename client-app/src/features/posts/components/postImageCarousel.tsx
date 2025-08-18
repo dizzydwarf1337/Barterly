@@ -111,7 +111,7 @@ export default function PostImageCarousel({ mainImageUrl, secondaryImageUrls = [
                     </Box>
                 ) : (
                     <img
-                        src={import.meta.env.VITE_API_URL.replace("api", "") + currentImage}
+                        src={import.meta.env.VITE_API_URL + "/" + currentImage}
                         alt={title}
                         onLoad={() => handleImageLoad(currentImage)}
                         onError={() => handleImageError(currentImage)}
@@ -284,7 +284,7 @@ export default function PostImageCarousel({ mainImageUrl, secondaryImageUrls = [
                                         />
                                     )}
                                     <img
-                                        src={import.meta.env.VITE_API_URL.replace("api", "") + imageUrl}
+                                        src={import.meta.env.VITE_API_URL + "/" + imageUrl}
                                         alt={`${title} thumbnail ${index + 1}`}
                                         onLoad={() => handleImageLoad(imageUrl)}
                                         onError={() => handleImageError(imageUrl)}

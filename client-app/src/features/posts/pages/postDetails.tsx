@@ -528,8 +528,8 @@ export default observer(function PostDetails() {
   }
 
   const isPromoted =
-    currentPost.postPromotionType !== null &&
-    currentPost.postPromotionType !== PostPromotionType.None;
+    currentPost.promotionType !== null &&
+    currentPost.promotionType !== PostPromotionType.None;
 
   return (
     <Fade in timeout={600}>
@@ -605,7 +605,7 @@ export default observer(function PostDetails() {
                     <Chip
                       icon={<TrendingUpIcon />}
                       label={
-                        currentPost.postPromotionType ===
+                        currentPost.promotionType ===
                         PostPromotionType.Highlight
                           ? t("promotion.Highlight")
                           : t("promotion.Top")

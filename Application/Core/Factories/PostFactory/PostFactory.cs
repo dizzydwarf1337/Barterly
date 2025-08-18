@@ -16,6 +16,7 @@ public class PostFactory : IPostFactory
         string fullDescription,
         string shortDescription,
         CancellationToken token,
+        PostCurrency currency,
         string? city = null,
         string? region = null,
         string? country = null,
@@ -34,9 +35,16 @@ public class PostFactory : IPostFactory
         decimal? minSalary = null,
         decimal? maxSalary = null,
         string? buildingNumber = null,
-        bool? experienceRequired = null)
+        bool? experienceRequired = null
+)
     {
         Post post;
+        Console.WriteLine(title);
+        Console.WriteLine(postType);
+        Console.WriteLine(fullDescription);
+        Console.WriteLine(shortDescription);
+
+
         switch (postType)
         {
             case "Rent":
@@ -58,7 +66,8 @@ public class PostFactory : IPostFactory
                     Area = area,
                     Floor = floor,
                     PriceType = postPriceType ?? PostPriceType.PerMonth,
-                    HouseNumber = buildingNumber
+                    HouseNumber = buildingNumber,
+                    Currency = currency,
                 };
                 break;
             }
@@ -105,6 +114,7 @@ public class PostFactory : IPostFactory
             default: throw new InvalidDataProvidedException("PostType", "PostDto", "PostFactory.CreatePost");
         }
 
+        post.SubCategoryId = subCategoryId;
         //Promotion 
         var postPromotion = new Promotion
         {
@@ -125,4 +135,5 @@ public class PostFactory : IPostFactory
         post.Promotion = postPromotion;
         return post;
     }
+    
 }

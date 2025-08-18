@@ -8,9 +8,6 @@ export default class BaseApi {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_API_URL,
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
 
     this.axiosInstance.interceptors.request.use((config) => {

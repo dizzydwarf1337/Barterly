@@ -3,7 +3,7 @@ import {
   PaginationRequest,
   PaginationResponse,
 } from "../../../app/API/pagination";
-import { PostDetails, PostImagesModal, PostPreview } from "../types/postTypes";
+import { PostDetails, PostFormData, PostImagesModal, PostPreview } from "../types/postTypes";
 
 export interface GetPostsResponseDTO extends PaginationResponse<PostPreview> {}
 
@@ -30,3 +30,5 @@ export interface GetFavPostsRequestDTO extends PaginationRequest {}
 
 export interface GetFavPostsResponseDTO
   extends PaginationResponse<PostPreview> {}
+
+export interface CreatePostRequestDTO extends PostFormData {}

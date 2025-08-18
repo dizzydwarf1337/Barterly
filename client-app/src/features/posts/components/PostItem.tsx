@@ -40,7 +40,7 @@ interface Props {
 export default observer(function PostItem({ post }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { uiStore } = useStore();
+  const { uiStore, authStore } = useStore();
   const renderPriceAndType = () => {
     const currencySymbol = post.currency ? PostCurrency[post.currency] : "";
     const priceTypeTranslation =
@@ -128,8 +128,8 @@ export default observer(function PostItem({ post }: Props) {
 
   const postTypeInfo = getPostTypeInfo();
   const isPromoted =
-    post.postPromotionType !== null &&
-    post.postPromotionType !== PostPromotionType.None;
+    post.promotionType !== null &&
+    post.promotionType !== PostPromotionType.None;
 
   return (
     <Box
@@ -222,7 +222,7 @@ export default observer(function PostItem({ post }: Props) {
                 <Chip
                   icon={<TrendingUpIcon />}
                   label={t(
-                    `promotion.${PostPromotionType[post.postPromotionType!]}`
+                    `promotion.${PostPromotionType[post.promotionType!]}`
                   )}
                   color="primary"
                   size="small"
@@ -283,17 +283,40 @@ export default observer(function PostItem({ post }: Props) {
                 onClick={async (e) => {
                   e.stopPropagation();
                   try {
-                    await postApi.addFavPost({ id: post.id });
-                    uiStore.showSnackbar(t("postAddedToFavorites"), "success");
+                    const isFav = authStore.user?.favPostIds.includes(post.id);
+                    if (isFav) {
+                      await postApi.addFavPost({ id: post.id });
+                      authStore.setUser({
+                        ...authStore.user!,
+                        favPostIds: authStore.user!.favPostIds.filter(
+                          (x) => x !== post.id
+                        ),
+                      });
+                      uiStore.showSnackbar(
+                        t("postRemovedFromFavorites"),
+                        "info"
+                      );
+                    } else {
+                      await postApi.addFavPost({ id: post.id });
+                      authStore.setUser({
+                        ...authStore.user!,
+                        favPostIds: [...authStore.user!.favPostIds, post.id],
+                      });
+                      uiStore.showSnackbar(
+                        t("postAddedToFavorites"),
+                        "success"
+                      );
+                    }
                   } catch (error) {
-                    uiStore.showSnackbar(
-                      t("errorAddingPostToFavorites"),
-                      "error"
-                    );
+                    uiStore.showSnackbar(t("errorUpdatingFavorites"), "error");
                   }
                 }}
                 sx={{
                   backgroundColor: alpha("#000", 0.04),
+                  color:(theme) => authStore.user?.favPostIds.includes(post.id)
+                    ? theme.palette.error.main
+                    : theme.palette.primary,
+                  
                   "&:hover": {
                     backgroundColor: alpha("#000", 0.08),
                     transform: "scale(1.1)",

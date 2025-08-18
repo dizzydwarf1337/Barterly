@@ -29,11 +29,13 @@ export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
                 try {
                     setLoading(true);
                     const response = await postApi.getPostImages({ postId });
-                    const allImages = [
-                        response?.value.mainImageUrl,
-                        ...(response?.value.secondaryImagesUrl || [])
-                    ].filter(Boolean);
-                    setImages(allImages);
+                    
+                    const imageUrls = response?.value
+                        ?.map(item => item.imageUrl)
+                        .filter(url => url != null) || [];
+                    
+                    setImages(imageUrls);
+                    console.log('Fetched images:', imageUrls);
                 } catch (error) {
                     console.error('Failed to fetch images:', error);
                     setImages([]);
@@ -59,7 +61,8 @@ export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
 
     const handleDownload = (imageUrl: string) => {
         const link = document.createElement('a');
-        link.href = import.meta.env.VITE_API_URL.replace("api", "") + imageUrl;
+        // Исправлено построение URL
+        link.href = import.meta.env.VITE_API_URL + "/" + imageUrl;
         link.download = `image-${Date.now()}.jpg`;
         link.target = '_blank';
         document.body.appendChild(link);
@@ -288,11 +291,12 @@ export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
                                         <Box
                                             key={index}
                                             sx={{
-                                                height: '100%',
+                                                height: 'calc(80vh - 120px)', // Фиксированная высота минус хедер
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 p: 2,
+                                                position: 'relative',
                                             }}
                                         >
                                             {imageErrors.has(index) ? (
@@ -317,15 +321,18 @@ export default function ImagesPreviewModal({ postId, isOpen, onClose }: Props) {
                                                 </Box>
                                             ) : (
                                                 <img
-                                                    src={import.meta.env.VITE_API_URL.replace("api", "") + imgUrl}
+                                                    src={import.meta.env.VITE_API_URL + "/" + imgUrl}
                                                     alt={`${t("image")} ${index + 1}`}
                                                     onError={() => handleImageError(index)}
                                                     style={{
-                                                        maxWidth: '100%',
-                                                        maxHeight: '100%',
+                                                        maxWidth: 'calc(100% - 32px)', // Учитываем padding
+                                                        maxHeight: 'calc(100% - 32px)',
+                                                        width: 'auto',
+                                                        height: 'auto',
                                                         objectFit: 'contain',
                                                         borderRadius: '12px',
                                                         boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                                                        display: 'block',
                                                     }}
                                                 />
                                             )}

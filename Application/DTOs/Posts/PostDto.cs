@@ -12,7 +12,6 @@ public class PostDto
     public required string Title { get; set; }
 
     public required string SubCategoryId { get; set; }
-    public required string PromotionId { get; set; }
     
     public required string FullDescription { get; set; }
     
@@ -23,7 +22,7 @@ public class PostDto
     public PostPriceType? PriceType { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
+    public PostPromotionType PromotionType { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public string? MainImageUrl { get; set; }
     public string[]? Tags { get; set; }

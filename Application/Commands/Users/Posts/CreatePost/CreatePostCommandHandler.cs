@@ -1,9 +1,7 @@
 ﻿using Application.Core.ApiResponse;
 using Application.Core.Factories.Interfaces;
-using Application.DTOs.Posts;
 using Application.Events.Posts.PostCreatedEvent;
 using Application.Interfaces;
-using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Enums.Common;
 using Domain.Interfaces.Commands.Post;
@@ -11,36 +9,35 @@ using MediatR;
 
 namespace Application.Commands.Users.Posts.CreatePost;
 
-public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiResponse<PostDto>>
+public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiResponse<Unit>>
 {
     private readonly IFileService _fileService;
     private readonly ILogService _logService;
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
     private readonly IPostCommandRepository _postCommandRepository;
     private readonly IPostFactory _postFactory;
 
     public CreatePostCommandHandler(IMediator mediator, ILogService logService, IPostFactory postFactory,
-        IFileService fileService, IPostCommandRepository postCommandRepository, IMapper mapper)
+        IFileService fileService, IPostCommandRepository postCommandRepository)
     {
         _mediator = mediator;
         _logService = logService;
         _postFactory = postFactory;
         _fileService = fileService;
         _postCommandRepository = postCommandRepository;
-        _mapper = mapper;
     }
 
-    public async Task<ApiResponse<PostDto>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<Unit>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
         var postToAdd = _postFactory.CreatePost(
             request.SubCategoryId,
-            request.OwnerId,
+            request.AuthorizeData.UserId,
             request.PostType,
             request.Title,
             request.FullDescription,
             request.ShortDescription,
             cancellationToken,
+            request.Currency,
             request.City,
             request.Region,
             request.Country,
@@ -85,11 +82,11 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiRe
 
         await _mediator.Publish(new PostCreatedEvent
         {
-            UserId = request.OwnerId,
+            UserId = request.AuthorizeData.UserId,
             PostId = post.Id
         });
         await _logService.CreateLogAsync($"Post created title: {post.Title}", cancellationToken,
             LogType.Information, post.Id.ToString(), post.OwnerId);
-        return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post), 201);
+        return ApiResponse<Unit>.Success(Unit.Value, 201);
     }
 }

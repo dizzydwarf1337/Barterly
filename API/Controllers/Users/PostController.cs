@@ -48,8 +48,9 @@ public class UserPostController : BaseController
 
     [HttpPost]
     [Route("create")]
-    public async Task<IActionResult> CreatePost([FromBody] CreatePostCommand command)
+    public async Task<IActionResult> CreatePost([FromForm]CreatePostCommand command)
     {
+        Console.WriteLine("ABOBA");
         return HandleResponse(await Mediator.Send(command));
     }
 

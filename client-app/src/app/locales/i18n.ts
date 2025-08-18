@@ -40,8 +40,36 @@ i18n
           settings: "Settings",
           thankForSignIn: "Thank you for sign in!",
 
+          // Post creation translations
+          postType: "Post Type",
+          basicInformation: "Basic Information",
+          title: "Title",
+          shortDescription: "Short Description",
+          fullDescription: "Full Description",
+          selectCategory: "Select Category",
+          selectSubcategory: "Select Subcategory",
+          location: "Location",
+          region: "Region",
+          buildingNumber: "Building Number",
+          propertyDetails: "Property Details",
+          workDetails: "Work Details",
+          tags: "Tags",
+          addTag: "Add Tag",
+          add: "Add",
+          images: "Images",
+          mainImage: "Main Image",
+          additionalImages: "Additional Images",
+          selectMainImage: "Select Main Image",
+          selectAdditionalImages: "Select Additional Images",
+          clickToSelectImage: "Click to select image",
+          clickToSelectMultipleImages: "Click to select multiple images",
+          selectedImages: "Selected Images",
+          cancel: "Cancel",
+          createPost: "Create Post",
+          creating: "Creating...",
+
           // Email confirmation translations
-          emailConfirmation:
+          emailConfirmationPostRegister:
             "To complete your registration, please confirm your email address by clicking the link in the email we sent you. If you didn't receive the email, please check your spam folder or click below to resend the email.",
           resendEmailConfirmation: "Resend email",
           confirmationMailSent: "New confirmation mail has been sent",
@@ -62,23 +90,32 @@ i18n
           failedToLoadPosts: "Failed to load posts",
           postNotFound: "Post not found",
           failedToLoadPost: "Failed to load post",
-          propertyDetails: "Property Details",
           noPosts: "No posts available",
-
+          common:"Common",
           // Work experience translations
           ExperienceRequired: "Experience required",
           ExperienceNotRequired: "No experience required",
+          experienceRequired: "Experience Required",
 
           // Property translations
           rooms: "Number of rooms",
+          numberOfRooms: "Number of Rooms",
           floor: "Floor",
+          area: "Area",
+          areaSquareMeters: "Area (m²)",
 
           // Price type translations
           "Onetime Payment": "One-time Payment",
-          "Per Hour": "Per hour",
-          "Per Month": "Per month",
-          "Per Day": "Per day",
-          "Per Item": "Per item",
+          "Per Hour": "Per Hour",
+          "Per Month": "Per Month",
+          "Per Day": "Per Day",
+          "Per Item": "Per Item",
+          priceType: "Price Type",
+          price: "Price",
+          salary: "Salary",
+          minSalary: "Minimum Salary",
+          maxSalary: "Maximum Salary",
+          currency: "Currency",
 
           // Property type translations
           WareHouse: "Warehouse",
@@ -88,26 +125,34 @@ i18n
           Apartment: "Apartment",
           Office: "Office",
           Studio: "Studio",
+          propertyType: "Property Type",
 
           // Work type translations
-          "Full-Time": "Full-time",
-          "Part-Time": "Part-time",
+          "Full-Time": "Full-Time",
+          "Part-Time": "Part-Time",
           Freelance: "Freelance",
           Internship: "Internship",
-          Shift: "Shift",
+          Shift: "Shift Work",
           Seasonal: "Seasonal",
+          workload: "Workload",
 
           // Contract type translations
-          "Employment Contract": "Employment contract",
+          "Employment Contract": "Employment Contract",
+          "Task Contract": "Task Contract",
           "Specific Work Contract": "Specific Work Contract",
-          "Task Contract": "Task contract",
+          "Volunteer Contract": "Volunteer Contract",
           B2B: "B2B",
-          "Volunteer Contract": "Volunteer contract",
 
           // Work location translations
-          OnSite: "On-site",
+          OnSite: "On-Site",
           Remote: "Remote",
           Hybrid: "Hybrid",
+          workLocation: "Work Location",
+
+          // Post types
+          work: "Work",
+          rent: "Rent",
+          service: "Service",
 
           // Navigation translations
           Home: "Home",
@@ -117,111 +162,19 @@ i18n
           notifications: "Notifications",
           user: "User",
           menu: "Menu",
-          pleaseLoginToAddPost: "Please login to add a post",
-          loginToAddPost: "Login to add",
-          switchToLight: "Switch to light theme",
-          switchToDark: "Switch to dark theme",
-          favorites: "Favorites",
-          savedPosts: "Saved Posts",
-          saved: "Saved",
-          history: "History",
-          help: "Help",
-          about: "About",
-          darkMode: "Dark mode",
-          language: "Language",
-          currentLanguage: "EN",
-          loginRequired: "Login required",
-          allRightsReserved: "All rights reserved",
-          invalidConfirmationLink: "Invalid confirmation link",
-          footerDescription:
-            "Your trusted platform for finding everything you need - from jobs and housing to services and products.",
+          pleaseLogin: "Please log in to access this feature",
+
+          // Footer translations
+          footerDescription: "Your trusted platform for finding everything you need - from jobs and housing to services and products.",
           quickLinks: "Quick Links",
           moreInfo: "More Info",
           contact: "Contact",
+          about: "About",
+          help: "Help",
           privacy: "Privacy Policy",
           terms: "Terms of Service",
           availableLanguages: "Available Languages",
           madeWithLove: "Made with love by Anton Krymouski",
-          // Categories translations
-          failedToLoadCategories: "Failed to load categories",
-          noCategoriesFound: "No categories found",
-          subcategory: "subcategory",
-          subcategories: "subcategories",
-          error: "Error",
-          browseCategoriesDescription: "Browse all available categories",
-          explore: "Explore",
-
-          // Email confirmation page specific
-          emailConfirm: {
-            verifying: "Verifying your email...",
-            verifyingDescription:
-              "Please wait while we confirm your email address.",
-            success: "Email Verified!",
-            successDescription: "Your email has been successfully verified.",
-            accountActivated: "Your account is now active and ready to use.",
-            redirecting: "Redirecting to login page in {{seconds}} seconds...",
-            goToLogin: "Go to Login",
-            goHome: "Home Page",
-            failed: "Verification Failed",
-            failedDescription: "We couldn't verify your email address.",
-            possibleReasons:
-              "This may be due to an expired or invalid link. Try requesting a new verification email.",
-            tryLogin: "Try to Login",
-            invalidLink: "Invalid Link",
-            invalidLinkDescription:
-              "The confirmation link appears to be invalid or corrupted.",
-            invalidLinkHelp:
-              "Please check the link in your email or request a new verification email from the login page.",
-            thankYou: "Thank you!",
-            registrationComplete: "Your registration is almost complete",
-            checkInbox:
-              "We've sent a verification link to your email address. Check your inbox and click the link to activate your account.",
-            instructions:
-              "To complete your registration, check your email and click the verification link. The link will expire in 24 hours for security reasons.",
-            didntReceive: "Didn't receive the email?",
-            resendEmail: "Resend Verification Email",
-            resendIn: "You can resend the email in",
-            resendAvailable: "You can resend the email in",
-            sending: "Sending...",
-            emailsSent: "Verification emails sent: {{count}}",
-            backToLogin: "Back to Login",
-            checkSpamTip:
-              "Don't forget to check your spam/junk folder if you don't see the email in your inbox.",
-            noEmailProvided: "No email address provided",
-          },
-
-          // Auth translations
-          auth: {
-            welcome: "Welcome",
-            subtitle: "Login to your account or create a new one",
-            login: "Login",
-            register: "Register",
-            email: "Email",
-            password: "Password",
-            confirmPassword: "Confirm Password",
-            firstName: "First Name",
-            lastName: "Last Name",
-            loginSuccess: "Successfully logged in!",
-            loginError: "Login failed. Please check your credentials.",
-            registerSuccess:
-              "Registration successful! Please check your email to verify your account.",
-            registerError: "Registration failed. Please try again.",
-            googleLoginSuccess: "Successfully logged in with Google!",
-            googleLoginError: "Google login failed. Please try again.",
-            continueWithGoogle: "Continue with Google",
-            or: "OR",
-          },
-          description: "Description",
-          tags: "Tags",
-          postImage: "Post image",
-          viewAllPhotos: "View all photos",
-          imageGallery: "Image Gallery",
-          of: "of",
-          loadingImages: "Loading images",
-          noImagesAvailable: "No images available",
-          imageLoadError: "Failed to load image",
-          image: "Image",
-          fullscreen: "Fullscreen",
 
           // Post interactions
           share: "Share",
@@ -232,11 +185,16 @@ i18n
           posts: "posts",
           posts_one: "post",
           posts_other: "posts",
-
-          // Work and service types
-          work: "Work",
-          rent: "Rent",
-          service: "Service",
+          description: "Description",
+          postImage: "Post image",
+          viewAllPhotos: "View all photos",
+          imageGallery: "Image Gallery",
+          of: "of",
+          loadingImages: "Loading images",
+          noImagesAvailable: "No images available",
+          imageLoadError: "Failed to load image",
+          image: "Image",
+          fullscreen: "Fullscreen",
 
           // Enhanced UI
           noPostsDescription: "Check back later for new posts",
@@ -248,23 +206,11 @@ i18n
           },
 
           postOwner: "Post Owner",
-          contactOwner: "Contact Owner",
+          contactOwner: "Contact",
           memberSince: "Member since",
           userNotAvailable: "User information not available",
 
-          // Navigation
           goBack: "Go Back",
-
-          // Details sections
-          workDetails: "Work Details",
-
-          // Property fields
-          propertyType: "Property Type",
-          area: "Area",
-          workload: "Workload",
-          workLocation: "Work Location",
-          contractType: "Contract Type",
-          experience: "Experience",
 
           // Actions
           addToFavorites: "Add to Favorites",
@@ -280,9 +226,42 @@ i18n
             nameMinLength: "Name must be at least 2 characters long",
             passwordsDoNotMatch: "Passwords do not match",
           },
-          // Price/Salary
-          price: "Price",
-          salary: "Salary",
+
+          // Auth translations
+          auth: {
+            welcome: "Welcome",
+            subtitle: "Login to your account or create a new one",
+            login: "Login",
+            register: "Register",
+            email: "Email",
+            password: "Password",
+            confirmPassword: "Confirm Password",
+            firstName: "First Name",
+            lastName: "Last Name",
+            loginSuccess: "Successfully logged in!",
+            loginError: "Login failed. Please check your credentials.",
+            registerSuccess: "Registration successful! Please check your email to verify your account.",
+            registerError: "Registration failed. Please try again.",
+            googleLoginSuccess: "Successfully logged in with Google!",
+            googleLoginError: "Google login failed. Please try again.",
+            continueWithGoogle: "Continue with Google",
+            or: "OR",
+          },
+
+          // Email confirmation extended
+          emailConfirmation: {
+            title: "Email Confirmation Required",
+            message: "To complete your registration, please confirm your email address by clicking the link in the email we sent you. The link will expire in 24 hours for security reasons.",
+            didntReceive: "Didn't receive the email?",
+            resendEmail: "Resend Verification Email",
+            resendIn: "You can resend the email in",
+            resendAvailable: "You can resend the email in",
+            sending: "Sending...",
+            emailsSent: "Verification emails sent: {{count}}",
+            backToLogin: "Back to Login",
+            checkSpamTip: "Don't forget to check your spam/junk folder if you don't see the email in your inbox.",
+            noEmailProvided: "No email address provided",
+          },
         },
       },
       pl: {
@@ -318,8 +297,36 @@ i18n
           settings: "Ustawienia",
           thankForSignIn: "Dziękujemy za rejestrację!",
 
+          // Post creation translations
+          postType: "Typ Ogłoszenia",
+          basicInformation: "Podstawowe Informacje",
+          title: "Tytuł",
+          shortDescription: "Krótki Opis",
+          fullDescription: "Pełny Opis",
+          selectCategory: "Wybierz Kategorię",
+          selectSubcategory: "Wybierz Podkategorię",
+          location: "Lokalizacja",
+          region: "Region",
+          buildingNumber: "Numer Budynku",
+          propertyDetails: "Szczegóły Nieruchomości",
+          workDetails: "Szczegóły Pracy",
+          tags: "Tagi",
+          addTag: "Dodaj Tag",
+          add: "Dodaj",
+          images: "Zdjęcia",
+          mainImage: "Zdjęcie Główne",
+          additionalImages: "Dodatkowe Zdjęcia",
+          selectMainImage: "Wybierz Zdjęcie Główne",
+          selectAdditionalImages: "Wybierz Dodatkowe Zdjęcia",
+          clickToSelectImage: "Kliknij aby wybrać zdjęcie",
+          clickToSelectMultipleImages: "Kliknij aby wybrać wiele zdjęć",
+          selectedImages: "Wybrane Zdjęcia",
+          cancel: "Anuluj",
+          createPost: "Utwórz Ogłoszenie",
+          creating: "Tworzenie...",
+
           // Email confirmation translations
-          emailConfirmation:
+          emailConfirmationPostRegister:
             "Aby zakończyć rejestrację, prosimy o potwierdzenie swojego adresu e-mail, klikając link w wiadomości, którą wysłaliśmy. Jeśli nie otrzymałeś wiadomości, sprawdź folder ze spamem lub kliknij poniżej, aby wysłać wiadomość ponownie.",
           resendEmailConfirmation: "Wyślij ponownie",
           confirmationMailSent: "Nowa wiadomość potwierdzająca została wysłana",
@@ -340,16 +347,20 @@ i18n
           failedToLoadPosts: "Nie udało się załadować ogłoszeń",
           postNotFound: "Ogłoszenie nie znalezione",
           failedToLoadPost: "Nie udało się załadować ogłoszenia",
-          propertyDetails: "Szczegóły nieruchomości",
           noPosts: "Brak dostępnych ogłoszeń",
+          common:"Ogólne",
 
           // Work experience translations
           ExperienceRequired: "Wymagane doświadczenie",
           ExperienceNotRequired: "Bez doświadczenia",
+          experienceRequired: "Wymagane Doświadczenie",
 
           // Property translations
           rooms: "Liczba pokoi",
+          numberOfRooms: "Liczba Pokoi",
           floor: "Piętro",
+          area: "Powierzchnia",
+          areaSquareMeters: "Powierzchnia (m²)",
 
           // Price type translations
           "Onetime Payment": "Płatność jednorazowa",
@@ -357,6 +368,12 @@ i18n
           "Per Month": "Za miesiąc",
           "Per Day": "Za dzień",
           "Per Item": "Za sztukę",
+          priceType: "Typ Ceny",
+          price: "Cena",
+          salary: "Wynagrodzenie",
+          minSalary: "Minimalne Wynagrodzenie",
+          maxSalary: "Maksymalne Wynagrodzenie",
+          currency: "Waluta",
 
           // Property type translations
           WareHouse: "Magazyn",
@@ -366,6 +383,7 @@ i18n
           Apartment: "Mieszkanie",
           Office: "Biuro",
           Studio: "Kawalerka",
+          propertyType: "Typ Nieruchomości",
 
           // Work type translations
           "Full-Time": "Pełny etat",
@@ -374,6 +392,7 @@ i18n
           Internship: "Praktyki",
           Shift: "Zmianowa",
           Seasonal: "Sezonowa",
+          workload: "Wymiar Pracy",
 
           // Contract type translations
           "Employment Contract": "Umowa o pracę",
@@ -386,6 +405,12 @@ i18n
           OnSite: "W biurze",
           Remote: "Zdalnie",
           Hybrid: "Hybrydowo",
+          workLocation: "Lokalizacja Pracy",
+
+          // Post types
+          work: "Praca",
+          rent: "Wynajem",
+          service: "Usługa",
 
           // Navigation translations
           Home: "Strona Główna",
@@ -395,105 +420,32 @@ i18n
           notifications: "Powiadomienia",
           user: "Użytkownik",
           menu: "Menu",
-          pleaseLoginToAddPost: "Zaloguj się, aby dodać ogłoszenie",
-          loginToAddPost: "Zaloguj się, aby dodać",
-          switchToLight: "Przełącz na jasny motyw",
-          switchToDark: "Przełącz na ciemny motyw",
-          favorites: "Ulubione",
-          savedPosts: "Zapisane Ogłoszenia",
-          saved: "Zapisane",
-          history: "Historia",
-          help: "Pomoc",
-          about: "O nas",
-          darkMode: "Tryb ciemny",
-          language: "Język",
-          currentLanguage: "PL",
-          loginRequired: "Wymagane logowanie",
+          pleaseLogin: "Zaloguj się, aby uzyskać dostęp do tej funkcji",
+
+          // Footer translations
+          footerDescription: "Twoja zaufana platforma do znajdowania wszystkiego czego potrzebujesz - od pracy i mieszkań po usługi i produkty.",
+          quickLinks: "Szybkie Linki",
+          moreInfo: "Dodatkowe Informacje", 
+          contact: "Kontakt",
+          about: "O Nas",
+          privacy: "Polityka Prywatności",
+          terms: "Regulamin",
+          help: "Centrum Pomocy",
+          availableLanguages: "Dostępne Języki",
+          poweredBy: "Powered by",
           allRightsReserved: "Wszystkie prawa zastrzeżone",
-          invalidConfirmationLink: "Nieprawidłowy link potwierdzający",
+          madeWithLove: "Stworzono z miłością przez Anton Krymouski",
 
-          // Categories translations
-          failedToLoadCategories: "Nie udało się załadować kategorii",
-          noCategoriesFound: "Nie znaleziono kategorii",
-          subcategory: "podkategoria",
-          subcategories: "podkategorie",
-          error: "Błąd",
-          browseCategoriesDescription:
-            "Przeglądaj wszystkie dostępne kategorie",
-          explore: "Eksploruj",
-
-          // Email confirmation page specific
-          emailConfirm: {
-            verifying: "Weryfikowanie adresu email...",
-            verifyingDescription:
-              "Proszę czekać, podczas gdy potwierdzamy Twój adres email.",
-            success: "Email Zweryfikowany!",
-            successDescription: "Twój email został pomyślnie zweryfikowany.",
-            accountActivated:
-              "Twoje konto jest teraz aktywne i gotowe do użycia.",
-            redirecting:
-              "Przekierowanie do strony logowania za {{seconds}} sekund...",
-            goToLogin: "Przejdź do Logowania",
-            goHome: "Strona Główna",
-            failed: "Weryfikacja Nieudana",
-            failedDescription:
-              "Nie mogliśmy zweryfikować Twojego adresu email.",
-            possibleReasons:
-              "Może to być spowodowane wygasłym lub nieprawidłowym linkiem. Spróbuj poprosić o nowy email weryfikacyjny.",
-            tryLogin: "Spróbuj się Zalogować",
-            invalidLink: "Nieprawidłowy Link",
-            invalidLinkDescription:
-              "Link potwierdzający wydaje się być nieprawidłowy lub uszkodzony.",
-            invalidLinkHelp:
-              "Sprawdź link w swoim emailu lub poproś o nowy email weryfikacyjny ze strony logowania.",
-            thankYou: "Dziękujemy!",
-            registrationComplete: "Twoja rejestracja jest prawie zakończona",
-            checkInbox:
-              "Wysłaliśmy link weryfikacyjny na Twój adres email. Sprawdź swoją skrzynkę i kliknij link, aby aktywować konto.",
-            instructions:
-              "Aby zakończyć rejestrację, sprawdź swój email i kliknij link weryfikacyjny. Link wygaśnie za 24 godziny ze względów bezpieczeństwa.",
-            didntReceive: "Nie otrzymałeś emaila?",
-            resendEmail: "Wyślij ponownie Email Weryfikacyjny",
-            resendIn: "Możliwość ponownego wysłania za",
-            resendAvailable: "Możesz wysłać ponownie email za",
-            sending: "Wysyłanie...",
-            emailsSent: "Wysłane emaile weryfikacyjne: {{count}}",
-            backToLogin: "Powrót do Logowania",
-            checkSpamTip:
-              "Nie zapomnij sprawdzić folderu spam/niechciane, jeśli nie widzisz emaila w skrzynce odbiorczej.",
-            noEmailProvided: "Nie podano adresu email",
-          },
-
-          // Auth translations
-          auth: {
-            welcome: "Witamy",
-            subtitle: "Zaloguj się do swojego konta lub utwórz nowe",
-            login: "Logowanie",
-            register: "Rejestracja",
-            email: "Email",
-            password: "Hasło",
-            confirmPassword: "Potwierdź hasło",
-            firstName: "Imię",
-            lastName: "Nazwisko",
-            loginSuccess: "Pomyślnie zalogowano!",
-            loginError: "Logowanie nie powiodło się. Sprawdź swoje dane.",
-            registerSuccess:
-              "Rejestracja zakończona pomyślnie! Sprawdź swoją skrzynkę email, aby zweryfikować konto.",
-            registerError: "Rejestracja nie powiodła się. Spróbuj ponownie.",
-            googleLoginSuccess: "Pomyślnie zalogowano przez Google!",
-            googleLoginError:
-              "Logowanie przez Google nie powiodło się. Spróbuj ponownie.",
-            continueWithGoogle: "Kontynuuj z Google",
-            or: "LUB",
-          },
-
-          // Promotion types
-          promotion: {
-            Highlight: "Wyróżnione",
-            Top: "Top Ogłoszenie",
-          },
+          // Post interactions
+          share: "Udostępnij",
+          favorite: "Dodaj do ulubionych",
+          views: "wyświetleń",
+          anonymous: "Anonimowy",
+          trending: "Popularne",
+          posts: "ogłoszeń",
+          posts_one: "ogłoszenie",
+          posts_other: "ogłoszenia",
           description: "Opis",
-          tags: "Tagi",
           postImage: "Zdjęcie ogłoszenia",
           viewAllPhotos: "Zobacz wszystkie zdjęcia",
           imageGallery: "Galeria Zdjęć",
@@ -504,40 +456,29 @@ i18n
           image: "Zdjęcie",
           fullscreen: "Pełny ekran",
 
-          price: "Cena",
-          // Post interactions
-          share: "Udostępnij",
-          favorite: "Dodaj do ulubionych",
-          views: "wyświetleń",
-          anonymous: "Anonim",
-          trending: "Na czasie",
-          posts: "ogłoszeń",
-          posts_one: "ogłoszenie",
-          posts_other: "ogłoszeń",
-
-          // Work and service types
-          work: "Praca",
-          rent: "Wynajem",
-          service: "Usługa",
-
           // Enhanced UI
-          noPostsDescription:
-            "Sprawdź ponownie później, aby zobaczyć nowe ogłoszenia",
-          postOwner: "Właściciel Ogłoszenia",
+          noPostsDescription: "Sprawdź ponownie później czy pojawiły się nowe ogłoszenia",
 
-          contactOwner: "Napisz do Właściciela",
+          // Promotion types
+          promotion: {
+            Highlight: "Wyróżnione",
+            Top: "Top Ogłoszenie",
+          },
+
+          postOwner: "Ogłoszeniodawca",
+          contactOwner: "Skontaktuj się",
           memberSince: "Członek od",
-          goBack: "Wróć",
-          footerDescription:
-            "Twoja zaufana platforma do znajdowania wszystkiego czego potrzebujesz - od pracy i mieszkań po usługi i produkty.",
-          quickLinks: "Szybkie Linki",
-          moreInfo: "Dodatkowe Informacje",
-          contact: "Kontakt",
-          privacy: "Polityka Prywatności",
-          terms: "Regulamin",
-          availableLanguages: "Dostępne Języki",
+          userNotAvailable: "Informacje o użytkowniku niedostępne",
 
-          madeWithLove: "Stworzono z miłością przez Anton Krymouski",
+          // Navigation
+          goBack: "Wróć",
+
+          // Actions
+          addToFavorites: "Dodaj do Ulubionych",
+
+          // General
+          free: "Darmowe",
+
           // Validation translations
           validation: {
             required: "To pole jest wymagane",
@@ -545,61 +486,42 @@ i18n
             passwordMinLength: "Hasło musi mieć co najmniej 6 znaków",
             nameMinLength: "Imię musi mieć co najmniej 2 znaki",
             passwordsDoNotMatch: "Hasła się nie zgadzają",
+          },
 
-            userNotAvailable: "Informacje o użytkowniku niedostępne",
+          // Auth translations
+          auth: {
+            welcome: "Witaj",
+            subtitle: "Zaloguj się na swoje konto lub utwórz nowe",
+            login: "Zaloguj się",
+            register: "Zarejestruj się",
+            email: "Email",
+            password: "Hasło",
+            confirmPassword: "Potwierdź Hasło",
+            firstName: "Imię",
+            lastName: "Nazwisko",
+            loginSuccess: "Pomyślnie zalogowano!",
+            loginError: "Logowanie nie powiodło się. Sprawdź swoje dane.",
+            registerSuccess: "Rejestracja zakończona sukcesem! Sprawdź email aby potwierdzić konto.",
+            registerError: "Rejestracja nie powiodła się. Spróbuj ponownie.",
+            googleLoginSuccess: "Pomyślnie zalogowano przez Google!",
+            googleLoginError: "Logowanie przez Google nie powiodło się. Spróbuj ponownie.",
+            continueWithGoogle: "Kontynuuj z Google",
+            or: "LUB",
+          },
 
-            // Navigation
-
-            // Details sections
-            propertyDetails: "Szczegóły Nieruchomości",
-            workDetails: "Szczegóły Pracy",
-            description: "Opis",
-            tags: "Tagi",
-
-            // Property fields
-            propertyType: "Typ Nieruchomości",
-            area: "Powierzchnia",
-            workload: "Wymiar Pracy",
-            workLocation: "Lokalizacja Pracy",
-            contractType: "Typ Umowy",
-            experience: "Doświadczenie",
-
-            // Actions
-            addToFavorites: "Dodaj do Ulubionych",
-
-            // General
-            free: "Darmowe",
-
-            // Property types (if not already present)
-            House: "Dom",
-            Apartment: "Mieszkanie",
-            Studio: "Kawalerka",
-            Room: "Pokój",
-            WareHouse: "Magazyn",
-            Office: "Biuro",
-            Other: "Inne",
-
-            // Work types (if not already present)
-            "Full-Time": "Pełny etat",
-            "Part-Time": "Niepełny etat",
-            Freelance: "Freelance",
-            Internship: "Praktyki",
-            Shift: "Praca zmianowa",
-            Seasonal: "Praca sezonowa",
-
-            // Work locations (if not already present)
-            OnSite: "W biurze",
-            Remote: "Zdalnie",
-            Hybrid: "Hybrydowo",
-
-            // Contract types (if not already present)
-            "Employment Contract": "Umowa o Pracę",
-            "Specific Work Contract": "Umowa o Dzieło",
-            "Task Contract": "Umowa Zlecenie",
-            B2B: "Umowa B2B",
-            "Volunteer Contract": "Umowa Wolontariacka",
-
-            salary: "Wynagrodzenie",
+          // Email confirmation extended
+          emailConfirmation: {
+            title: "Wymagane Potwierdzenie Email",
+            message: "Aby zakończyć rejestrację, potwierdź swój adres email klikając w link w wiadomości, którą wysłaliśmy. Link wygaśnie za 24 godziny ze względów bezpieczeństwa.",
+            didntReceive: "Nie otrzymałeś emaila?",
+            resendEmail: "Wyślij Ponownie Email Weryfikacyjny",
+            resendIn: "Możesz wysłać ponownie email za",
+            resendAvailable: "Możesz wysłać ponownie email za",
+            sending: "Wysyłanie...",
+            emailsSent: "Wysłano emaili weryfikacyjnych: {{count}}",
+            backToLogin: "Powrót do Logowania",
+            checkSpamTip: "Nie zapomnij sprawdzić folderu spam/junk jeśli nie widzisz emaila w skrzynce odbiorczej.",
+            noEmailProvided: "Nie podano adresu email",
           },
         },
       },
