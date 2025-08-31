@@ -62,8 +62,7 @@ public class UpdatePostImagesCommandHandler : IRequestHandler<UpdatePostImagesCo
             }
         }
 
-        await _postSettingsCommandRepository.UpdatePostSettings(postId, true, false, PostStatusType.ReSubmitted, "",
-            cancellationToken);
+        await _postSettingsCommandRepository.UpdatePostSettings(postId, cancellationToken,true, false, PostStatusType.ReSubmitted, "");
         await _mediator.Publish(new PostUpdatedEvent { PostId = postId, UserId = request.OwnerId });
         await _logService.CreateLogAsync("Post updated", cancellationToken, LogType.Information, postId: postId,
             userId: request.OwnerId);

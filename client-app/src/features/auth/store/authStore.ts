@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { User } from "../types/authTypes";
 import apiClient from "../../../app/API/apiClient";
 
@@ -8,7 +8,6 @@ export default class authStore {
   userLoading: boolean = false;
   googleLoading: boolean = false;
   token: string | null = null;
-  roles: string[] = [];
   constructor() {
     makeAutoObservable(this);
     const user = localStorage.getItem("brt_user");
@@ -37,36 +36,37 @@ export default class authStore {
 
   getGoogleLoading = () => this.googleLoading;
 
-  setRoles = (roles: string[]) => (this.roles = roles);
-
-  getRoles = () => this.roles;
-
   setToken = (token: string | null) => (this.token = token);
 
-  login = async (token: string, roles: string[]) => {
+  login = async (token: string) => {
+    runInAction(()=>{
     this.setUserIsLoggedIn(true);
     localStorage.setItem("brt_login", JSON.stringify(this.isLoggedIn));
-    this.setRoles(roles);
     this.setToken(token);
     apiClient.setToken(token);
+    })
   };
-  loginWithGoogle = (token: string, roles: string[]) => {
+  loginWithGoogle = (token: string) => {
+    runInAction(()=>{
     this.setUserIsLoggedIn(true);
     localStorage.setItem("brt_login", JSON.stringify(this.isLoggedIn));
-    this.setRoles(roles);
-    this.setToken(token);
     apiClient.setToken(token);
+    })
   };
   logout = async () => {
+    runInAction(()=>{
     this.clearUser();
     this.setUserIsLoggedIn(false);
     localStorage.removeItem("brt_login");
     localStorage.removeItem("brt_user");
     apiClient.setToken(null);
+    })
   };
 
   setMe = async (user: User) => {
+    runInAction(()=>{
     this.setUser(user);
     localStorage.setItem("brt_user", JSON.stringify(this.user));
+    })
   };
 }

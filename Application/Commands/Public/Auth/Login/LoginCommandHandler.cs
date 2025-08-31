@@ -14,25 +14,24 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<Log
 {
     private readonly ILogService _logService;
     private readonly ITokenService _tokenService;
-    private readonly IUserFavPostQueryRepository _userFavPostQueryRepository;
-    private readonly INotificationQueryRepository _notificationQueryRepository;
+    private readonly IUserSettingQueryRepository _userSettingQueryRepository;
     private readonly UserManager<User> _userManager;
 
-    public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, ILogService logService,
-        IUserFavPostQueryRepository userFavPostQueryRepository,
-        INotificationQueryRepository notificationQueryRepository)
+    public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, ILogService logService, IUserSettingQueryRepository userSettingQueryRepository)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _userSettingQueryRepository = userSettingQueryRepository;
         _logService = logService;
-        _userFavPostQueryRepository = userFavPostQueryRepository;
-        _notificationQueryRepository = notificationQueryRepository;
     }
 
     public async Task<ApiResponse<LoginCommand.Result>> Handle(LoginCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new EntityNotFoundException("User");
+        var settings = await _userSettingQueryRepository.GetUserSettingByUserIdAsync(user.Id,cancellationToken);
+        if(settings.IsDeleted)
+            return ApiResponse<LoginCommand.Result>.Failure("User deleted");
         var roles =  (await _userManager.GetRolesAsync(user)).ToList();
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
         var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);

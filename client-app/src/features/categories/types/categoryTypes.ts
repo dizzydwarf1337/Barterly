@@ -10,6 +10,6 @@ export interface Category {
 
 export interface SubCategory {
     id:string;
-    titleEN:string;
-    titlePL:string;
+    nameEN:string;
+    namePL:string;
 }

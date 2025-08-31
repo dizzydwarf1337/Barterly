@@ -49,10 +49,11 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
 
     private async Task<ICollection<Post>> GetPosts(int pageSize, int pageNumber, GetFeedQuery.SortSpecification? sortBy, CancellationToken token)
     {
-        var query = _postRepository.GetAllPosts()
+        var query = _postRepository.GetAllPosts().Include(x=>x.Owner)
             .Where(x =>
                 x.PostSettings.postStatusType == PostStatusType.Published &&
                 !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden && 
                 x.Promotion.Type == PostPromotionType.None);
 
         if (sortBy != null && !string.IsNullOrEmpty(sortBy.SortBy))
@@ -82,12 +83,12 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<Get
         var topPostsCount = (int)Math.Ceiling(count * 2 / 3.0);
         var highlightPostsCount = count - topPostsCount;
 
-        var topPosts = await _postRepository.GetAllPosts()
+        var topPosts = await _postRepository.GetAllPosts().Include(x=>x.Owner)
             .Where(x =>
                 x.Promotion.Type == PostPromotionType.Top &&
                 x.PostSettings.postStatusType == PostStatusType.Published &&
-                !x.PostSettings.IsDeleted)
-            .Include(x=>x.Owner)
+                !x.PostSettings.IsDeleted && 
+                !x.PostSettings.IsHidden)
             .OrderByDescending(x=>x.Id)
             .Skip((pageNumber - 1) * topPostsCount)
             .Take(topPostsCount)

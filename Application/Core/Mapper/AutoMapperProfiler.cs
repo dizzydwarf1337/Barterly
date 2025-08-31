@@ -26,7 +26,10 @@ public class AutoMapperProfiler : Profile
         CreateMap<Post, PostDto>()
             .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
             .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory))
-            .ForMember(x=>x.PromotionType, opt=>opt.MapFrom(x=>x.Promotion.Type));
+            .ForMember(x => x.PostType, opt => opt.MapFrom(x =>
+                x is WorkPost ? "Work" :
+                x is RentPost ? "Rent" :
+                "Common"));
         CreateMap<WorkPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<RentPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<CommonPost, PostDto>().IncludeBase<Post, PostDto>();
@@ -45,7 +48,7 @@ public class AutoMapperProfiler : Profile
                 x is RentPost ? "Rent" :
                 "Common"))
             .ForMember(x => x.CreatedAt, opt => opt.MapFrom(y => y.CreatedAt))
-            .ForMember(x => x.OwnerName, opt => opt.MapFrom((x => x.Owner.FirstName)));
+            .ForMember(x => x.OwnerName, opt => opt.MapFrom(x => $"{x.Owner.FirstName} {x.Owner.LastName}"));
         CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
@@ -69,7 +72,9 @@ public class AutoMapperProfiler : Profile
         CreateMap<ReportPost, ReportDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.ReportedPostId))
             .ForMember(x => x.CreatedAt, opt => opt.MapFrom(x => x.CreatedAt));
 
-        CreateMap<SubCategory, SubCategoryDto>();
+        CreateMap<SubCategory, SubCategoryDto>()
+            .ForMember(x=>x.NameEN, opt => opt.MapFrom(y=>y.TitleEN))
+            .ForMember(x=>x.NamePL, opt => opt.MapFrom(y=>y.TitlePL));
         CreateMap<SubCategoryDto, SubCategory>();
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.token, opt => opt.Ignore());

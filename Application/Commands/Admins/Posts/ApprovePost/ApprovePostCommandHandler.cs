@@ -33,7 +33,7 @@ public class ApprovePostCommandHandler : IRequestHandler<ApprovePostCommand, Api
 
     private async Task UpdatePostSettings(Guid postId, CancellationToken token)
     {
-        await _postSettingsCommandRepository.UpdatePostSettings(postId, false, false,
-            PostStatusType.Published, null, token);
+        await _postSettingsCommandRepository.UpdatePostSettings(postId, token, false, false,
+            PostStatusType.Published, null);
     }
 }

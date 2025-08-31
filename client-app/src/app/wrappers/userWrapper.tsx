@@ -1,6 +1,6 @@
 import { Box, Fade, Container } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import Footer from "../layout/footer";
 import NavBar from "../layout/navBar";
 import useStore from "../stores/store";
@@ -9,13 +9,17 @@ import authApi from "../../features/auth/api/authApi";
 
 export const UserWrapper = observer(() => {
   const { uiStore, authStore } = useStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchMe = async () => {
       try {
         if (authStore.isLoggedIn) {
           const result = await authApi.getMe();
           authStore.setUser(result.value);
+          if(authStore.user?.role === "Admin")
+            navigate("/admin", {replace:true});
+            if( authStore.user?.role === "Moderator") 
+              navigate("/moderator", {replace:true})
         }
       } catch (error) {
         console.error("Error during UserWrapper initialization:", error);

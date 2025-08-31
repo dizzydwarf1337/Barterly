@@ -67,6 +67,8 @@ i18n
           cancel: "Cancel",
           createPost: "Create Post",
           creating: "Creating...",
+          subCategory:"Subcategory",
+          subCategories:"Subcategories",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -209,11 +211,14 @@ i18n
           contactOwner: "Contact",
           memberSince: "Member since",
           userNotAvailable: "User information not available",
-
+          postAddedToFavorites:"Favourite post added",
+          errorUpdatingFavorites:"Log in to add favourite post",
+          postRemovedFromFavorites:"Favorite post removed",
           goBack: "Go Back",
-
+          contractType:"Contract Type",
           // Actions
           addToFavorites: "Add to Favorites",
+          experience:"Experience",
 
           // General
           free: "Free",
@@ -324,6 +329,8 @@ i18n
           cancel: "Anuluj",
           createPost: "Utwórz Ogłoszenie",
           creating: "Tworzenie...",
+          subCategory:"Podkategoria",
+          subCategories:"Podkategorii",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -455,6 +462,11 @@ i18n
           imageLoadError: "Nie udało się załadować zdjęcia",
           image: "Zdjęcie",
           fullscreen: "Pełny ekran",
+          postAddedToFavorites:"Dodano do ulubionych",
+          errorUpdatingFavorites:"Zaloguj się aby dodać ogłoszenie do ulubionych",
+          postRemovedFromFavorites:"Usunięto z ulubionych",
+          contractType:"Typ umowy",
+          experience:"Doświaczenie",
 
           // Enhanced UI
           noPostsDescription: "Sprawdź ponownie później czy pojawiły się nowe ogłoszenia",

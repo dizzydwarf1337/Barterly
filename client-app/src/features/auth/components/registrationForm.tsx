@@ -97,7 +97,7 @@ export default observer(function RegistrationForm({ onSuccess, onError }: Regist
         if (onSuccess) {
           onSuccess(registerData.email);
         } else {
-          navigate(`/auth/email-confirm/${response.value.email}`);
+          navigate(`/auth/email-confirm/${registerData.email}`);
         }
       } else {
         const errorMessage = response.error || t('auth.registerError');

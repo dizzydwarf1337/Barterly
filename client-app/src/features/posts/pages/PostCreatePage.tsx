@@ -55,7 +55,7 @@ import {
 } from "../types/postTypes";
 import { Category, SubCategory } from "../../categories/types/categoryTypes";
 import categoryApi from "../../categories/api/categoriesApi";
-import postApi from "../api/postApi";
+import userPostApi from "../api/userPostApi";
 
 export const PostCreatePage = observer(() => {
   const { t } = useTranslation();
@@ -177,6 +177,7 @@ export const PostCreatePage = observer(() => {
     control,
     handleSubmit,
     watch,
+    getValues,
     setValue,
     formState: { errors }
   } = useForm<PostFormData>({
@@ -193,7 +194,7 @@ export const PostCreatePage = observer(() => {
       shortDescription: "",
       price: null,
       postPriceType: null,
-      currency: PostCurrency["zł"],
+      currency: PostCurrency["Zł"],
       tags: [],
       mainImage: null,
       secondaryImages: [],
@@ -214,7 +215,15 @@ export const PostCreatePage = observer(() => {
 
   const watchedPostType = watch("postType");
   const watchedTags = watch("tags");
-
+  const selectedPriceType = watch("postPriceType");
+  const isFree = selectedPriceType === PostPriceType.Free;  
+  useEffect(() => {
+    if (isFree) {
+      setValue("minSalary", null);
+      setValue("maxSalary", null);
+      setValue("price", null);
+    }
+  }, [isFree]);
   // Load categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -273,6 +282,12 @@ export const PostCreatePage = observer(() => {
     }
   };
 
+  const handleRemoveMainImage = () => {
+    var mainImage = getValues('mainImage');
+    if(mainImage)
+      setValue('mainImage',null);
+  }
+
   const handleRemoveSecondaryImage = (index: number) => {
     const currentImages = watch("secondaryImages");
     const newImages = currentImages.filter((_, i) => i !== index);
@@ -282,9 +297,9 @@ export const PostCreatePage = observer(() => {
   const onSubmit: SubmitHandler<PostFormData> = async (data) => {
     setSubmitting(true);
     try {
-      await postApi.createPost(data);
+      await userPostApi.createPost(data);
       uiStore.showSnackbar("Post created successfully!", "success");
-      // navigate("/posts");
+      navigate("/posts");
     } catch (error) {
       console.error("Error submitting form:", error);
       uiStore.showSnackbar("Error creating post", "error");
@@ -1081,7 +1096,10 @@ export const PostCreatePage = observer(() => {
       
       <Stack spacing={3}>
         {watchedPostType === PostType.Work ? (
+          
           <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
+            {!isFree && (
+              <>
             <Box sx={{ flex: 1 }}>
               <Controller
                 name="minSalary"
@@ -1170,9 +1188,14 @@ export const PostCreatePage = observer(() => {
                 )}
               />
             </Box>
+            </>
+       )}
           </Stack>
-        ) : (
+   
+        ) : 
+          !isFree && (
           <Box sx={{ maxWidth: "100%" }}>
+ 
             <Controller
               name="price"
               control={control}
@@ -1215,9 +1238,10 @@ export const PostCreatePage = observer(() => {
                 />
               )}
             />
+            
           </Box>
-        )}
-        
+          )}
+
         <Stack direction={{ xs: "column", md: "row" }} spacing={3}>
           <Box sx={{ flex: 1 }}>
             <Controller
@@ -1301,6 +1325,7 @@ export const PostCreatePage = observer(() => {
               )}
             />
           </Box>
+                  {!isFree && (
           <Box sx={{ flex: 1 }}>
             <Controller
               name="currency"
@@ -1377,6 +1402,7 @@ export const PostCreatePage = observer(() => {
               )}
             />
           </Box>
+                  )}
         </Stack>
       </Stack>
     </Paper>
@@ -1930,7 +1956,6 @@ export const PostCreatePage = observer(() => {
               label={t("addTag")}
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
               size="small"
               fullWidth
               sx={{ 
@@ -2057,9 +2082,25 @@ export const PostCreatePage = observer(() => {
       <Stack spacing={2}>
         {/* Main Image */}
         <Box display="flex" flexDirection={"column"}>
+          <Box display="flex" flexDirection={"row"} justifyContent={"space-between"}>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'text.primary' }}>
             {t("mainImage")}
           </Typography>
+          {getValues('mainImage') &&
+          <IconButton
+                      size="small"
+                      onClick={() => handleRemoveMainImage()}
+                      sx={{
+                        color: 'error.main',
+                        '&:hover': {
+                          backgroundColor: alpha(theme.palette.error.main, 0.1),
+                        },
+                      }}
+                    >
+                      <DeleteIcon />
+          </IconButton>
+          }
+          </Box>
           <Paper
             elevation={0}
             sx={{

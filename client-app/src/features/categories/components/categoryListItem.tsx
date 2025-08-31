@@ -109,7 +109,7 @@ export default observer(function CategoryListItem({ category }: Props) {
                             color="text.secondary"
                             sx={{ mt: 0.5, display: 'block' }}
                         >
-                            {category.subCategories.length} {category.subCategories.length === 1 ? t('subcategory') : t('subcategories')}
+                            {category.subCategories.length} {category.subCategories.length === 1 ? t('subCategory') : t('subCategories')}
                         </Typography>
                     )}
                 </CardContent>

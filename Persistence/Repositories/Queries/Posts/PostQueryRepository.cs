@@ -20,10 +20,11 @@ public class PostQueryRepository : BaseQueryRepository<BarterlyDbContext>, IPost
             .Include(x => x.PostOpinions)
             .Include(x => x.Promotion)
             .Include(x => x.SubCategory)
-            .FirstOrDefaultAsync(x => x.Id == postId);
+            .Include(x=>x.Owner)
+            .FirstOrDefaultAsync(x => x.Id == postId,token);
 
         if (post == null || post.PostSettings == null) throw new EntityNotFoundException($"Post with id {postId}");
-
+        post.ViewsCount = await _context.VisitedPosts.Where(x => x.PostId == postId).CountAsync(token);
         return post;
     }
 

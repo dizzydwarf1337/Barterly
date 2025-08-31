@@ -11,7 +11,7 @@ export enum ContractType {
 export enum PostCurrency {
   "$" = 0,
   "€" = 1,
-  "zł" = 2,
+  "Zł" = 2,
 }
 
 export enum PostPriceType {
@@ -62,49 +62,43 @@ export enum WorkLocationType {
 }
 
 export interface PostPreview {
-  id: string;
-  subCategoryId: string;
-  ownerId: string;
-  title: string;
-  city?: string | null;
-  street?: string | null;
-  houseNumber?: string | null;
-  shortDescription: string | null;
-  price?: number | null;
-  minSalary?: number | null;
-  maxSalary?: number | null;
-  priceType: PostPriceType;
-  mainImageUrl?: string | null;
-  promotionType: PostPromotionType;
-  workload?: WorkloadType | null;
-  workLocation?: WorkLocationType | null;
-  contract?: ContractType | null;
-  experienceRequired?: boolean | null;
-  rentObjectType?: RentObjectType | null;
-  currency?: PostCurrency | null;
-  numberOfRooms?: number | null;
-  area?: number | null;
-  floor?: number | null;
-  postType: string;
-  ownerName:string;
-  
+    id: string;
+    subCategoryId: string;
+    ownerId: string;
+    title: string;
+    city: string | null;
+    street: string | null;
+    houseNumber: string | null;
+    shortDescription: string | null;
+    price: number | null;
+    minSalary: number | null;
+    maxSalary: number | null;
+    priceType: PostPriceType;
+    mainImageUrl: string | null;
+    postPromotionType: PostPromotionType | null;
+    workload: WorkloadType | null;
+    workLocation: WorkLocationType | null;
+    contract: ContractType | null;
+    experienceRequired: boolean | null;
+    rentObjectType: RentObjectType;
+    currency: PostCurrency | null;
+    numberOfRooms: number | null;
+    area: number | null;
+    viewsCount: number | null;
+    createdAt: string | null;
+    floor: number | null;
+    postType: string | null;
+    ownerName: string | null;
 }
 
 export interface PostDetails extends PostPreview {
   fullDescription: string;
   tags?: string[] | null;
-
   region?: string | null;
-  viewsCount?: number | null;
   country?: string | null;
-  street?: string | null;
-  houseNumber?: string | null;
-
   createdAt: string;
   updatedAt?: string | null;
-
   buildingNumber?: string | null;
-
   subCategory?: SubCategory | null;
   postImages?: PostImage[] | null;
 }

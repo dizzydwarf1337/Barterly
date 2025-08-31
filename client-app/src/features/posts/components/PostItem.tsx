@@ -32,6 +32,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import postApi from "../api/postApi";
 import useStore from "../../../app/stores/store";
+import userPostApi from "../api/userPostApi";
 
 interface Props {
   post: PostPreview;
@@ -128,8 +129,8 @@ export default observer(function PostItem({ post }: Props) {
 
   const postTypeInfo = getPostTypeInfo();
   const isPromoted =
-    post.promotionType !== null &&
-    post.promotionType !== PostPromotionType.None;
+    post.postPromotionType !== null &&
+    post.postPromotionType !== PostPromotionType.None;
 
   return (
     <Box
@@ -222,7 +223,7 @@ export default observer(function PostItem({ post }: Props) {
                 <Chip
                   icon={<TrendingUpIcon />}
                   label={t(
-                    `promotion.${PostPromotionType[post.promotionType!]}`
+                    `promotion.${PostPromotionType[post.postPromotionType!]}`
                   )}
                   color="primary"
                   size="small"
@@ -285,7 +286,7 @@ export default observer(function PostItem({ post }: Props) {
                   try {
                     const isFav = authStore.user?.favPostIds.includes(post.id);
                     if (isFav) {
-                      await postApi.addFavPost({ id: post.id });
+                      await userPostApi.addFavPost({ id: post.id });
                       authStore.setUser({
                         ...authStore.user!,
                         favPostIds: authStore.user!.favPostIds.filter(
@@ -297,7 +298,7 @@ export default observer(function PostItem({ post }: Props) {
                         "info"
                       );
                     } else {
-                      await postApi.addFavPost({ id: post.id });
+                      await userPostApi.addFavPost({ id: post.id });
                       authStore.setUser({
                         ...authStore.user!,
                         favPostIds: [...authStore.user!.favPostIds, post.id],

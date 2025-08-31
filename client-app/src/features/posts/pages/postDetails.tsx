@@ -32,7 +32,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import BusinessCenterIcon from "@mui/icons-material/Business";
 import MessageIcon from "@mui/icons-material/Message";
-import ShareIcon from "@mui/icons-material/Share";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import ApartmentIcon from "@mui/icons-material/Apartment";
@@ -53,10 +52,11 @@ import {
 import postApi from "../api/postApi";
 import { PostOwner } from "../../users/types/userTypes";
 import userApi from "../../users/api/userApi";
+import userPostApi from "../api/userPostApi";
 
 export default observer(function PostDetails() {
   const { postId } = useParams<{ postId: string }>();
-  const { uiStore } = useStore();
+  const { uiStore, authStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -77,7 +77,13 @@ export default observer(function PostDetails() {
       try {
         setLoading(true);
         setError(null);
-        const response = await postApi.getPost({ postId });
+        let response;
+        if(authStore.isLoggedIn){
+        response = await userPostApi.getPost({postId});
+        }
+        else {
+          response = await postApi.getPost({ postId }); 
+        }
         setCurrentPost(response.value);
       } catch (err) {
         console.error("Failed to fetch post:", err);
@@ -140,10 +146,10 @@ export default observer(function PostDetails() {
 
   const renderPriceSection = () => {
     if (!currentPost) return null;
-
-    const currencySymbol = currentPost.currency
-      ? PostCurrency[currentPost.currency]
-      : "";
+    const currencySymbol =
+      currentPost.currency !== null && currentPost.currency !== undefined
+        ? PostCurrency[currentPost.currency]
+        : "";
     const priceTypeTranslation =
       currentPost.priceType != null && PostPriceType[currentPost.priceType]
         ? t(PostPriceType[currentPost.priceType])
@@ -528,8 +534,8 @@ export default observer(function PostDetails() {
   }
 
   const isPromoted =
-    currentPost.promotionType !== null &&
-    currentPost.promotionType !== PostPromotionType.None;
+    currentPost.postPromotionType !== null &&
+    currentPost.postPromotionType !== PostPromotionType.None;
 
   return (
     <Fade in timeout={600}>
@@ -550,12 +556,11 @@ export default observer(function PostDetails() {
         </Box>
 
         {/* Images */}
-        {currentPost.postImages && currentPost.postImages.length > 0 && (
+        {currentPost.mainImageUrl || (currentPost.postImages && currentPost.postImages.length > 0) && (
           <Box mb={4}>
             <PostImageCarousel
-              mainImageUrl={currentPost.postImages[0].imageUrl!}
+              mainImageUrl={currentPost.mainImageUrl}
               secondaryImageUrls={currentPost.postImages
-                .slice(1)
                 .map((img) => img.imageUrl!)}
               title={currentPost.title}
             />
@@ -592,8 +597,8 @@ export default observer(function PostDetails() {
                     <Chip
                       label={
                         uiStore.lang === "pl"
-                          ? currentPost.subCategory.titlePL
-                          : currentPost.subCategory.titleEN
+                          ? currentPost.subCategory.namePL
+                          : currentPost.subCategory.nameEN
                       }
                       color="primary"
                       variant="outlined"
@@ -605,7 +610,7 @@ export default observer(function PostDetails() {
                     <Chip
                       icon={<TrendingUpIcon />}
                       label={
-                        currentPost.promotionType ===
+                        currentPost.postPromotionType ===
                         PostPromotionType.Highlight
                           ? t("promotion.Highlight")
                           : t("promotion.Top")
@@ -669,62 +674,83 @@ export default observer(function PostDetails() {
 
                 {/* Action Buttons */}
                 <Box display="flex" gap={2}>
-                  <Tooltip title={t("share")}>
-                    <IconButton
-                      sx={{
-                        bgcolor: alpha("#000", 0.04),
-                        "&:hover": {
-                          bgcolor: alpha("#000", 0.08),
-                          transform: "scale(1.1)",
-                        },
-                      }}
-                    >
-                      <ShareIcon />
-                    </IconButton>
-                  </Tooltip>
 
-                  <Tooltip title={t("addToFavorites")}>
-                    <IconButton
-                      sx={{
-                        bgcolor: alpha("#000", 0.04),
-                        "&:hover": {
-                          bgcolor: alpha("#000", 0.08),
-                          transform: "scale(1.1)",
-                        },
-                      }}
-                    >
-                      <FavoriteIcon />
-                    </IconButton>
-                  </Tooltip>
+                   <Tooltip title={t("favorite")}>
+              <IconButton
+                size="small"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    const isFav = authStore.user?.favPostIds.includes(currentPost.id);
+                    if (isFav) {
+                      await userPostApi.addFavPost({ id: currentPost.id });
+                      authStore.setUser({
+                        ...authStore.user!,
+                        favPostIds: authStore.user!.favPostIds.filter(
+                          (x) => x !== currentPost.id
+                        ),
+                      });
+                      uiStore.showSnackbar(
+                        t("postRemovedFromFavorites"),
+                        "info"
+                      );
+                    } else {
+                      await userPostApi.addFavPost({ id: currentPost.id });
+                      authStore.setUser({
+                        ...authStore.user!,
+                        favPostIds: [...authStore.user!.favPostIds, currentPost.id],
+                      });
+                      uiStore.showSnackbar(
+                        t("postAddedToFavorites"),
+                        "success"
+                      );
+                    }
+                  } catch (error) {
+                    uiStore.showSnackbar(t("errorUpdatingFavorites"), "error");
+                  }
+                }}
+                sx={{
+                  backgroundColor: alpha("#000", 0.04),
+                  color:(theme) => authStore.user?.favPostIds.includes(currentPost.id)
+                    ? theme.palette.error.main
+                    : theme.palette.primary,
+                  
+                  "&:hover": {
+                    backgroundColor: alpha("#000", 0.08),
+                    transform: "scale(1.1)",
+                  },
+                }}
+              >
+                <FavoriteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
                 </Box>
               </CardContent>
             </Card>
 
-            {/* Property/Work Details */}
             {renderPropertyDetails()}
             {renderWorkDetails()}
 
             {/* Description Card */}
-            <Card elevation={2} sx={{ borderRadius: "16px" }}>
-              <CardContent>
-                <Typography
+            <Card elevation={2} sx={{ borderRadius: "16px", mb:2 }}>
+                <CardContent>
+                  <Typography
                   variant="h6"
                   gutterBottom
                   sx={{ color: "primary.main", fontWeight: 700 }}
                 >
-                  {t("description")}
+                  {t("shortDescription")}
                 </Typography>
-                <Typography
+                 <Typography
                   variant="body1"
                   sx={{
                     lineHeight: 1.7,
-                    whiteSpace: "pre-wrap",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
                   }}
                 >
-                  {currentPost.fullDescription}
+                  {currentPost.shortDescription}
                 </Typography>
-
-                {/* Tags */}
                 {currentPost.tags && currentPost.tags.length > 0 && (
                   <Box mt={3}>
                     <Typography
@@ -752,6 +778,30 @@ export default observer(function PostDetails() {
                     </Box>
                   </Box>
                 )}
+                </CardContent>
+            </Card>
+
+            <Card elevation={2} sx={{ borderRadius: "16px" }}>
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ color: "primary.main", fontWeight: 700 }}
+                >
+                  {t("fullDescription")}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    lineHeight: 1.7,
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {currentPost.fullDescription}
+                </Typography>
+
+                {/* Tags */}
               </CardContent>
             </Card>
           </Box>

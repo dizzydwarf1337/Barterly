@@ -4,7 +4,7 @@ using Application.Commands.Users.Opinions.EditOpinion;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Users;
 
 [Route("user/opinions")]
 [Authorize(Policy = "User")]

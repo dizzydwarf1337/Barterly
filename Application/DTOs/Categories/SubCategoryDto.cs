@@ -8,12 +8,12 @@ public class SubCategoryDto
 
     [Required(ErrorMessage = "TitlePL is required")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "TitlePL must be between 2 and 50 characters long")]
-    public required string TitlePL { get; set; }
+    public required string NamePL { get; set; }
 
     [Required(ErrorMessage = "TitleEN is required")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "TitleEN must be between 2 and 50 characters long")]
-    public required string TitleEN { get; set; }
-
+    public required string NameEN { get; set; }
+    
     [Required(ErrorMessage = "CategoryId is required")]
     public Guid CategoryId { get; set; }
 }

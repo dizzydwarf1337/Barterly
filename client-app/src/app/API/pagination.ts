@@ -5,11 +5,11 @@ export interface PaginationRequest {
         search?:string;
         subCategoryId?:string;
         userId?:string;
-        pageSize:string;
-        pageNumber:string;
+        pageSize:number;
+        pageNumber:number;
     }
     sortBy?:{
-        soryBy:string;
+        sortBy:string | null;
         isDescending:boolean
     }
 

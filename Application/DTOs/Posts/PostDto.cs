@@ -22,7 +22,7 @@ public class PostDto
     public PostPriceType? PriceType { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    public PostPromotionType PromotionType { get; set; }
+    public PostPromotionType PostPromotionType { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public string? MainImageUrl { get; set; }
     public string[]? Tags { get; set; }
@@ -50,4 +50,5 @@ public class PostDto
     public bool? ExperienceRequired { get; set; }
     public SubCategoryDto? SubCategory { get; set; }
     public ICollection<PostImageDto>? PostImages { get; set; }
+    public string? PostType { get; set; }
 }

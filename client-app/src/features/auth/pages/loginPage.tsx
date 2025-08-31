@@ -109,8 +109,7 @@ const LoginPage: React.FC = observer(() => {
       const response = await authApi.login(loginData);
 
       if (response.isSuccess && response.value) {
-        await authStore.login(response.value.token, response.value.roles);
-        setSuccess(t("auth.loginSuccess"));
+        await authStore.login(response.value.token);
         uiStore.showSnackbar(t("auth.loginSuccess"), "success", "center");
         navigate("/");
       } else {
@@ -145,7 +144,7 @@ const LoginPage: React.FC = observer(() => {
         const response = await authApi.loginWithGoogle(googleLoginData);
 
         if (response.isSuccess) {
-          authStore.loginWithGoogle(response.value.token, response.value.roles);
+          authStore.loginWithGoogle(response.value.token);
           setSuccess(t("auth.googleLoginSuccess"));
           uiStore.showSnackbar(
             t("auth.googleLoginSuccess"),
