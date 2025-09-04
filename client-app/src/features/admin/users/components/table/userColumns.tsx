@@ -1,6 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { UserPreview, UserRoles } from "../../types/userTypes";
-import { Chip, Box, Typography, Tooltip, IconButton, Stack } from "@mui/material";
+import {
+  Chip,
+  Box,
+  Typography,
+  Tooltip,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
@@ -20,23 +27,29 @@ const columnHelper = createColumnHelper<UserPreview>();
 
 const roleConfig = {
   [UserRoles.Admin]: {
-    label: 'Admin',
-    color: 'error' as const,
-    icon: <AdminPanelSettingsIcon fontSize="small" />
+    label: "Admin",
+    color: "error" as const,
+    icon: <AdminPanelSettingsIcon fontSize="small" />,
   },
   [UserRoles.Moderator]: {
-    label: 'Moderator',
-    color: 'warning' as const,
-    icon: <SupervisorAccountIcon fontSize="small" />
+    label: "Moderator",
+    color: "warning" as const,
+    icon: <SupervisorAccountIcon fontSize="small" />,
   },
   [UserRoles.User]: {
-    label: 'User',
-    color: 'primary' as const,
-    icon: <PersonIcon fontSize="small" />
-  }
+    label: "User",
+    color: "primary" as const,
+    icon: <PersonIcon fontSize="small" />,
+  },
 };
 
-const ActionsCell = ({ user, onDelete }: { user: UserPreview; onDelete: (userId: string) => void }) => {
+const ActionsCell = ({
+  user,
+  onDelete,
+}: {
+  user: UserPreview;
+  onDelete: (userId: string) => void;
+}) => {
   const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
@@ -48,31 +61,31 @@ const ActionsCell = ({ user, onDelete }: { user: UserPreview; onDelete: (userId:
   return (
     <>
       <Stack direction="row" spacing={0.5}>
-        <Tooltip title={t('edit')}>
-          <IconButton 
-            size="small" 
+        <Tooltip title={t("adminUsers:edit")}>
+          <IconButton
+            size="small"
             color="primary"
-            sx={{ 
-              '&:hover': { 
-                transform: 'scale(1.1)' 
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1)",
               },
-              transition: 'all 0.2s'
+              transition: "all 0.2s",
             }}
-            onClick={()=>navigate(`${user.id}`)}
+            onClick={() => navigate(`${user.id}`)}
           >
             <EditIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t('delete')}>
-          <IconButton 
-            size="small" 
+        <Tooltip title={t("adminUsers:delete")}>
+          <IconButton
+            size="small"
             color="error"
             onClick={() => setDeleteDialogOpen(true)}
-            sx={{ 
-              '&:hover': { 
-                transform: 'scale(1.1)' 
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1)",
               },
-              transition: 'all 0.2s'
+              transition: "all 0.2s",
             }}
           >
             <DeleteIcon fontSize="small" />
@@ -82,7 +95,8 @@ const ActionsCell = ({ user, onDelete }: { user: UserPreview; onDelete: (userId:
 
       <DeletionDialog
         open={deleteDialogOpen}
-        message={t('deleteConfirmation.userMessage', { name: `${user.firstName} ${user.lastName}` })}
+        message={t("adminUsers:deleteConfirmation.message")}
+        title={t("adminUsers:deleteConfirmation.title")}
         onAccept={handleDelete}
         onClose={() => setDeleteDialogOpen(false)}
       />
@@ -91,8 +105,8 @@ const ActionsCell = ({ user, onDelete }: { user: UserPreview; onDelete: (userId:
 };
 
 export const usersColumns = (onDelete: (userId: string) => void) => [
-  columnHelper.accessor('firstName', {
-    header: 'First Name',
+  columnHelper.accessor("firstName", {
+    header: "First Name",
     cell: (info) => (
       <Typography variant="body2" fontWeight={600}>
         {info.getValue()}
@@ -102,8 +116,8 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
   }),
 
   // Last Name column
-  columnHelper.accessor('lastName', {
-    header: 'Last Name',
+  columnHelper.accessor("lastName", {
+    header: "Last Name",
     cell: (info) => (
       <Typography variant="body2" fontWeight={600}>
         {info.getValue()}
@@ -112,8 +126,8 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
     size: 150,
   }),
 
-  columnHelper.accessor('email', {
-    header: 'Email',
+  columnHelper.accessor("email", {
+    header: "Email",
     cell: (info) => (
       <Typography variant="body2" fontWeight={600}>
         {info.getValue()}
@@ -124,26 +138,30 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
 
   // Address column
   columnHelper.display({
-    id: 'address',
-    header: 'Address',
+    id: "address",
+    header: "Address",
     cell: ({ row }) => {
       const { street, houseNumber, city, postalCode, country } = row.original;
-      
+
       if (!street && !city && !country) {
-        return <Typography variant="body2" color="text.secondary">—</Typography>;
+        return (
+          <Typography variant="body2" color="text.secondary">
+            —
+          </Typography>
+        );
       }
-      
+
       const addressParts = [
         street && houseNumber ? `${street} ${houseNumber}` : street,
         postalCode && city ? `${postalCode} ${city}` : city,
-        country
+        country,
       ].filter(Boolean);
-      
+
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <LocationOnIcon fontSize="small" color="action" />
           <Typography variant="body2" noWrap sx={{ maxWidth: 250 }}>
-            {addressParts.join(', ')}
+            {addressParts.join(", ")}
           </Typography>
         </Box>
       );
@@ -152,12 +170,12 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
   }),
 
   // Role column
-  columnHelper.accessor('role', {
-    header: 'Role',
+  columnHelper.accessor("role", {
+    header: "Role",
     cell: (info) => {
       const role = info.getValue();
       const config = roleConfig[role];
-      
+
       return (
         <Chip
           label={config.label}
@@ -172,12 +190,12 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
   }),
 
   // Created At column
-  columnHelper.accessor('createdAt', {
-    header: 'Created At',
+  columnHelper.accessor("createdAt", {
+    header: "Created At",
     cell: (info) => (
-      <Tooltip title={dayjs(info.getValue()).format('MMMM DD, YYYY HH:mm:ss')}>
+      <Tooltip title={dayjs(info.getValue()).format("MMMM DD, YYYY HH:mm:ss")}>
         <Typography variant="body2">
-          {dayjs(info.getValue()).format('MMM DD, YYYY')}
+          {dayjs(info.getValue()).format("MMM DD, YYYY")}
         </Typography>
       </Tooltip>
     ),
@@ -185,21 +203,21 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
   }),
 
   // Last Seen column
-  columnHelper.accessor('lastSeen', {
-    header: 'Last Seen',
+  columnHelper.accessor("lastSeen", {
+    header: "Last Seen",
     cell: (info) => {
       const lastSeen = dayjs(info.getValue());
       const now = dayjs();
-      const diffMinutes = now.diff(lastSeen, 'minute');
-      const diffHours = now.diff(lastSeen, 'hour');
-      const diffDays = now.diff(lastSeen, 'day');
-      
-      let status = 'default';
-      let label = '';
-      
+      const diffMinutes = now.diff(lastSeen, "minute");
+      const diffHours = now.diff(lastSeen, "hour");
+      const diffDays = now.diff(lastSeen, "day");
+
+      let status = "default";
+      let label = "";
+
       if (diffMinutes < 5) {
-        status = 'success';
-        label = 'Online';
+        status = "success";
+        label = "Online";
       } else if (diffHours < 1) {
         label = `${diffMinutes}m ago`;
       } else if (diffHours < 24) {
@@ -207,15 +225,15 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
       } else if (diffDays < 7) {
         label = `${diffDays}d ago`;
       } else {
-        label = lastSeen.format('MMM DD, YYYY');
+        label = lastSeen.format("MMM DD, YYYY");
       }
-      
+
       return (
         <Chip
           label={label}
           size="small"
-          color={status === 'success' ? 'success' : 'default'}
-          variant={status === 'success' ? 'filled' : 'outlined'}
+          color={status === "success" ? "success" : "default"}
+          variant={status === "success" ? "filled" : "outlined"}
           sx={{ fontWeight: 500, minWidth: 80 }}
         />
       );
@@ -225,12 +243,12 @@ export const usersColumns = (onDelete: (userId: string) => void) => [
 
   // Actions column
   columnHelper.display({
-    id: 'actions',
-    header: 'Actions',
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => (
-      <ActionsCell 
-        user={row.original} 
-        onDelete={() => onDelete(row.original.id)} 
+      <ActionsCell
+        user={row.original}
+        onDelete={() => onDelete(row.original.id)}
       />
     ),
     size: 100,

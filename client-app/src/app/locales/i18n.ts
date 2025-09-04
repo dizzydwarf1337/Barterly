@@ -1,5 +1,7 @@
 ﻿import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import adminUsersEn from "../../features/admin/users/translation/en";
+import adminUsersPl from "../../features/admin/users/translation/pl";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 i18n
@@ -9,8 +11,8 @@ i18n
     resources: {
       en: {
         translation: {
-          // Basic app translations
           addPost: "Add Post",
+          delete: "Delete",
           category: "Category",
           categories: "Categories",
           profile: "Profile",
@@ -67,8 +69,8 @@ i18n
           cancel: "Cancel",
           createPost: "Create Post",
           creating: "Creating...",
-          subCategory:"Subcategory",
-          subCategories:"Subcategories",
+          subCategory: "Subcategory",
+          subCategories: "Subcategories",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -93,7 +95,7 @@ i18n
           postNotFound: "Post not found",
           failedToLoadPost: "Failed to load post",
           noPosts: "No posts available",
-          common:"Common",
+          common: "Common",
           // Work experience translations
           ExperienceRequired: "Experience required",
           ExperienceNotRequired: "No experience required",
@@ -167,7 +169,8 @@ i18n
           pleaseLogin: "Please log in to access this feature",
 
           // Footer translations
-          footerDescription: "Your trusted platform for finding everything you need - from jobs and housing to services and products.",
+          footerDescription:
+            "Your trusted platform for finding everything you need - from jobs and housing to services and products.",
           quickLinks: "Quick Links",
           moreInfo: "More Info",
           contact: "Contact",
@@ -211,14 +214,14 @@ i18n
           contactOwner: "Contact",
           memberSince: "Member since",
           userNotAvailable: "User information not available",
-          postAddedToFavorites:"Favourite post added",
-          errorUpdatingFavorites:"Log in to add favourite post",
-          postRemovedFromFavorites:"Favorite post removed",
+          postAddedToFavorites: "Favourite post added",
+          errorUpdatingFavorites: "Log in to add favourite post",
+          postRemovedFromFavorites: "Favorite post removed",
           goBack: "Go Back",
-          contractType:"Contract Type",
+          contractType: "Contract Type",
           // Actions
           addToFavorites: "Add to Favorites",
-          experience:"Experience",
+          experience: "Experience",
 
           // General
           free: "Free",
@@ -245,7 +248,8 @@ i18n
             lastName: "Last Name",
             loginSuccess: "Successfully logged in!",
             loginError: "Login failed. Please check your credentials.",
-            registerSuccess: "Registration successful! Please check your email to verify your account.",
+            registerSuccess:
+              "Registration successful! Please check your email to verify your account.",
             registerError: "Registration failed. Please try again.",
             googleLoginSuccess: "Successfully logged in with Google!",
             googleLoginError: "Google login failed. Please try again.",
@@ -256,7 +260,8 @@ i18n
           // Email confirmation extended
           emailConfirmation: {
             title: "Email Confirmation Required",
-            message: "To complete your registration, please confirm your email address by clicking the link in the email we sent you. The link will expire in 24 hours for security reasons.",
+            message:
+              "To complete your registration, please confirm your email address by clicking the link in the email we sent you. The link will expire in 24 hours for security reasons.",
             didntReceive: "Didn't receive the email?",
             resendEmail: "Resend Verification Email",
             resendIn: "You can resend the email in",
@@ -264,15 +269,18 @@ i18n
             sending: "Sending...",
             emailsSent: "Verification emails sent: {{count}}",
             backToLogin: "Back to Login",
-            checkSpamTip: "Don't forget to check your spam/junk folder if you don't see the email in your inbox.",
+            checkSpamTip:
+              "Don't forget to check your spam/junk folder if you don't see the email in your inbox.",
             noEmailProvided: "No email address provided",
           },
+          rowsPerPage: "Rows per page:",
         },
       },
       pl: {
         translation: {
           // Basic app translations
           addPost: "Dodaj Ogłoszenie",
+          delete: "Usuń",
           category: "Kategoria",
           categories: "Kategorie",
           profile: "Profil użytkownika",
@@ -329,8 +337,8 @@ i18n
           cancel: "Anuluj",
           createPost: "Utwórz Ogłoszenie",
           creating: "Tworzenie...",
-          subCategory:"Podkategoria",
-          subCategories:"Podkategorii",
+          subCategory: "Podkategoria",
+          subCategories: "Podkategorii",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -355,7 +363,7 @@ i18n
           postNotFound: "Ogłoszenie nie znalezione",
           failedToLoadPost: "Nie udało się załadować ogłoszenia",
           noPosts: "Brak dostępnych ogłoszeń",
-          common:"Ogólne",
+          common: "Ogólne",
 
           // Work experience translations
           ExperienceRequired: "Wymagane doświadczenie",
@@ -430,9 +438,10 @@ i18n
           pleaseLogin: "Zaloguj się, aby uzyskać dostęp do tej funkcji",
 
           // Footer translations
-          footerDescription: "Twoja zaufana platforma do znajdowania wszystkiego czego potrzebujesz - od pracy i mieszkań po usługi i produkty.",
+          footerDescription:
+            "Twoja zaufana platforma do znajdowania wszystkiego czego potrzebujesz - od pracy i mieszkań po usługi i produkty.",
           quickLinks: "Szybkie Linki",
-          moreInfo: "Dodatkowe Informacje", 
+          moreInfo: "Dodatkowe Informacje",
           contact: "Kontakt",
           about: "O Nas",
           privacy: "Polityka Prywatności",
@@ -462,14 +471,16 @@ i18n
           imageLoadError: "Nie udało się załadować zdjęcia",
           image: "Zdjęcie",
           fullscreen: "Pełny ekran",
-          postAddedToFavorites:"Dodano do ulubionych",
-          errorUpdatingFavorites:"Zaloguj się aby dodać ogłoszenie do ulubionych",
-          postRemovedFromFavorites:"Usunięto z ulubionych",
-          contractType:"Typ umowy",
-          experience:"Doświaczenie",
+          postAddedToFavorites: "Dodano do ulubionych",
+          errorUpdatingFavorites:
+            "Zaloguj się aby dodać ogłoszenie do ulubionych",
+          postRemovedFromFavorites: "Usunięto z ulubionych",
+          contractType: "Typ umowy",
+          experience: "Doświaczenie",
 
           // Enhanced UI
-          noPostsDescription: "Sprawdź ponownie później czy pojawiły się nowe ogłoszenia",
+          noPostsDescription:
+            "Sprawdź ponownie później czy pojawiły się nowe ogłoszenia",
 
           // Promotion types
           promotion: {
@@ -513,10 +524,12 @@ i18n
             lastName: "Nazwisko",
             loginSuccess: "Pomyślnie zalogowano!",
             loginError: "Logowanie nie powiodło się. Sprawdź swoje dane.",
-            registerSuccess: "Rejestracja zakończona sukcesem! Sprawdź email aby potwierdzić konto.",
+            registerSuccess:
+              "Rejestracja zakończona sukcesem! Sprawdź email aby potwierdzić konto.",
             registerError: "Rejestracja nie powiodła się. Spróbuj ponownie.",
             googleLoginSuccess: "Pomyślnie zalogowano przez Google!",
-            googleLoginError: "Logowanie przez Google nie powiodło się. Spróbuj ponownie.",
+            googleLoginError:
+              "Logowanie przez Google nie powiodło się. Spróbuj ponownie.",
             continueWithGoogle: "Kontynuuj z Google",
             or: "LUB",
           },
@@ -524,7 +537,8 @@ i18n
           // Email confirmation extended
           emailConfirmation: {
             title: "Wymagane Potwierdzenie Email",
-            message: "Aby zakończyć rejestrację, potwierdź swój adres email klikając w link w wiadomości, którą wysłaliśmy. Link wygaśnie za 24 godziny ze względów bezpieczeństwa.",
+            message:
+              "Aby zakończyć rejestrację, potwierdź swój adres email klikając w link w wiadomości, którą wysłaliśmy. Link wygaśnie za 24 godziny ze względów bezpieczeństwa.",
             didntReceive: "Nie otrzymałeś emaila?",
             resendEmail: "Wyślij Ponownie Email Weryfikacyjny",
             resendIn: "Możesz wysłać ponownie email za",
@@ -532,9 +546,11 @@ i18n
             sending: "Wysyłanie...",
             emailsSent: "Wysłano emaili weryfikacyjnych: {{count}}",
             backToLogin: "Powrót do Logowania",
-            checkSpamTip: "Nie zapomnij sprawdzić folderu spam/junk jeśli nie widzisz emaila w skrzynce odbiorczej.",
+            checkSpamTip:
+              "Nie zapomnij sprawdzić folderu spam/junk jeśli nie widzisz emaila w skrzynce odbiorczej.",
             noEmailProvided: "Nie podano adresu email",
           },
+          rowsPerPage: "Wierszy na stronę:",
         },
       },
     },
@@ -542,5 +558,8 @@ i18n
     fallbackLng: "en",
     interpolation: { escapeValue: false },
   });
+
+i18n.addResourceBundle("en", "adminUsers", adminUsersEn, true, true);
+i18n.addResourceBundle("pl", "adminUsers", adminUsersPl, true, true);
 
 export default i18n;

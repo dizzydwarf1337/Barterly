@@ -11,6 +11,9 @@ public class GetUsersQuery : AdminRequest<GetUsersQuery.Result>
     public class FilterSpecification
     {
         public string? Search { get; set; }
+        public bool? IsDeleted { get; set; }
+        public bool? IsBanned { get; set; }
+        public bool? IsEmailConfirmed { get; set; }
         public int PageSize { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
     }

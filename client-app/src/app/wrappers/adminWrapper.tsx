@@ -1,14 +1,15 @@
-import { Box, Fade, Container } from "@mui/material";
-import { observer } from "mobx-react-lite";
 import { Outlet } from "react-router";
+import AdminNavBar from "../layout/adminNavBar";
+import { AdminDrawer } from "../layout/adminDrawer";
+import { Box } from "@mui/material";
+import { observer } from "mobx-react-lite";
 import useStore from "../stores/store";
 import { useEffect } from "react";
 import authApi from "../../features/auth/api/authApi";
-import AdminNavBar from "../layout/adminNavBar";
-import { AdminDrawer } from "../layout/adminDrawer";
 
 export const AdminWrapper = observer(() => {
-  const { uiStore, authStore } = useStore();
+  const { authStore } = useStore();
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -21,51 +22,38 @@ export const AdminWrapper = observer(() => {
       }
     };
     fetchMe();
-
   }, [authStore.token]);
 
   return (
     <Box
       display="flex"
-      flexDirection="column"
       minHeight="100vh"
-      sx={{
-        position: "relative",
-        overflow: "hidden",
-      }}
+      sx={{ bgcolor: "background.default" }}
     >
-      <AdminNavBar />
+      <Box sx={{ width: 240, flexShrink: 0 }}>
+        <AdminDrawer />
+      </Box>
 
       <Box
-        component="main"
-        display="flex"
-        flexDirection="row"
         sx={{
-          minHeight: "calc(100vh - 140px)",
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          marginLeft: 0,
+          width: "100%",
         }}
       >
-      <Box flex={1}>
-       <AdminDrawer/>
-      </Box>
-        <Fade in timeout={300}>
-            
-          <Container
-            maxWidth={false}
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              px: 2,
-              py: 2,
-              mx: "auto",
-              width: "100%",
-              maxWidth: 1200,
-            }}
-          >
-
-            <Outlet />
-          </Container>
-        </Fade>
+        <AdminNavBar />
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            width: "100%",
+            maxWidth: "100%",
+          }}
+        >
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

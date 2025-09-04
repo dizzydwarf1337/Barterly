@@ -36,10 +36,21 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, ApiResponse<G
                 _ => query.OrderByDescending(x => x.CreatedAt)
             };
         }
-        if (request.FilterBy is not null && !string.IsNullOrWhiteSpace(request.FilterBy.Search))
+        if (request.FilterBy is not null )
         {
-            query = query.Where(x=>x.FirstName.Contains(request.FilterBy.Search) || x.LastName.Contains(request.FilterBy.Search));
+            if(!string.IsNullOrWhiteSpace(request.FilterBy.Search))
+                query = query.Where(
+                    x=>x.FirstName.Contains(request.FilterBy.Search) 
+                   || x.LastName.Contains(request.FilterBy.Search) 
+                   || x.Email.Contains(request.FilterBy.Search));
+            if (request.FilterBy.IsBanned.HasValue && request.FilterBy.IsBanned.Value)
+                query = query.Where(x => x.Setting.IsBanned == true);
+            if(request.FilterBy.IsDeleted.HasValue && request.FilterBy.IsDeleted.Value)
+                query = query.Where(x => x.Setting.IsDeleted == true);
+            if(request.FilterBy.IsEmailConfirmed.HasValue && request.FilterBy.IsEmailConfirmed.Value)
+                query = query.Where(x => x.EmailConfirmed == true);
         }
+        
 
         var totalCount = await query.CountAsync(cancellationToken);
         var totalPages = totalCount / request.FilterBy.PageSize; 

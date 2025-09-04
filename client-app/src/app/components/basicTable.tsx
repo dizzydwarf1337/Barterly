@@ -1,5 +1,5 @@
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import {
   Box,
   LinearProgress,
@@ -12,9 +12,16 @@ import {
   TableRow,
   Paper,
   alpha,
-} from '@mui/material';
-import { ColumnDef, flexRender, getCoreRowModel, SortingState, useReactTable } from '@tanstack/react-table';
-import React from 'react';
+} from "@mui/material";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { t } from "i18next";
+import React from "react";
 
 type Props<T> = {
   data?: Array<T>;
@@ -36,9 +43,9 @@ const BasicTable = <T extends object>(props: Props<T>) => {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: props.setSorting,
     state: {
-      sorting: props.sorting
+      sorting: props.sorting,
     },
-    enableSortingRemoval: false
+    enableSortingRemoval: false,
   });
 
   return (
@@ -46,26 +53,30 @@ const BasicTable = <T extends object>(props: Props<T>) => {
       <TableContainer
         component={Paper}
         sx={{
-          backgroundColor: 'background.paper',
-          px: 1,
-          borderRadius: 2,
+          backgroundColor: "background.paper",
+          p: 1,
+          borderRadius: 0,
           border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.2)}`,
           boxShadow: (theme) => theme.shadows[2],
-        }}>
-        {props.loading ? <LinearProgress sx={{ width: '100%' }} /> : null}
+        }}
+      >
+        {props.loading ? <LinearProgress sx={{ width: "100%" }} /> : null}
         <Table
           size="small"
           sx={{
-            overflowX: 'auto',
-            width: '100%',
+            overflowX: "auto",
+            width: "100%",
             minWidth: 300,
-            borderSpacing: '0px 4px'
-          }}>
-          <TableHead 
-            sx={{ 
+            borderSpacing: "0px 4px",
+          }}
+        >
+          <TableHead
+            sx={{
               borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
-              backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.08),
-            }}>
+              backgroundColor: (theme) =>
+                alpha(theme.palette.primary.main, 0.08),
+            }}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -74,27 +85,36 @@ const BasicTable = <T extends object>(props: Props<T>) => {
                     sx={{
                       py: 1,
                       px: 2,
-                      color: 'text.primary',
+                      color: "text.primary",
                       fontWeight: 600,
-                      ':hover': {
-                        cursor: header.column.getCanSort() ? 'pointer' : undefined,
-                        backgroundColor: (theme) => 
-                          header.column.getCanSort() 
+                      ":hover": {
+                        cursor: header.column.getCanSort()
+                          ? "pointer"
+                          : undefined,
+                        backgroundColor: (theme) =>
+                          header.column.getCanSort()
                             ? alpha(theme.palette.action.hover, 0.5)
-                            : undefined
+                            : undefined,
                       },
-                      border: 'none'
+                      border: "none",
                     }}
-                    padding={header.id === 'actions' ? 'checkbox' : 'none'}
-                    onClick={header.column.getToggleSortingHandler()}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && !header.column.getIsSorted()
+                    padding={header.id === "actions" ? "checkbox" : "none"}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      {header.column.getCanSort() &&
+                      !header.column.getIsSorted()
                         ? undefined
                         : {
-                          asc: <ArrowDropUpIcon />,
-                          desc: <ArrowDropDownIcon />
-                        }[header.column.getIsSorted() as string] ?? null}
+                            asc: <ArrowDropUpIcon />,
+                            desc: <ArrowDropDownIcon />,
+                          }[header.column.getIsSorted() as string] ?? null}
                     </Box>
                   </TableCell>
                 ))}
@@ -106,23 +126,26 @@ const BasicTable = <T extends object>(props: Props<T>) => {
               <TableRow
                 key={row.id}
                 sx={{
-                  borderBottom: (theme) => `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
+                  borderBottom: (theme) =>
+                    `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                  "&:hover": {
+                    backgroundColor: "action.hover",
                   },
-                  '&:last-child': {
-                    borderBottom: 'none',
-                  }
-                }}>
+                  "&:last-child": {
+                    borderBottom: "none",
+                  },
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    padding={cell.column.id === 'actions' ? 'checkbox' : 'none'}
+                    padding={cell.column.id === "actions" ? "checkbox" : "none"}
                     sx={{
                       py: 1,
                       px: 2,
-                      color: 'text.primary',
-                    }}>
+                      color: "text.primary",
+                    }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -130,29 +153,38 @@ const BasicTable = <T extends object>(props: Props<T>) => {
             ))}
           </TableBody>
         </Table>
-        {props.page && props.pageSize && props.handlePageChange && props.handlePageSizeChange ? (
+        {props.page &&
+        props.pageSize &&
+        props.handlePageChange &&
+        props.handlePageSizeChange ? (
           <TablePagination
             sx={{
-              '& .MuiToolbar-root': { 
-                flexWrap: 'wrap', 
-                justifyContent: 'end',
-                color: 'text.primary',
+              "& .MuiToolbar-root": {
+                flexWrap: "wrap",
+                justifyContent: "end",
+                color: "text.primary",
               },
-              color: 'text.primary',
-              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                color: 'text.secondary',
-              },
+              color: "text.primary",
+              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+                {
+                  color: "text.secondary",
+                },
             }}
             rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
             count={props.count || 0}
-            labelRowsPerPage={'Wierszy na stronę:'}
-            labelDisplayedRows={({ from, to, count }) => `${from} - ${to} z ${count}`}
+            labelRowsPerPage={t("rowsPerPage") || "Rows per page"}
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from} - ${to} z ${count}`
+            }
             rowsPerPage={props.pageSize}
             page={props.page - 1}
-            onPageChange={(_, page) => props.handlePageChange && props.handlePageChange(page + 1)}
+            onPageChange={(_, page) =>
+              props.handlePageChange && props.handlePageChange(page + 1)
+            }
             onRowsPerPageChange={(e) =>
-              props.handlePageSizeChange && props.handlePageSizeChange(parseInt(e.target.value))
+              props.handlePageSizeChange &&
+              props.handlePageSizeChange(parseInt(e.target.value))
             }
           />
         ) : null}

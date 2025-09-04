@@ -111,11 +111,6 @@ export default observer(function AdminNavBar() {
 
   const theme = uiStore.getTheme();
 
-
-
-  
-
-
   const handleLogout = async () => {
     try {
       await authApi.logout();
@@ -140,11 +135,8 @@ export default observer(function AdminNavBar() {
 
   const renderDesktopContent = () => (
     <Box display="flex" flexDirection="row" gap={2} alignItems="center">
-  
-
       {authStore.isLoggedIn ? (
         <>
-
           <UserInfo>
             <Avatar
               src={authStore.user?.profilePicturePath ?? undefined}
@@ -230,8 +222,6 @@ export default observer(function AdminNavBar() {
     </Box>
   );
 
- 
-
   return (
     <>
       <HideOnScroll>
@@ -269,7 +259,6 @@ export default observer(function AdminNavBar() {
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {renderDesktopContent()}
             </Box>
-
           </Toolbar>
         </StyledAppBar>
       </HideOnScroll>

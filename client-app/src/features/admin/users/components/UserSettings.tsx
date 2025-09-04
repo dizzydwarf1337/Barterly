@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Card,
@@ -9,24 +9,23 @@ import {
   Button,
   alpha,
   useTheme,
-  Divider,
-} from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { observer } from 'mobx-react-lite';
+} from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
+import { observer } from "mobx-react-lite";
 
 // Icons
-import SettingsIcon from '@mui/icons-material/Settings';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import DeleteIcon from '@mui/icons-material/Delete';
-import BlockIcon from '@mui/icons-material/Block';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import CommentIcon from '@mui/icons-material/Comment';
-import ChatIcon from '@mui/icons-material/Chat';
-import SaveIcon from '@mui/icons-material/Save';
-import { UserSettings } from '../types/userTypes';
+import SettingsIcon from "@mui/icons-material/Settings";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BlockIcon from "@mui/icons-material/Block";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import CommentIcon from "@mui/icons-material/Comment";
+import ChatIcon from "@mui/icons-material/Chat";
+import SaveIcon from "@mui/icons-material/Save";
+import { UserSettings } from "../types/userTypes";
 
 interface UserSettingsFormProps {
   userSettings: UserSettings;
@@ -35,7 +34,7 @@ interface UserSettingsFormProps {
 }
 
 const validationSchema = Yup.object().shape({
-  id:Yup.string().required(),
+  id: Yup.string().required(),
   isHidden: Yup.boolean().required(),
   isDeleted: Yup.boolean().required(),
   isBanned: Yup.boolean().required(),
@@ -44,198 +43,233 @@ const validationSchema = Yup.object().shape({
   isChatRestricted: Yup.boolean().required(),
 });
 
-const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(({ 
-  userSettings, 
-  onSubmit, 
-  loading = false 
-}) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
+const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
+  ({ userSettings, onSubmit, loading = false }) => {
+    const { t } = useTranslation();
+    const theme = useTheme();
 
-  const { control, handleSubmit, formState: { isDirty } } = useForm<UserSettings>({
-    resolver: yupResolver(validationSchema),
-    defaultValues: userSettings,
-  });
+    const {
+      control,
+      handleSubmit,
+      formState: { isDirty },
+    } = useForm<UserSettings>({
+      resolver: yupResolver(validationSchema),
+      defaultValues: userSettings,
+    });
 
-  const switchSettings = [
-    {
-      name: 'isHidden' as keyof UserSettings,
-      label: t('hiddenAccount'),
-      description: t('hiddenAccountDesc'),
-      icon: <VisibilityOffIcon />,
-      color: theme.palette.warning.main,
-    },
-    {
-      name: 'isDeleted' as keyof UserSettings,
-      label: t('deletedAccount'),
-      description: t('deletedAccountDesc'),
-      icon: <DeleteIcon />,
-      color: theme.palette.error.main,
-    },
-    {
-      name: 'isBanned' as keyof UserSettings,
-      label: t('bannedAccount'),
-      description: t('bannedAccountDesc'),
-      icon: <BlockIcon />,
-      color: theme.palette.error.main,
-    },
-    {
-      name: 'isPostRestricted' as keyof UserSettings,
-      label: t('postRestrictions'),
-      description: t('postRestrictionsDesc'),
-      icon: <PostAddIcon />,
-      color: theme.palette.warning.main,
-    },
-    {
-      name: 'isOpinionRestricted' as keyof UserSettings,
-      label: t('opinionRestrictions'),
-      description: t('opinionRestrictionsDesc'),
-      icon: <CommentIcon />,
-      color: theme.palette.warning.main,
-    },
-    {
-      name: 'isChatRestricted' as keyof UserSettings,
-      label: t('chatRestrictions'),
-      description: t('chatRestrictionsDesc'),
-      icon: <ChatIcon />,
-      color: theme.palette.warning.main,
-    },
-  ];
+    const switchSettings = [
+      {
+        name: "isHidden" as keyof UserSettings,
+        label: t("hiddenAccount"),
+        description: t("hiddenAccountDesc"),
+        icon: <VisibilityOffIcon />,
+        color: theme.palette.warning.main,
+      },
+      {
+        name: "isDeleted" as keyof UserSettings,
+        label: t("deletedAccount"),
+        description: t("deletedAccountDesc"),
+        icon: <DeleteIcon />,
+        color: theme.palette.error.main,
+      },
+      {
+        name: "isBanned" as keyof UserSettings,
+        label: t("bannedAccount"),
+        description: t("bannedAccountDesc"),
+        icon: <BlockIcon />,
+        color: theme.palette.error.main,
+      },
+      {
+        name: "isPostRestricted" as keyof UserSettings,
+        label: t("postRestrictions"),
+        description: t("postRestrictionsDesc"),
+        icon: <PostAddIcon />,
+        color: theme.palette.warning.main,
+      },
+      {
+        name: "isOpinionRestricted" as keyof UserSettings,
+        label: t("opinionRestrictions"),
+        description: t("opinionRestrictionsDesc"),
+        icon: <CommentIcon />,
+        color: theme.palette.warning.main,
+      },
+      {
+        name: "isChatRestricted" as keyof UserSettings,
+        label: t("chatRestrictions"),
+        description: t("chatRestrictionsDesc"),
+        icon: <ChatIcon />,
+        color: theme.palette.warning.main,
+      },
+    ];
 
-  return (
-    <Box sx={{ maxWidth: 600, margin: '0 auto', p: 3 }}>
-      <Card
-        elevation={0}
-        sx={{
-          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-          borderRadius: 3,
-          background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.02)} 0%, ${alpha(theme.palette.secondary.main, 0.02)} 100%)`,
-        }}
-      >
-        <CardContent sx={{ p: 4 }}>
-          <Typography 
-            variant="h5" 
-            fontWeight="bold" 
-            color="primary" 
-            mb={1}
-            display="flex"
-            alignItems="center"
-            gap={1}
-          >
-            <SettingsIcon />
-            {t('userSettings')}
-          </Typography>
-          
-          <Typography variant="body2" color="text.secondary" mb={3}>
-            {t('userSettingsDesc')}
-          </Typography>
+    return (
+      <Box sx={{ margin: "0 auto", p: 3 }}>
+        <Card
+          elevation={0}
+          sx={{
+            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            borderRadius: 3,
+            background: `linear-gradient(135deg, ${alpha(
+              theme.palette.primary.main,
+              0.02
+            )} 0%, ${alpha(theme.palette.secondary.main, 0.02)} 100%)`,
+          }}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              color="primary"
+              mb={1}
+              display="flex"
+              alignItems="center"
+              gap={1}
+            >
+              <SettingsIcon />
+              {t("userSettings")}
+            </Typography>
 
-          <Divider sx={{ mb: 3 }} />
+            <Typography variant="body2" color="text.secondary" mb={3}>
+              {t("userSettingsDesc")}
+            </Typography>
 
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Box display="flex" flexDirection="column" gap={2}>
-              {switchSettings.map((setting, index) => (
-                <Box key={setting.name}>
-                  <Controller
-                    name={setting.name}
-                    control={control}
-                    render={({ field }) => (
-                      <Box
-                        sx={{
-                          p: 2,
-                          borderRadius: 2,
-                          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
-                          transition: 'all 0.2s ease',
-                          '&:hover': {
-                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
-                            borderColor: alpha(setting.color, 0.3),
-                          },
-                        }}
-                      >
-                        <Box display="flex" alignItems="center" justifyContent="space-between">
-                          <Box display="flex" alignItems="center" gap={1.5} flex={1}>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
+                {switchSettings.map((setting, _) => (
+                  <Box key={setting.name}>
+                    <Controller
+                      name={setting.name}
+                      control={control}
+                      render={({ field }) => (
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 2,
+                            border: `1px solid ${alpha(
+                              theme.palette.divider,
+                              0.1
+                            )}`,
+                            backgroundColor: alpha(
+                              theme.palette.background.paper,
+                              0.5
+                            ),
+                            transition: "all 0.2s ease",
+                            "&:hover": {
+                              backgroundColor: alpha(
+                                theme.palette.background.paper,
+                                0.8
+                              ),
+                              borderColor: alpha(setting.color, 0.3),
+                            },
+                          }}
+                        >
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
                             <Box
-                              sx={{
-                                color: setting.color,
-                                display: 'flex',
-                                alignItems: 'center',
-                              }}
+                              display="flex"
+                              alignItems="center"
+                              gap={1.5}
+                              flex={1}
                             >
-                              {setting.icon}
-                            </Box>
-                            <Box>
-                              <Typography variant="subtitle1" fontWeight="medium">
-                                {setting.label}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {setting.description}
-                              </Typography>
-                            </Box>
-                          </Box>
-                          
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={field.value as boolean}
-                                onChange={(e) => field.onChange(e.target.checked)}
+                              <Box
                                 sx={{
-                                  '& .MuiSwitch-switchBase.Mui-checked': {
-                                    color: setting.color,
-                                    '& + .MuiSwitch-track': {
-                                      backgroundColor: alpha(setting.color, 0.5),
-                                    },
-                                  },
+                                  color: setting.color,
+                                  display: "flex",
+                                  alignItems: "center",
                                 }}
-                              />
-                            }
-                            label=""
-                            sx={{ m: 0 }}
-                          />
-                        </Box>
-                      </Box>
-                    )}
-                  />
-                  {index < switchSettings.length - 1 && (
-                    <Divider sx={{ my: 2, opacity: 0.3 }} />
-                  )}
-                </Box>
-              ))}
-            </Box>
+                              >
+                                {setting.icon}
+                              </Box>
+                              <Box>
+                                <Typography
+                                  variant="subtitle1"
+                                  fontWeight="medium"
+                                >
+                                  {setting.label}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {setting.description}
+                                </Typography>
+                              </Box>
+                            </Box>
 
-            <Box mt={4} display="flex" justifyContent="flex-end">
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                disabled={!isDirty || loading}
-                startIcon={<SaveIcon />}
-                sx={{
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-                  boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
-                  '&:hover': {
-                    background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-                    transform: 'translateY(-2px)',
-                    boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.4)}`,
-                  },
-                  '&:disabled': {
-                    background: alpha(theme.palette.action.disabled, 0.1),
-                    color: theme.palette.action.disabled,
-                    boxShadow: 'none',
-                  },
-                }}
-              >
-                {loading ? t('saving') : t('saveSettings')}
-              </Button>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={field.value as boolean}
+                                  onChange={(e) =>
+                                    field.onChange(e.target.checked)
+                                  }
+                                  sx={{
+                                    "& .MuiSwitch-switchBase.Mui-checked": {
+                                      color: setting.color,
+                                      "& + .MuiSwitch-track": {
+                                        backgroundColor: alpha(
+                                          setting.color,
+                                          0.5
+                                        ),
+                                      },
+                                    },
+                                  }}
+                                />
+                              }
+                              label=""
+                              sx={{ m: 0 }}
+                            />
+                          </Box>
+                        </Box>
+                      )}
+                    />
+                  </Box>
+                ))}
+              </Box>
+
+              <Box mt={4} display="flex" justifyContent="flex-end">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  disabled={!isDirty || loading}
+                  startIcon={<SaveIcon />}
+                  sx={{
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+                    boxShadow: `0 8px 24px ${alpha(
+                      theme.palette.primary.main,
+                      0.3
+                    )}`,
+                    "&:hover": {
+                      background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                      transform: "translateY(-2px)",
+                      boxShadow: `0 12px 32px ${alpha(
+                        theme.palette.primary.main,
+                        0.4
+                      )}`,
+                    },
+                    "&:disabled": {
+                      background: alpha(theme.palette.action.disabled, 0.1),
+                      color: theme.palette.action.disabled,
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  {loading ? t("saving") : t("saveSettings")}
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
-  );
-});
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+);
 
 export default UserSettingsForm;
