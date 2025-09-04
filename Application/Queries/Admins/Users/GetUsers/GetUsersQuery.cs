@@ -37,7 +37,7 @@ public class GetUsersQuery : AdminRequest<GetUsersQuery.Result>
             LastName = user.LastName;
             Bio = user.Bio;
             Country = user.Country;
-            Email = user.Email;
+            Email = user.Email!;
             City = user.City;
             Role = role;
             Street = user.Street;

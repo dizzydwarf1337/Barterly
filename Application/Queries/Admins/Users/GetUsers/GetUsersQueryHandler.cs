@@ -27,14 +27,18 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, ApiResponse<G
         {
             query = (request.SortBy.SortBy.ToLower()) switch
             {
-                "createdat" => request.SortBy.IsDescending ? query.OrderByDescending(x => x.CreatedAt) : query.OrderBy(x => x.CreatedAt),
-                "lastseen" => request.SortBy.IsDescending ? query.OrderByDescending(x=>x.LastSeen) : query.OrderBy(x => x.LastSeen),
-                _ => query.OrderByDescending(x => x.CreatedAt) 
+                "createdat" => request.SortBy.IsDescending
+                    ? query.OrderByDescending(x => x.CreatedAt)
+                    : query.OrderBy(x => x.CreatedAt),
+                "lastseen" => request.SortBy.IsDescending
+                    ? query.OrderByDescending(x => x.LastSeen)
+                    : query.OrderBy(x => x.LastSeen),
+                _ => query.OrderByDescending(x => x.CreatedAt)
             };
-            if (request.FilterBy is not null && !string.IsNullOrWhiteSpace(request.FilterBy.Search))
-            {
-                query = query.Where(x=>x.FirstName.Contains(request.FilterBy.Search) || x.LastName.Contains(request.FilterBy.Search));
-            }
+        }
+        if (request.FilterBy is not null && !string.IsNullOrWhiteSpace(request.FilterBy.Search))
+        {
+            query = query.Where(x=>x.FirstName.Contains(request.FilterBy.Search) || x.LastName.Contains(request.FilterBy.Search));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
