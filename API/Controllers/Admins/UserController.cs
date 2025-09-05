@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Admins.Users.CreateUser;
 using Application.Commands.Admins.Users.DeleteUser;
+using Application.Commands.Admins.Users.UpdateUserSettings;
 using Application.Queries.Admins.Users.GetUserById;
 using Application.Queries.Admins.Users.GetUsers;
 using Microsoft.AspNetCore.Authorization;
@@ -39,5 +40,12 @@ public class AdminUserController : BaseController
     public async Task<IActionResult> GetUserById(Guid id)
     {
         return HandleResponse(await Mediator.Send(new GetUserByIdQuery() { Id = id }));
+    }
+
+    [HttpPost]
+    [Route("settings")]
+    public async Task<IActionResult> UpdateUserSettings(UpdateUserSettingsCommand command)
+    {
+        return HandleResponse(await Mediator.Send(command));
     }
 }

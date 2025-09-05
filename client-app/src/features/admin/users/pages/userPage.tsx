@@ -19,12 +19,14 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 export const UserPage = observer(() => {
   const { uiStore } = useStore();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [userProfile, setUserProfile] = useState<UserData | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
@@ -50,14 +52,14 @@ export const UserPage = observer(() => {
 
   const handleSettingsSubmit = async (data: UserSettings) => {
     try {
-      console.log("Updating settings:", data);
+      await usersApi.updateUserSettings({...data, id: userProfile!.id as string});
       uiStore.showSnackbar(
-        "Settings updated successfully",
+        t("adminUsers:settingsUpdated"),
         "success",
         "center"
       );
     } catch {
-      uiStore.showSnackbar("Error updating settings", "error", "center");
+      uiStore.showSnackbar(t("adminUsers:errorUpdatingSettings"), "error", "center");
     }
   };
 
@@ -161,11 +163,11 @@ export const UserPage = observer(() => {
         </Box>
       </Paper>
 
-      <Box display="flex" flexDirection={"column"} gap={3} flex={1}>
-        <Box flex={1}>
+      <Box display="flex" flexDirection={"column"} width="100%">
+        <Box>
           <UserProfile userData={userProfile ?? ({} as UserData)} />
         </Box>
-        <Box flex={1}>
+        <Box>
           <UserSettingsForm
             userSettings={userSettings ?? ({} as UserSettings)}
             onSubmit={handleSettingsSubmit}

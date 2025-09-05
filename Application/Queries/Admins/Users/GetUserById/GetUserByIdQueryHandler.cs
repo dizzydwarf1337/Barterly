@@ -22,7 +22,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ApiResp
         var settings = user.Setting;
         var result = new GetUserByIdQuery.Result
         (
-            new GetUserByIdQuery.UserData(user.FirstName, user.LastName, user.Email, user.Bio, user.Country, user.City,
+            new GetUserByIdQuery.UserData(user.Id, user.FirstName, user.LastName, user.Email, user.Bio, user.Country, user.City,
                 user.Street, user.HouseNumber, user.PostalCode, user.ProfilePicturePath, user.CreatedAt, user.LastSeen),
             new GetUserByIdQuery.UserSettings(settings.Id, settings.IsHidden, settings.IsDeleted, settings.IsBanned,
                 settings.IsPostRestricted, settings.IsPostRestricted, settings.IsChatRestricted)

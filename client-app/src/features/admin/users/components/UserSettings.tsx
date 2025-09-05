@@ -51,7 +51,7 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
     const {
       control,
       handleSubmit,
-      formState: { isDirty },
+      formState: {  },
     } = useForm<UserSettings>({
       resolver: yupResolver(validationSchema),
       defaultValues: userSettings,
@@ -60,43 +60,37 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
     const switchSettings = [
       {
         name: "isHidden" as keyof UserSettings,
-        label: t("hiddenAccount"),
-        description: t("hiddenAccountDesc"),
+        label: t("adminUsers:hiddenAccount"),
         icon: <VisibilityOffIcon />,
         color: theme.palette.warning.main,
       },
       {
         name: "isDeleted" as keyof UserSettings,
-        label: t("deletedAccount"),
-        description: t("deletedAccountDesc"),
+        label: t("adminUsers:deletedAccount"),
         icon: <DeleteIcon />,
         color: theme.palette.error.main,
       },
       {
         name: "isBanned" as keyof UserSettings,
-        label: t("bannedAccount"),
-        description: t("bannedAccountDesc"),
+        label: t("adminUsers:bannedAccount"),
         icon: <BlockIcon />,
         color: theme.palette.error.main,
       },
       {
         name: "isPostRestricted" as keyof UserSettings,
-        label: t("postRestrictions"),
-        description: t("postRestrictionsDesc"),
+        label: t("adminUsers:postRestrictions"),
         icon: <PostAddIcon />,
         color: theme.palette.warning.main,
       },
       {
         name: "isOpinionRestricted" as keyof UserSettings,
-        label: t("opinionRestrictions"),
-        description: t("opinionRestrictionsDesc"),
+        label: t("adminUsers:opinionRestrictions"),
         icon: <CommentIcon />,
         color: theme.palette.warning.main,
       },
       {
         name: "isChatRestricted" as keyof UserSettings,
-        label: t("chatRestrictions"),
-        description: t("chatRestrictionsDesc"),
+        label: t("adminUsers:chatRestrictions"),
         icon: <ChatIcon />,
         color: theme.palette.warning.main,
       },
@@ -126,11 +120,7 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
               gap={1}
             >
               <SettingsIcon />
-              {t("userSettings")}
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary" mb={3}>
-              {t("userSettingsDesc")}
+              {t("adminUsers:userSettings")}
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -190,12 +180,6 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
                                 >
                                   {setting.label}
                                 </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {setting.description}
-                                </Typography>
                               </Box>
                             </Box>
 
@@ -235,7 +219,6 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
                   type="submit"
                   variant="contained"
                   size="large"
-                  disabled={!isDirty || loading}
                   startIcon={<SaveIcon />}
                   sx={{
                     px: 4,
@@ -261,7 +244,7 @@ const UserSettingsForm: React.FC<UserSettingsFormProps> = observer(
                     },
                   }}
                 >
-                  {loading ? t("saving") : t("saveSettings")}
+                  {loading ? t("adminUsers:saving") : t("adminUsers:saveSettings")}
                 </Button>
               </Box>
             </Box>

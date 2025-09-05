@@ -11,6 +11,7 @@ public class GetUserByIdQuery : AdminRequest<GetUserByIdQuery.Result>
 
     public record UserData
     (
+        Guid Id,
     string FirstName,
     string LastName,
     string Email,

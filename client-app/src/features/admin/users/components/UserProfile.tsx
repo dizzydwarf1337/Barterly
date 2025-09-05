@@ -147,7 +147,7 @@ const UserProfile: React.FC<UserProfileProps> = observer(({ userData }) => {
                   gap={1}
                 >
                   <PersonIcon />
-                  {t("personalInfo")}
+                  {t("adminUsers:personalInfo")}
                 </Typography>
 
                 {userData.bio && (
@@ -157,7 +157,7 @@ const UserProfile: React.FC<UserProfileProps> = observer(({ userData }) => {
                       color="text.secondary"
                       mb={1}
                     >
-                      {t("bio")}
+                      {t("adminUsers:bio")}
                     </Typography>
                     <Typography variant="body2">{userData.bio}</Typography>
                   </Box>
@@ -174,7 +174,7 @@ const UserProfile: React.FC<UserProfileProps> = observer(({ userData }) => {
                       gap={0.5}
                     >
                       <LocationOnIcon fontSize="small" />
-                      {t("address")}
+                      {t("adminUsers:address")}
                     </Typography>
                     <Typography variant="body2">{getFullAddress()}</Typography>
                   </Box>
@@ -220,12 +220,12 @@ const UserProfile: React.FC<UserProfileProps> = observer(({ userData }) => {
                   gap={1}
                 >
                   <AccessTimeIcon />
-                  {t("activityInfo")}
+                  {t("adminUsers:activityInfo")}
                 </Typography>
 
                 <Box>
                   <Typography variant="subtitle2" color="text.secondary" mb={1}>
-                    {t("lastSeen")}
+                    {t("adminUsers:lastSeen")}
                   </Typography>
                   <Typography variant="body2">
                     {formatDateTime(userData.lastSeen)}
