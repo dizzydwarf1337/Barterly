@@ -27,7 +27,10 @@ public class CategoryCommandRepository : BaseCommandRepository<BarterlyDbContext
 
     public async Task DeleteCategoryAsync(Guid id, CancellationToken token)
     {
-        var category = await _context.Categories.FindAsync(id) ?? throw new EntityNotFoundException("Category");
+        var category = await _context.Categories.FirstOrDefaultAsync(x=>x.Id == id, token) ?? throw new EntityNotFoundException("Category");
+        var postExists = await _context.Posts.Include(x=>x.SubCategory).AnyAsync(x => x.SubCategory.CategoryId == category.Id, token);
+        if (postExists)
+            throw new ApplicationException("Cannot remove category with provided posts");
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync(token);
     }

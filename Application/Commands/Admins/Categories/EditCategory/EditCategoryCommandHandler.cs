@@ -30,8 +30,8 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, A
             {
                 Id = category.Id,
                 Description = category.Description,
-                NameEN = category.NameEN,
-                NamePL = category.NamePL,
+                NameEN = category.NameEn,
+                NamePL = category.NamePl,
                 SubCategories = _mapper.Map<List<SubCategory>>(category.SubCategories)
             }, token);
         return categoryToEdit;
