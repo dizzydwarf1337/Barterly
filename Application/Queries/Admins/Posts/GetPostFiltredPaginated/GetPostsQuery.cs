@@ -15,7 +15,6 @@ public class GetPostsQuery : AdminRequest<GetPostsQuery.Result>
         public Guid? SubCategoryId { get; set; }
         public Guid? UserId { get; set; }
         public bool? IsActive { get; set; }
-        public bool? IsPinned { get; set; }
         public bool? IsDeleted { get; set; }
         public int PageSize { get; set; } = 10;
         public int PageNumber { get; set; } = 1;
