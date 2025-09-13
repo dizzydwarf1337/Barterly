@@ -2,14 +2,14 @@
 
 export interface Category {
     id:string,
-    nameEn: string,
-    namePl: string,
+    nameEN: string,
+    namePL: string,
     description: string,
     subCategories: SubCategory[],
 }
 
 export interface SubCategory {
     id:string,
-    nameEn: string,
-    namePl: string,
+    nameEN: string,
+    namePL: string,
 }

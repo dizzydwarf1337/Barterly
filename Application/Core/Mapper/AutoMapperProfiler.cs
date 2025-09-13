@@ -75,7 +75,9 @@ public class AutoMapperProfiler : Profile
         CreateMap<SubCategory, SubCategoryDto>()
             .ForMember(x=>x.NameEN, opt => opt.MapFrom(y=>y.TitleEN))
             .ForMember(x=>x.NamePL, opt => opt.MapFrom(y=>y.TitlePL));
-        CreateMap<SubCategoryDto, SubCategory>();
+        CreateMap<SubCategoryDto, SubCategory>()
+            .ForMember(x=>x.TitleEN, opt => opt.MapFrom(y=>y.NameEN))
+            .ForMember(x=>x.TitlePL, opt => opt.MapFrom(y=> y.NamePL));
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.token, opt => opt.Ignore());
         CreateMap<UserSettings, UserSettingsDto>();

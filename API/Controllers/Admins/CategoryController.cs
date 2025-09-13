@@ -11,10 +11,10 @@ namespace API.Controllers;
 [Authorize(Policy = "Admin")]
 public class AdminCategoryController : BaseController
 {
-    [HttpGet]
-    public async Task<IActionResult> GetAllCategories()
+    [HttpPost]
+    public async Task<IActionResult> GetAllCategories(GetAllCategoriesQuery request)
     {
-        return HandleResponse(await Mediator.Send(new GetAllCategoriesQuery()));
+        return HandleResponse(await Mediator.Send(request));
     }
 
     [HttpPost]

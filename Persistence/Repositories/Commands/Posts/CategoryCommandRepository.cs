@@ -44,24 +44,17 @@ public class CategoryCommandRepository : BaseCommandRepository<BarterlyDbContext
     public async Task<Category> UpdateCategoryAsync(Category category, CancellationToken token)
     {
         var categoryOld = await _context.Categories
-            .Include(c => c.SubCategories)
-            .FirstOrDefaultAsync(c => c.Id == category.Id) ?? throw new EntityNotFoundException("Category");
-
-        if (categoryOld.SubCategories != null) _context.SubCategories.RemoveRange(categoryOld.SubCategories);
-
-        if (category.SubCategories != null)
-        {
-            foreach (var sub in category.SubCategories) sub.CategoryId = category.Id;
-
-            await _context.SubCategories.AddRangeAsync(category.SubCategories.Where(s =>
-                !string.IsNullOrWhiteSpace(s.TitlePL) && !string.IsNullOrWhiteSpace(s.TitleEN)));
-        }
-
+                              .Include(c => c.SubCategories)
+                              .FirstOrDefaultAsync(c => c.Id == category.Id, token)
+                          ?? throw new EntityNotFoundException("Category");
+        
         categoryOld.NameEN = category.NameEN;
         categoryOld.NamePL = category.NamePL;
         categoryOld.Description = category.Description;
+        
+        categoryOld.SubCategories = category.SubCategories;
 
         await _context.SaveChangesAsync(token);
-        return category;
+        return categoryOld;
     }
 }

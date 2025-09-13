@@ -12,9 +12,9 @@ public class CategoryQueryRepository : BaseQueryRepository<BarterlyDbContext>, I
     {
     }
 
-    public async Task<ICollection<Category>> GetCategoriesAsync(CancellationToken token)
+    public IQueryable<Category> GetCategoriesAsync()
     {
-        return await _context.Categories.Include(x => x.SubCategories).ToListAsync(token);
+        return _context.Categories.Include(x => x.SubCategories).AsQueryable();
     }
 
     public async Task<Category> GetCategoryByIdAsync(Guid id, CancellationToken token)

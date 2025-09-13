@@ -17,7 +17,7 @@ public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery,
     public async Task<ApiResponse<IEnumerable<GetAllCategoriesQuery.Result>>> Handle(GetAllCategoriesQuery request,
         CancellationToken cancellationToken)
     {
-        var categories = await _categoryQueryRepository.GetCategoriesAsync(cancellationToken);
+        var categories = _categoryQueryRepository.GetCategoriesAsync();
         return ApiResponse<IEnumerable<GetAllCategoriesQuery.Result>>.Success(categories
             .Select(x =>
                 new GetAllCategoriesQuery.Result(
