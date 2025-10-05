@@ -20,7 +20,7 @@ import { useDebounce } from "../../../../app/hooks/useDebounce";
 import { usePagination } from "../../../../app/hooks/usePagination";
 import useStore from "../../../../app/stores/store";
 import { useTranslation } from "react-i18next";
-import {  GetAllCategoriesRequestDto } from "../dto/categoriesDto";
+import { GetAllCategoriesRequestDto } from "../dto/categoriesDto";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { SortingState } from "@tanstack/react-table";
@@ -44,7 +44,8 @@ export const CategoriesPage = observer(() => {
     try {
       await categoriesApi.deleteCategory({ id: categoryId });
       uiStore.showSnackbar(
-        t("adminCategories:categoryDeletedSuccess") || "Category has been deleted",
+        t("adminCategories:categoryDeletedSuccess") ||
+          "Category has been deleted",
         "success"
       );
     } catch {
@@ -57,7 +58,7 @@ export const CategoriesPage = observer(() => {
 
   const handleClearFilters = () => {
     setSearch("");
-  }
+  };
 
   const handlePageChange = (newPage: number) => {
     pagination.page.setPage(newPage);
@@ -65,61 +66,65 @@ export const CategoriesPage = observer(() => {
 
   const handlePageSizeChange = (newPageSize: number) => {
     pagination.page.setPageSize(newPageSize);
-    pagination.page.setPage(1); 
+    pagination.page.setPage(1);
   };
 
   useEffect(() => {
     const fetchCategories = async () => {
-    setIsLoading(true);
-    try {
-      let sortField = "namePL";
-      let isDescending = false;
+      setIsLoading(true);
+      try {
+        let sortField = "namePL";
+        let isDescending = false;
 
-      if (sorting.length > 0) {
-        const sortConfig = sorting[0];
-        sortField = sortConfig.id;
-        isDescending = sortConfig.desc;
-      }
+        if (sorting.length > 0) {
+          const sortConfig = sorting[0];
+          sortField = sortConfig.id;
+          isDescending = sortConfig.desc;
+        }
 
-      const request: GetAllCategoriesRequestDto = {
-        filterBy: {
+        const request: GetAllCategoriesRequestDto = {
+          filterBy: {
             search: debouncedSearch,
             pageNumber: pagination.page.pageNumber,
             pageSize: pagination.page.pageSize,
             id: "",
-            nameEN:"",
-            namePL:"",
-            description:"",
-            subCategories:[],
-        },
-        sortBy: {
-          sortBy: sortField,
-          isDescending: isDescending,
-        },
-      };
+            nameEN: "",
+            namePL: "",
+            description: "",
+            subCategories: [],
+          },
+          sortBy: {
+            sortBy: sortField,
+            isDescending: isDescending,
+          },
+        };
 
-      const response = await categoriesApi.getCategories(request);
-      if (response.isSuccess) {
-        setCategories(response.value.categories);
-        pagination.total.setTotalCount(response.value.totalCount);
-        pagination.total.setTotalPagesCount(response.value.totalPages);
+        const response = await categoriesApi.getCategories(request);
+        if (response.isSuccess) {
+          setCategories(response.value.categories);
+          pagination.total.setTotalCount(response.value.totalCount);
+          pagination.total.setTotalPagesCount(response.value.totalPages);
+        }
+      } catch {
+        uiStore.showSnackbar(
+          t("adminCategories:fetchError") || "Error loading categories",
+          "error"
+        );
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      uiStore.showSnackbar(
-        t("adminCategories:fetchError") || "Error loading categories",
-        "error"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-      fetchCategories();
-  }, [debouncedSearch, pagination.page.pageNumber, pagination.page.pageSize, sorting]);
+    };
+    fetchCategories();
+  }, [
+    debouncedSearch,
+    pagination.page.pageNumber,
+    pagination.page.pageSize,
+    sorting,
+  ]);
 
   return (
     <Fade in timeout={300}>
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        {/* Header */}
         <Paper
           elevation={0}
           sx={{
@@ -169,7 +174,11 @@ export const CategoriesPage = observer(() => {
                 >
                   {t("adminCategories:title")}
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
                   {t("adminCategories:subtitle")}
                 </Typography>
               </Box>
@@ -276,10 +285,7 @@ export const CategoriesPage = observer(() => {
             overflow: "hidden",
             border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
             background: theme.palette.background.paper,
-            boxShadow: `0 4px 24px ${alpha(
-              theme.palette.common.black,
-              0.06
-            )}`,
+            boxShadow: `0 4px 24px ${alpha(theme.palette.common.black, 0.06)}`,
           }}
         >
           <BasicTable

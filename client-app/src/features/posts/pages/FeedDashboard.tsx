@@ -25,15 +25,15 @@ export default observer(function FeedDashboard() {
         if (authStore.isLoggedIn) {
           response = await userPostApi.getFeed({
             filterBy: {
-              pageNumber: "1",
-              pageSize: "10",
+              pageNumber: 1,
+              pageSize: 10,
             },
           });
         } else {
           response = await postApi.getFeed({
             filterBy: {
-              pageNumber: "1",
-              pageSize: "10",
+              pageNumber: 1,
+              pageSize: 10,
             },
           });
         }

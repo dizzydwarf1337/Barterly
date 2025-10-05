@@ -78,11 +78,10 @@ export default observer(function PostDetails() {
         setLoading(true);
         setError(null);
         let response;
-        if(authStore.isLoggedIn){
-        response = await userPostApi.getPost({postId});
-        }
-        else {
-          response = await postApi.getPost({ postId }); 
+        if (authStore.isLoggedIn) {
+          response = await userPostApi.getPost({ postId });
+        } else {
+          response = await postApi.getPost({ postId });
         }
         setCurrentPost(response.value);
       } catch (err) {
@@ -302,7 +301,7 @@ export default observer(function PostDetails() {
             <Avatar
               src={
                 owner.profilePicturePath
-                  ? `${import.meta.env.VITE_API_URL.replace("api", "")}${
+                  ? `${import.meta.env.VITE_API_URL}/${
                       owner.profilePicturePath
                     }`
                   : undefined
@@ -555,27 +554,23 @@ export default observer(function PostDetails() {
           </Button>
         </Box>
 
-        {/* Images */}
-        {currentPost.mainImageUrl || (currentPost.postImages && currentPost.postImages.length > 0) && (
+        {currentPost.mainImageUrl && (
           <Box mb={4}>
             <PostImageCarousel
               mainImageUrl={currentPost.mainImageUrl}
-              secondaryImageUrls={currentPost.postImages
-                .map((img) => img.imageUrl!)}
+              secondaryImageUrls={(currentPost.postImages ?? []).map(
+                (img) => img.imageUrl!
+              )}
               title={currentPost.title}
             />
           </Box>
         )}
-
-        {/* Main Content Grid */}
         <Box
           display="grid"
           gridTemplateColumns={{ xs: "1fr", md: "2fr 1fr" }}
           gap={4}
         >
-          {/* Left Column - Main Content */}
           <Box>
-            {/* Header Card */}
             <Card
               elevation={3}
               sx={{ borderRadius: "20px", mb: 3, overflow: "hidden" }}
@@ -591,7 +586,6 @@ export default observer(function PostDetails() {
               )}
 
               <CardContent sx={{ p: 4 }}>
-                {/* Category and Promotion Chips */}
                 <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
                   {currentPost.subCategory && (
                     <Chip
@@ -622,7 +616,6 @@ export default observer(function PostDetails() {
                   )}
                 </Box>
 
-                {/* Title */}
                 <Typography
                   variant="h3"
                   component="h1"
@@ -640,7 +633,6 @@ export default observer(function PostDetails() {
                   {currentPost.title}
                 </Typography>
 
-                {/* Location and Meta */}
                 <Box
                   display="flex"
                   flexWrap="wrap"
@@ -672,58 +664,69 @@ export default observer(function PostDetails() {
                   </Box>
                 </Box>
 
-                {/* Action Buttons */}
                 <Box display="flex" gap={2}>
+                  <Tooltip title={t("favorite")}>
+                    <IconButton
+                      size="small"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const isFav = authStore.user?.favPostIds.includes(
+                            currentPost.id
+                          );
+                          if (isFav) {
+                            await userPostApi.addFavPost({
+                              id: currentPost.id,
+                            });
+                            authStore.setUser({
+                              ...authStore.user!,
+                              favPostIds: authStore.user!.favPostIds.filter(
+                                (x) => x !== currentPost.id
+                              ),
+                            });
+                            uiStore.showSnackbar(
+                              t("postRemovedFromFavorites"),
+                              "info"
+                            );
+                          } else {
+                            await userPostApi.addFavPost({
+                              id: currentPost.id,
+                            });
+                            authStore.setUser({
+                              ...authStore.user!,
+                              favPostIds: [
+                                ...authStore.user!.favPostIds,
+                                currentPost.id,
+                              ],
+                            });
+                            uiStore.showSnackbar(
+                              t("postAddedToFavorites"),
+                              "success"
+                            );
+                          }
+                        } catch (error) {
+                          uiStore.showSnackbar(
+                            t("errorUpdatingFavorites"),
+                            "error"
+                          );
+                        }
+                      }}
+                      sx={{
+                        backgroundColor: alpha("#000", 0.04),
+                        color: (theme) =>
+                          authStore.user?.favPostIds.includes(currentPost.id)
+                            ? theme.palette.error.main
+                            : theme.palette.primary,
 
-                   <Tooltip title={t("favorite")}>
-              <IconButton
-                size="small"
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  try {
-                    const isFav = authStore.user?.favPostIds.includes(currentPost.id);
-                    if (isFav) {
-                      await userPostApi.addFavPost({ id: currentPost.id });
-                      authStore.setUser({
-                        ...authStore.user!,
-                        favPostIds: authStore.user!.favPostIds.filter(
-                          (x) => x !== currentPost.id
-                        ),
-                      });
-                      uiStore.showSnackbar(
-                        t("postRemovedFromFavorites"),
-                        "info"
-                      );
-                    } else {
-                      await userPostApi.addFavPost({ id: currentPost.id });
-                      authStore.setUser({
-                        ...authStore.user!,
-                        favPostIds: [...authStore.user!.favPostIds, currentPost.id],
-                      });
-                      uiStore.showSnackbar(
-                        t("postAddedToFavorites"),
-                        "success"
-                      );
-                    }
-                  } catch (error) {
-                    uiStore.showSnackbar(t("errorUpdatingFavorites"), "error");
-                  }
-                }}
-                sx={{
-                  backgroundColor: alpha("#000", 0.04),
-                  color:(theme) => authStore.user?.favPostIds.includes(currentPost.id)
-                    ? theme.palette.error.main
-                    : theme.palette.primary,
-                  
-                  "&:hover": {
-                    backgroundColor: alpha("#000", 0.08),
-                    transform: "scale(1.1)",
-                  },
-                }}
-              >
-                <FavoriteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                        "&:hover": {
+                          backgroundColor: alpha("#000", 0.08),
+                          transform: "scale(1.1)",
+                        },
+                      }}
+                    >
+                      <FavoriteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               </CardContent>
             </Card>
@@ -731,17 +734,16 @@ export default observer(function PostDetails() {
             {renderPropertyDetails()}
             {renderWorkDetails()}
 
-            {/* Description Card */}
-            <Card elevation={2} sx={{ borderRadius: "16px", mb:2 }}>
-                <CardContent>
-                  <Typography
+            <Card elevation={2} sx={{ borderRadius: "16px", mb: 2 }}>
+              <CardContent>
+                <Typography
                   variant="h6"
                   gutterBottom
                   sx={{ color: "primary.main", fontWeight: 700 }}
                 >
                   {t("shortDescription")}
                 </Typography>
-                 <Typography
+                <Typography
                   variant="body1"
                   sx={{
                     lineHeight: 1.7,
@@ -778,7 +780,7 @@ export default observer(function PostDetails() {
                     </Box>
                   </Box>
                 )}
-                </CardContent>
+              </CardContent>
             </Card>
 
             <Card elevation={2} sx={{ borderRadius: "16px" }}>
@@ -801,17 +803,12 @@ export default observer(function PostDetails() {
                   {currentPost.fullDescription}
                 </Typography>
 
-                {/* Tags */}
               </CardContent>
             </Card>
           </Box>
 
-          {/* Right Column - Sidebar */}
           <Box>
-            {/* Owner Card */}
             <Box mb={3}>{renderOwnerCard()}</Box>
-
-            {/* Price Card */}
             {renderPriceSection()}
           </Box>
         </Box>

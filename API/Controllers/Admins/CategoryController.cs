@@ -25,7 +25,7 @@ public class AdminCategoryController : BaseController
     }
 
     [HttpDelete]
-    [Route("delete/{id:guid}")]
+    [Route("delete-category/{id:guid}")]
     public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
     {
         return HandleResponse(await Mediator.Send(new DeleteCategoryCommand { CategoryId = id }));

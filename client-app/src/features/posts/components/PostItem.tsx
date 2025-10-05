@@ -183,7 +183,6 @@ export default observer(function PostItem({ post }: Props) {
         />
       )}
 
-      {/* Image Section - только если есть фото */}
       {post.mainImageUrl && (
         <Box
           className="post-image"
@@ -314,10 +313,11 @@ export default observer(function PostItem({ post }: Props) {
                 }}
                 sx={{
                   backgroundColor: alpha("#000", 0.04),
-                  color:(theme) => authStore.user?.favPostIds.includes(post.id)
-                    ? theme.palette.error.main
-                    : theme.palette.primary,
-                  
+                  color: (theme) =>
+                    authStore.user?.favPostIds.includes(post.id)
+                      ? theme.palette.error.main
+                      : theme.palette.primary,
+
                   "&:hover": {
                     backgroundColor: alpha("#000", 0.08),
                     transform: "scale(1.1)",

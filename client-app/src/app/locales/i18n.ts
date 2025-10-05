@@ -4,6 +4,9 @@ import adminUsersEn from "../../features/admin/users/translation/en";
 import adminUsersPl from "../../features/admin/users/translation/pl";
 import adminCategoriesEn from "../../features/admin/categories/translation/en";
 import adminCategoriesPl from "../../features/admin/categories/translation/pl";
+import adminPostsEn from "../../features/admin/posts/translation/en";
+import adminPostsPl from "../../features/admin/posts/translation/pl";
+
 import LanguageDetector from "i18next-browser-languagedetector";
 
 i18n
@@ -565,5 +568,7 @@ i18n.addResourceBundle("en", "adminUsers", adminUsersEn, true, true);
 i18n.addResourceBundle("pl", "adminUsers", adminUsersPl, true, true);
 i18n.addResourceBundle("en", "adminCategories", adminCategoriesEn, true, true);
 i18n.addResourceBundle("pl", "adminCategories", adminCategoriesPl, true, true);
+i18n.addResourceBundle("en", "adminPosts", adminPostsEn, true, true);
+i18n.addResourceBundle("pl", "adminPosts", adminPostsPl, true, true);
 
 export default i18n;

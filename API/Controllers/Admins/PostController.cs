@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Admins.Posts.ApprovePost;
 using Application.Commands.Admins.Posts.DeletePost;
 using Application.Commands.Admins.Posts.RejectPost;
+using Application.Commands.Admins.Posts.UpdatePostSettings;
 using Application.Queries.Admins.Posts.GetPostById;
 using Application.Queries.Admins.Posts.GetPostFiltredPaginated;
 using Application.Queries.Public.Posts.GetPostImages;
@@ -50,6 +51,11 @@ public class AdminPostController : BaseController
     }
     
     [HttpPost]
-    public async Task<IActionResult> GetPosts(GetPostsQuery query)
-        => HandleResponse(await Mediator.Send(query));
+    public async Task<IActionResult> GetPosts([FromBody] GetPostsQuery request)
+        => HandleResponse(await Mediator.Send(request));
+
+    [HttpPut]
+    [Route("update-settings")]
+    public async Task<IActionResult> UpdatePostSettings([FromBody] UpdatePostSettingsCommand request)
+        => HandleResponse(await Mediator.Send(request));
 }
