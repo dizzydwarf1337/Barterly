@@ -3,11 +3,30 @@ import {
   PaginationRequest,
   PaginationResponse,
 } from "../../../app/API/pagination";
-import { PostDetails, PostFormData, PostPreview } from "../types/postTypes";
+import { PostDetails, PostFormData, PostPreview, PostType, RentObjectType, WorkloadType, WorkLocationType } from "../types/postTypes";
 
 export interface GetPostsResponseDTO extends PaginationResponse<PostPreview> {}
 
-export interface GetPostsRequestDTO extends PaginationRequest {}
+export interface SearchFilters {
+    search?: string;
+    categoryId?: string;
+    subCategoryId?: string;
+    city?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    postType?: PostType;
+    rentObjectType?: RentObjectType;
+    numberOfRooms?: number;
+    area?: number;
+    floor?: number;
+    workload?: WorkloadType;
+    workLocation?: WorkLocationType;
+    minSalary?: number;
+    maxSalary?: number;
+    experienceRequired?: boolean;
+}
+
+export interface GetPostsRequestDTO extends PaginationRequest<SearchFilters> {}
 
 export interface GetPostRequestDTO {
   postId: string;

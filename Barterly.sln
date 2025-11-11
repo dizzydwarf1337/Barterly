@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarterlyUnitTests", "Barter
 		{118C1197-003B-4B7B-B7BE-00694FFAF3CA} = {118C1197-003B-4B7B-B7BE-00694FFAF3CA}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarterlyIntegrationTests", "BarterlyIntegrationTests\BarterlyIntegrationTests.csproj", "{DDDA81C9-CB99-41E9-B3E0-38B28ADFF131}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,10 +50,6 @@ Global
 		{CF94F6AB-8923-492F-9062-4C7350800811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF94F6AB-8923-492F-9062-4C7350800811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF94F6AB-8923-492F-9062-4C7350800811}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDDA81C9-CB99-41E9-B3E0-38B28ADFF131}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDDA81C9-CB99-41E9-B3E0-38B28ADFF131}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDDA81C9-CB99-41E9-B3E0-38B28ADFF131}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDDA81C9-CB99-41E9-B3E0-38B28ADFF131}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

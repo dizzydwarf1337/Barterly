@@ -5,24 +5,28 @@ import i18n from "../locales/i18n";
 import darkTheme from "../theme/DarkTheme";
 
 export default class UiStore {
-  // Application theme using for choosing colors and so on
+
   theme!: Theme;
-  // String representing application theme mode "dark" or "light"
+
   themeMode!: "dark" | "light";
-  // App Language
+
   lang: string = "pl";
-  // NavBar user profile settings dialog
+
   userSettingIsOpen: boolean = false;
-  // Menu controll stuff
+
   menuElement: HTMLElement | undefined;
-  // Snackbar feature
+
   snackbarOpen: boolean = false;
   snackbarMessage: string = "";
   snackbarSeverity: "success" | "error" | "warning" | "info" = "info";
   snackbarPosition: "right" | "left" | "center" = "right";
-  // var for controlling user interface
+
+  notificationsOpen: boolean = false;
+
   isMobile = window.innerWidth < 480;
   isMobileMenuOpen: boolean = false;
+
+  isMessagesWidgetOpen: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -30,14 +34,12 @@ export default class UiStore {
     this.setTheme(theme === "dark" ? darkTheme : lightTheme);
     this.setThemeMode(theme === "dark" ? "dark" : "light");
 
-    // Инициализация языка
     let savedLang = localStorage.getItem("brt_lng") || "pl";
     this.setLanguage(savedLang);
 
     window.addEventListener("resize", this.updateIsMobile);
   }
 
-  // ✅ ИСПРАВЛЕННЫЙ метод обновления мобильного режима
   updateIsMobile = () => {
     this.isMobile = window.innerWidth < 480;
   };
@@ -46,7 +48,6 @@ export default class UiStore {
 
   getTheme = () => this.theme;
 
-  // ✅ ИСПРАВЛЕННЫЙ метод смены темы
   changeTheme = () => {
     if (this.themeMode === "dark") {
       localStorage.setItem("brt_theme", "light");
@@ -67,7 +68,6 @@ export default class UiStore {
 
   getLanguage = () => this.lang;
 
-  // ✅ ИСПРАВЛЕННЫЙ метод смены языка
   changeLanguage = () => {
     const newLanguage = this.getLanguage() === "en" ? "pl" : "en";
     this.setLanguage(newLanguage);
@@ -75,7 +75,6 @@ export default class UiStore {
     localStorage.setItem("brt_lng", newLanguage);
   };
 
-  // User settings dialog methods
   setUserSettingIsOpen = (isOpen: boolean) => (this.userSettingIsOpen = isOpen);
 
   getUserSettingIsOpen = () => this.userSettingIsOpen;
@@ -83,10 +82,8 @@ export default class UiStore {
   setMenuElement = (element: HTMLElement | undefined) =>
     (this.menuElement = element);
 
-  // Mobile menu methods
   setIsMobileMenuOpen = (isOpen: boolean) => (this.isMobileMenuOpen = isOpen);
 
-  // Snackbar methods
   showSnackbar = (
     message: string,
     severity: "success" | "error" | "warning" | "info" = "info",
@@ -100,5 +97,13 @@ export default class UiStore {
 
   closeSnackbar = () => {
     this.snackbarOpen = false;
+  };
+
+  setNotificationsOpen = () => {
+    this.notificationsOpen = !this.notificationsOpen;
+  };
+
+  setIsMessagesWidgetOpen = (isOpen: boolean) => {
+    this.isMessagesWidgetOpen = isOpen;
   };
 }

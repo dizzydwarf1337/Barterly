@@ -15,15 +15,17 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiRe
     private readonly ILogService _logService;
     private readonly IMediator _mediator;
     private readonly IPostCommandRepository _postCommandRepository;
+    private readonly IPostSettingsCommandRepository _postSettingsCommandRepository;
     private readonly IPostFactory _postFactory;
 
     public CreatePostCommandHandler(IMediator mediator, ILogService logService, IPostFactory postFactory,
-        IFileService fileService, IPostCommandRepository postCommandRepository)
+        IFileService fileService, IPostSettingsCommandRepository postSettingsCommandRepository, IPostCommandRepository postCommandRepository)
     {
         _mediator = mediator;
         _logService = logService;
         _postFactory = postFactory;
         _fileService = fileService;
+        _postSettingsCommandRepository = postSettingsCommandRepository;
         _postCommandRepository = postCommandRepository;
     }
 
@@ -77,9 +79,9 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, ApiRe
                 postToAdd.PostImages ??= [];
                 postToAdd.PostImages.Add(postImage);
             }
-
+        
         var post = await _postCommandRepository.CreatePostAsync(postToAdd, cancellationToken);
-
+        
         await _mediator.Publish(new PostCreatedEvent
         {
             UserId = request.AuthorizeData.UserId,

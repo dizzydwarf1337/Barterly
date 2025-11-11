@@ -39,11 +39,6 @@ public class PostFactory : IPostFactory
 )
     {
         Post post;
-        Console.WriteLine(title);
-        Console.WriteLine(postType);
-        Console.WriteLine(fullDescription);
-        Console.WriteLine(shortDescription);
-
 
         switch (postType)
         {

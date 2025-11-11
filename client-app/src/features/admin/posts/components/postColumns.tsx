@@ -13,6 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TitleIcon from "@mui/icons-material/Title";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import PublishIcon from "@mui/icons-material/Publish";
 import { useNavigate } from "react-router";
 import { DeletionDialog } from "../../../../app/components/deletionDialog";
 import { PostPreview } from "../../../posts/types/postTypes";
@@ -22,9 +23,11 @@ const columnHelper = createColumnHelper<PostPreview>();
 const ActionsCell = ({
   post,
   onDelete,
+  onPublish,
 }: {
   post: PostPreview;
   onDelete: (postId: string) => void;
+  onPublish: (postId: string) => void;
 }) => {
   const { t } = useTranslation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -37,6 +40,10 @@ const ActionsCell = ({
 
   const handleEdit = () => {
     navigate(`${post.id}`, { state: { post } });
+  };
+
+  const handlePublish = () => {
+    onPublish(post.id);
   };
 
   return (
@@ -55,6 +62,21 @@ const ActionsCell = ({
             onClick={handleEdit}
           >
             <EditIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={t("adminPosts:publish")}>
+          <IconButton
+            size="small"
+            color="success"
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s",
+            }}
+            onClick={handlePublish}
+          >
+            <PublishIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title={t("adminPosts:delete")}>
@@ -85,7 +107,10 @@ const ActionsCell = ({
   );
 };
 
-export const postsColumns = (onDelete: (postId: string) => void) => [
+export const postsColumns = (
+  onDelete: (postId: string) => void,
+  onPublish: (postId: string) => void
+) => [
   columnHelper.accessor("title", {
     header: "Title",
     cell: (info) => (
@@ -222,9 +247,10 @@ export const postsColumns = (onDelete: (postId: string) => void) => [
       <ActionsCell
         post={row.original}
         onDelete={() => onDelete(row.original.id)}
+        onPublish={() => onPublish(row.original.id)}
       />
     ),
-    size: 100,
+    size: 120,
     enableSorting: false,
   }),
 ];

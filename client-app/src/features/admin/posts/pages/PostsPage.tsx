@@ -339,7 +339,7 @@ export const PostsPage = observer(() => {
 
         const response = await postsApi.getPosts(request);
         if (response.isSuccess) {
-          setPosts(response.value.posts);
+          setPosts(response.value.items);
           pagination.total.setTotalCount(response.value.totalCount);
           pagination.total.setTotalPagesCount(response.value.totalPages);
         }
@@ -396,6 +396,30 @@ export const PostsPage = observer(() => {
     }
   }, [uiStore]);
 
+  const handleDelete = async (id:string) => {
+    try{
+      const res = await postsApi.deletePost({id});
+      if(res.isSuccess)
+        uiStore.showSnackbar("Post deleted successfully", "success");
+      else uiStore.showSnackbar("Error while deleting post", "error");
+    }
+    catch {
+      uiStore.showSnackbar("Api error while deleting post", "error");
+    }
+  }
+
+  const handleApprove = async (id:string) => {
+    try{
+      const res = await postsApi.approvePost(id);
+      if(res.isSuccess)
+        uiStore.showSnackbar("Post has been published","success");
+      else uiStore.showSnackbar("Error while publishing post", "error");
+    }
+    catch {
+      uiStore.showSnackbar("Api error publishing post", "error");
+    }
+  }
+
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (search) count++;
@@ -406,7 +430,7 @@ export const PostsPage = observer(() => {
     return count;
   }, [search, category, subCategory, isActive, isDeleted]);
 
-  const tableColumns = useMemo(() => postsColumns(() => {}), []);
+  const tableColumns = useMemo(() => postsColumns(handleDelete, handleApprove), []);
 
   useEffect(() => {
     fetchPosts();

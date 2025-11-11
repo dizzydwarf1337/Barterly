@@ -48,7 +48,6 @@ const userPostApi = {
             }
         }
     });
-    console.log(Object.fromEntries(formData.entries()));
     return apiClient.post<void>("user/posts/create", formData, false);
 },
 };

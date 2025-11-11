@@ -101,7 +101,7 @@ export default function PostSmallItem({ post }: Props) {
 
     return (
         <Box
-            onClick={() => navigate(`posts/${post.id}`)}
+            onClick={() => navigate(`/posts/${post.id}`)}
             sx={{
                 display: 'flex',
                 flexDirection: 'row',

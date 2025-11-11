@@ -1,15 +1,17 @@
 import { Box, Fade, Container } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { Outlet, useNavigate } from "react-router";
+import { useEffect } from "react";
 import Footer from "../layout/footer";
 import NavBar from "../layout/navBar";
 import useStore from "../stores/store";
-import { useEffect } from "react";
 import authApi from "../../features/auth/api/authApi";
+import ChatWidget from "../../features/messages/components/ChatWidget";
 
 export const UserWrapper = observer(() => {
   const { uiStore, authStore } = useStore();
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -18,8 +20,8 @@ export const UserWrapper = observer(() => {
           authStore.setUser(result.value);
           if(authStore.user?.role === "Admin")
             navigate("/admin", {replace:true});
-            if( authStore.user?.role === "Moderator") 
-              navigate("/moderator", {replace:true})
+          if(authStore.user?.role === "Moderator") 
+            navigate("/moderator", {replace:true})
         }
       } catch (error) {
         console.error("Error during UserWrapper initialization:", error);
@@ -27,6 +29,11 @@ export const UserWrapper = observer(() => {
     };
     fetchMe();
   }, [authStore.token]);
+
+  useEffect(() => {
+    if(!authStore.isLoggedIn) return;
+    authStore.chatHub?.connect(authStore.token!);
+  }, []);
 
   return (
     <Box
@@ -83,6 +90,11 @@ export const UserWrapper = observer(() => {
       >
         <Footer />
       </Box>
+
+      {/* Chat Widget */}
+      {authStore.isLoggedIn && (
+        <ChatWidget />
+      )}
     </Box>
   );
 });

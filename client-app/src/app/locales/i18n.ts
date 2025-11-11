@@ -6,6 +6,10 @@ import adminCategoriesEn from "../../features/admin/categories/translation/en";
 import adminCategoriesPl from "../../features/admin/categories/translation/pl";
 import adminPostsEn from "../../features/admin/posts/translation/en";
 import adminPostsPl from "../../features/admin/posts/translation/pl";
+import userPostsEn from "../../features/posts/translation/en";
+import userPostsPl from "../../features/posts/translation/pl";
+import notificationsEn from "../../features/notifications/translation/en";
+import notificationsPl from "../../features/notifications/translation/pl";
 
 import LanguageDetector from "i18next-browser-languagedetector";
 
@@ -46,7 +50,8 @@ i18n
           signInFailed: "Sign in has failed",
           settings: "Settings",
           thankForSignIn: "Thank you for sign in!",
-
+          favorites:"Favorites",
+          seeAlsoOwnerPosts:"See other posts by this owner",
           // Post creation translations
           postType: "Post Type",
           basicInformation: "Basic Information",
@@ -287,6 +292,8 @@ i18n
           addPost: "Dodaj Ogłoszenie",
           delete: "Usuń",
           category: "Kategoria",
+          favorites:"Ulubione",
+          seeAlsoOwnerPosts:"Zobacz inne posty tego ogłoszeniodawcy",
           categories: "Kategorie",
           profile: "Profil użytkownika",
           changeLanguage: "Change to EN",
@@ -570,5 +577,10 @@ i18n.addResourceBundle("en", "adminCategories", adminCategoriesEn, true, true);
 i18n.addResourceBundle("pl", "adminCategories", adminCategoriesPl, true, true);
 i18n.addResourceBundle("en", "adminPosts", adminPostsEn, true, true);
 i18n.addResourceBundle("pl", "adminPosts", adminPostsPl, true, true);
+i18n.addResourceBundle("en", "posts", userPostsEn, true, true);
+i18n.addResourceBundle("pl", "posts", userPostsPl, true, true);
+i18n.addResourceBundle("en", "notifications", notificationsEn, true, true);
+i18n.addResourceBundle("pl", "notifications", notificationsPl, true, true);
+
 
 export default i18n;

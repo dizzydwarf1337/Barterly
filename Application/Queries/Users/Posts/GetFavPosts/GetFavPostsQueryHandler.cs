@@ -24,19 +24,26 @@ public class GetFavPostsQueryHandler : IRequestHandler<GetFavPostsQuery, ApiResp
     
     public async Task<ApiResponse<GetFavPostsQuery.Result>> Handle(GetFavPostsQuery request, CancellationToken cancellationToken)
     {
-        var favIds = (await _favPostQueryRepository.GetUserFavPostsByUserIdAsync(request.AuthorizeData.UserId, cancellationToken)).Select(x=>x.PostId);
-        var posts = await _postQueryRepository.GetAllPosts().Include(x => x.PostSettings)
-            .Where(x => favIds.Contains(x.Id) && !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden)
+        var favIds = (await _favPostQueryRepository
+                .GetUserFavPostsByUserIdAsync(request.AuthorizeData.UserId, cancellationToken))
+            .Select(x => x.PostId);
+
+        var query = _postQueryRepository.GetAllPosts()
+            .Include(x => x.PostSettings)
+            .Where(x => favIds.Contains(x.Id) && !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var posts = await query
             .Skip((request.FilterBy.PageNumber - 1) * request.FilterBy.PageSize)
             .Take(request.FilterBy.PageSize)
             .ToListAsync(cancellationToken);
-        
-        return ApiResponse<GetFavPostsQuery.Result>.Success(new GetFavPostsQuery.Result()
-        {
-            Posts = _mapper.Map<List<PostPreviewDto>>(posts),
-            TotalCount = posts.Count,
-            TotalPages = posts.Count / request.FilterBy.PageSize,
-        });
 
+        return ApiResponse<GetFavPostsQuery.Result>.Success(new GetFavPostsQuery.Result
+        {
+            Items = _mapper.Map<List<PostPreviewDto>>(posts),
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling((double)totalCount / request.FilterBy.PageSize)
+        });
     }
 }

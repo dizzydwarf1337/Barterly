@@ -18,15 +18,13 @@ export default observer(function FeedPostList({ posts }: FeedPostListProps) {
   const [_, setAnimationDelay] = useState(0);
 
   useEffect(() => {
-    // Reset visible posts when posts change
     setVisiblePosts([]);
     setAnimationDelay(0);
 
-    // Gradually show posts with staggered animation
     posts.forEach((post, index) => {
       setTimeout(() => {
         setVisiblePosts((prev) => [...prev, post]);
-      }, index * 100); // 100ms delay between each post
+      }, index * 100);
     });
   }, [posts]);
 
@@ -109,7 +107,6 @@ export default observer(function FeedPostList({ posts }: FeedPostListProps) {
         );
       })}
 
-      {/* Loading indicator for additional posts */}
       {visiblePosts.length < posts.length && (
         <Box display="flex" justifyContent="center" py={2}>
           <Box

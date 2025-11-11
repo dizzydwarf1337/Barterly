@@ -23,9 +23,9 @@ public class NotificationQueryRepository : BaseQueryRepository<BarterlyDbContext
                throw new EntityNotFoundException("Notification");
     }
 
-    public async Task<ICollection<Notification>> GetNotificationsByUserIdAsync(Guid userId, CancellationToken token)
+    public async Task<IEnumerable<Notification>> GetNotificationsByUserIdAsync(Guid userId, CancellationToken token)
     {
-        return await _context.Notifications.Where(x => x.UserId == userId).ToListAsync(token);
+        return await _context.Notifications.Where(x => x.UserId == userId).OrderByDescending(x=> x.CreatedAt ).ToListAsync(token);
     }
 
     public async Task<ICollection<Notification>> GetPaginatedUserNotifications(Guid userId, int PageSize,

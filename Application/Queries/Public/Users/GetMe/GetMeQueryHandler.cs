@@ -27,7 +27,7 @@ public class GetMeQueryHandler : IRequestHandler<GetMeQuery, ApiResponse<GetMeQu
     {
         var user = await _userRepository.GetUserAsync(request.AuthorizeData.UserId, cancellationToken);
         var favPostIds = (await _favPostRepository.GetUserFavPostsByUserIdAsync(user.Id, cancellationToken)).Select(x=>x.PostId).ToList();
-        var notificationsCount = (await _notificationRepository.GetNotificationsByUserIdAsync(user.Id, cancellationToken)).Count;
+        var notificationsCount = (await _notificationRepository.GetNotificationsByUserIdAsync(user.Id, cancellationToken)).Count(x=> !x.IsRead);
         var role = await _userManager.IsInRoleAsync(user, "Admin") ? "Admin" : await _userManager.IsInRoleAsync(user,"Moderator") ? "Moderator" : "User";
         return ApiResponse<GetMeQuery.Result>.Success(new GetMeQuery.Result
         {

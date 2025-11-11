@@ -12,7 +12,7 @@ const postsApi = {
   getPost: (id: string) =>
     apiClient.get<ApiResponse<GetPostResponseDto>>(`admin/posts/get/${id}`),
   approvePost: (postId: string) =>
-    apiClient.post<void>("admin/posts/approve-post", { postId }),
+    apiClient.post<ApiResponse<void>>("admin/posts/approve-post", { postId }),
   rejectPost: (body: RejectPostRequestDto) =>
     apiClient.post<void>("admin/posts/reject-post", body),
   getPosts: (query: GetPostsRequestDto) =>
@@ -24,6 +24,10 @@ const postsApi = {
       false
     );
   },
+  deletePost: (body: {id:string}) => 
+    apiClient.delete<ApiResponse<void>>(
+      `admin/posts/delete/${body.id}`,
+    )
 };
 
 export default postsApi;

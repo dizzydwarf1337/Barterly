@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Domain.Enums.Common;
 using Domain.Enums.Posts;
 using Domain.Interfaces.Commands.Post;
+using Domain.Interfaces.Queries.Post;
 using MediatR;
 
 namespace Application.Commands.Admins.Posts.DeletePost;
@@ -13,18 +14,21 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, ApiRe
     private readonly ILogService _logService;
     private readonly IMediator _mediator;
     private readonly IPostSettingsCommandRepository _postSettingsCommandRepository;
+    private readonly IPostSettingsQueryRepository _postSettingsQueryRepository;
 
-    public DeletePostCommandHandler(IPostSettingsCommandRepository postSettingsCommandRepository,
+    public DeletePostCommandHandler(IPostSettingsCommandRepository postSettingsCommandRepository, IPostSettingsQueryRepository postSettingsQueryRepository,
         IMediator mediator, ILogService logService)
     {
         _postSettingsCommandRepository = postSettingsCommandRepository;
+        _postSettingsQueryRepository = postSettingsQueryRepository;
         _mediator = mediator;
         _logService = logService;
     }
 
     public async Task<ApiResponse<Unit>> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
-        await _postSettingsCommandRepository.UpdatePostSettings(request.PostId, cancellationToken, false, true,
+        var settings = await _postSettingsQueryRepository.GetPostSettingsByPostId(request.PostId, cancellationToken);
+        await _postSettingsCommandRepository.UpdatePostSettings(settings.Id, cancellationToken, false, true,
             PostStatusType.Deleted, null);
         await _mediator.Publish(new PostDeletedEvent { postId = request.PostId });
         await _logService.CreateLogAsync($"Post deleted id: {request.PostId}", cancellationToken,

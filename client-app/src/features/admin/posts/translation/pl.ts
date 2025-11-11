@@ -7,6 +7,7 @@ export default {
   fullDescription: "Pełny opis",
   tags: "Tagi",
   edit: "Edytuj",
+  publish:"Opublikuj",
   delete: "Usuń",
   deleteConfirmation: {
     message: "Czy na pewno chcesz usunąć ten post?",

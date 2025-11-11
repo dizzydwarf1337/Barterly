@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Json;
-
+﻿
 namespace API.Core.Extensions.Middleware;
 
 public static class AppServices

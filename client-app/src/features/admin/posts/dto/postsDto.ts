@@ -23,7 +23,7 @@ export interface GetPostsRequestDto
   }> {}
 
 export interface GetPostsResponseDto {
-  posts: PostPreview[];
+  items: PostPreview[];
   totalCount: number;
   totalPages: number;
 }

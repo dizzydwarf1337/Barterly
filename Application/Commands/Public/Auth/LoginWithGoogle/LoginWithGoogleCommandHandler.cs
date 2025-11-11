@@ -56,7 +56,7 @@ public class
             );
 
         var favPostsCount = (await _favPostQueryRepository.GetUserFavPostsByUserIdAsync(Guid.Parse(loginResponse.UserDto.Id), cancellationToken)).Count;
-        var notificationCount = (await _notificationQueryRepository.GetNotificationsByUserIdAsync(Guid.Parse(loginResponse.UserDto.Id),cancellationToken)).Count;
+        var notificationCount = (await _notificationQueryRepository.GetNotificationsByUserIdAsync(Guid.Parse(loginResponse.UserDto.Id),cancellationToken)).Count();
         return ApiResponse<LoginWithGoogleCommand.Result>.Success(
             new LoginWithGoogleCommand.Result
             {

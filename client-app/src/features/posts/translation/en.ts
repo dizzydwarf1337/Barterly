@@ -1,0 +1,32 @@
+export default {
+    favouritePosts:"Your favourite posts",
+    common:{
+        itemsPerPage: "Post per page",
+        loading:"Loading..."
+    },
+    noFavouritePosts: "No favourite posts were added",
+    searchPlaceholder: "Search...",
+    search:"Search",
+    selectCategory:"Select category",
+    selectSubCategory:"Select sub category",
+    clear:"Clear",
+    city:"City",
+    postType:"Post type",
+    priceRange:"Price range",
+    minPrice:"Min price",
+    maxPrice:"Max price",
+    propertyDetails:"Property details",
+    propertyType:"Property type",
+    any:"Any",
+    numberOfRooms:"Number of rooms",
+    area:"Area",
+    floor:"Floor",
+    workDetails:"Work details",
+    workload:"Workload",
+    workLocation:"Work location",
+    minSalary:"Min salary",
+    maxSalary:"Max salary",
+    experienceRequired:"Experience required",
+    hideAdvancedFilters:"Hide advanced filters",
+    showAdvancedFilters:"Show advanced filters"
+}

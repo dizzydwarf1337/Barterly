@@ -28,7 +28,7 @@ public class GetPostsQuery : AdminRequest<GetPostsQuery.Result>
 
     public class Result
     {
-        public List<PostPreviewDto> Posts { get; set; }
+        public List<PostPreviewDto> Items { get; set; }
         public int TotalCount { get; set; }
         public int TotalPages { get; set; }
     }

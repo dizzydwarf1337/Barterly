@@ -33,6 +33,7 @@ import useStore from "../stores/store";
 import MobileNavDialog from "./MobileNavDialog";
 import { Link, useNavigate } from "react-router";
 import authApi from "../../features/auth/api/authApi";
+import NotificationsDrawer from "../../features/notifications/components/NotificationsDrawer";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.95),
@@ -157,6 +158,10 @@ export default observer(function NavBar() {
     uiStore.changeTheme();
   };
 
+  const changeOpenNotifications = () => {
+    uiStore.setNotificationsOpen();
+  }
+
   const renderDesktopContent = () => (
     <Box display="flex" flexDirection="row" gap={2} alignItems="center">
       <Tooltip
@@ -176,7 +181,7 @@ export default observer(function NavBar() {
       {authStore.isLoggedIn ? (
         <>
           <Tooltip title={t("notifications")}>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={changeOpenNotifications}>
               <Badge
                 badgeContent={authStore.user?.notificationCount}
                 color="error"
@@ -187,7 +192,7 @@ export default observer(function NavBar() {
           </Tooltip>
 
           <Tooltip title={t("favorites")}>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={()=> navigate("/posts/favourite")}>
               <Badge
                 badgeContent={authStore.user?.favPostIds?.length}
                 color="error"
@@ -410,6 +415,9 @@ export default observer(function NavBar() {
       </HideOnScroll>
 
       <MobileNavDialog />
+      {uiStore.notificationsOpen &&(
+        <NotificationsDrawer/>
+      )}
     </>
   );
 });

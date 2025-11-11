@@ -20,10 +20,8 @@ public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, ApiResp
     public async Task<ApiResponse<PostDto>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
         var post = await _postQueryRepository.GetPostById(request.PostId, cancellationToken);
-        if
-        (
-            (!(post.OwnerId == request.AuthorizeData.UserId) || post.PostSettings.IsHidden)
-            && !post.PostSettings.IsDeleted)
+        if ((!(post.OwnerId == request.AuthorizeData.UserId) || post.PostSettings.IsHidden)
+            && post.PostSettings.IsDeleted)
             return ApiResponse<PostDto>.Failure("Post not found or is hidden/deleted.", 404);
         return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post));
     }

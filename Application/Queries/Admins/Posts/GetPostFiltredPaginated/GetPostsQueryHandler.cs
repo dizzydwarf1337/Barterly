@@ -62,7 +62,7 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
 
             return ApiResponse<GetPostsQuery.Result>.Success(new GetPostsQuery.Result
             {
-                Posts = items,
+                Items = items,
                 TotalCount = totalCount,
                 TotalPages = totalPages
             });

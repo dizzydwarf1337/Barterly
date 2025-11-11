@@ -1,3 +1,4 @@
+import { PostPreview } from "../../posts/types/postTypes";
 
 export interface PostOwner {
   id:string;
@@ -5,4 +6,5 @@ export interface PostOwner {
   lastName:string;
   createdAt:Date;
   profilePicturePath?:string | null;
+  posts: PostPreview[]
 }

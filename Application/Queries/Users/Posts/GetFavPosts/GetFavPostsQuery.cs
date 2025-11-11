@@ -15,8 +15,8 @@ public class GetFavPostsQuery : UserRequest<GetFavPostsQuery.Result>
     
     public class Result
     {
-        public List<PostPreviewDto> Posts { get; set; }
+        public List<PostPreviewDto> Items { get; set; }
         public int TotalCount { get; set; }
-        public int TotalPages { get; set; }
+        public double TotalPages { get; set; }
     }
 }

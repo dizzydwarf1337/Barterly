@@ -53,10 +53,11 @@ import postApi from "../api/postApi";
 import { PostOwner } from "../../users/types/userTypes";
 import userApi from "../../users/api/userApi";
 import userPostApi from "../api/userPostApi";
+import PostSmallItem from "../components/PostSmallItem";
 
 export default observer(function PostDetails() {
   const { postId } = useParams<{ postId: string }>();
-  const { uiStore, authStore } = useStore();
+  const { uiStore, authStore, messageStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -332,8 +333,13 @@ export default observer(function PostDetails() {
             fullWidth
             startIcon={<MessageIcon />}
             onClick={() => {
-              // TODO: Implement messaging functionality
-              console.log("Contact owner:", owner.id);
+              if (!authStore.isLoggedIn) {
+                uiStore.showSnackbar(t("pleaseLoginToContact"), "warning");
+                navigate("/login");
+                return;
+              }
+              messageStore.setSelectedUserForChat(owner.id, authStore.user?.id!);
+              uiStore.setIsMessagesWidgetOpen(true);
             }}
             sx={{
               borderRadius: "12px",
@@ -807,9 +813,31 @@ export default observer(function PostDetails() {
             </Card>
           </Box>
 
-          <Box>
-            <Box mb={3}>{renderOwnerCard()}</Box>
+          <Box sx={{
+            display:'flex',
+            flexDirection:'column',
+            gap:2
+          }}>
+            <Box>
+              {renderOwnerCard()}
+            </Box>
             {renderPriceSection()}
+            <Box sx={{
+              display:'flex',
+              flexDirection:'column',
+              gap:2
+            }}>
+              <Typography  variant="h6" sx={{ color:'primary.main', fontWeight: 700 }}>
+                {t('seeAlsoOwnerPosts')}
+              </Typography>
+              {owner?.posts
+              .filter(x => x.id !== postId)
+              .sort(() => Math.random() - 0.5)
+              .slice(0, 3)
+              .map(x => (
+                <PostSmallItem post={x} />
+              ))}
+            </Box>
           </Box>
         </Box>
       </Box>
