@@ -47,7 +47,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
             {
                 Message = message
             });
-            await Clients.User(message.ReceiverId.ToString()).SendAsync("ReceivePropose", message);
+            await Clients.Users(message.ReceiverId.ToString(), message.SenderId.ToString()).SendAsync("ReceivePropose", message);
     }
 
     public async Task AcceptPropose(HubDto.AcceptProposal accept)
@@ -56,7 +56,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         {
             AcceptPropose = accept
         });
-        await Clients.User(accept.ReceiverId.ToString()).SendAsync("ProposeAccepted", accept);
+        await Clients.Users(accept.ReceiverId.ToString(), accept.SenderId.ToString()).SendAsync("ProposeAccepted", accept);
     }
 
     public async Task RejectPropose(HubDto.RejectProposal reject)
@@ -65,7 +65,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         {
             Reject = reject
         });
-        await Clients.User(reject.ReceiverId.ToString()).SendAsync("ProposeRejected", reject);
+        await Clients.Users(reject.ReceiverId.ToString(), reject.SenderId.ToString()).SendAsync("ProposeRejected", reject);
     }
 
     public async Task ReadMessage(HubDto.ReadMessage message)
