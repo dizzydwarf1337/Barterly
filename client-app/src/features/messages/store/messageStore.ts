@@ -25,16 +25,16 @@ export default class MessageStore {
   }
 
   setSelectedUserForChat = (userId: string, currentUserId: string) => {
-  this.selectedUserIdForChat = userId;
+    this.selectedUserIdForChat = userId;
 
-  const existingChat = this.chats.find(
-    chat =>
-      (chat.user1.userId === userId && chat.user2.userId === currentUserId) ||
-      (chat.user2.userId === userId && chat.user1.userId === currentUserId)
-  );
+    const existingChat = this.chats.find(
+      chat =>
+        (chat.user1.userId === userId && chat.user2.userId === currentUserId) ||
+        (chat.user2.userId === userId && chat.user1.userId === currentUserId)
+    );
 
-  this.selectedChatId = existingChat ? existingChat.id : null;
-};
+    this.selectedChatId = existingChat ? existingChat.id : null;
+  };
 
   setSelectedChatId = (chatId: string | null) => {
     this.selectedChatId = chatId;
@@ -50,25 +50,49 @@ export default class MessageStore {
   handleMessage = (msg: CommonMessage) => {
     console.log("Receiving message", msg);
     runInAction(() => {
-      const chat = this.getChat(msg.chatId!);
+      if (!msg.chatId) {
+        console.error("Received message without chatId:", msg);
+        return;
+      }
+      
+      const chat = this.getChat(msg.chatId);
       if (chat) {
-        chat.messages.push(this.createMessage(msg, MessageType.Common));
-      };
+        const existingMessage = chat.messages.find(m => m.id === msg.messageId);
+        if (!existingMessage) {
+          chat.messages.push(this.createMessage(msg, MessageType.Common));
+        }
+      } else {
+        console.warn("Chat not found for message:", msg.chatId);
+      }
     });
   };
 
   handleProposal = (msg: ProposalMessage) => {
     console.log("Receiving proposal", msg);
     runInAction(() => {
-      const chat = this.getChat(msg.chatId!);
-      if (chat) chat.messages.push(this.createMessage(msg, MessageType.Proposal));
+      if (!msg.chatId) {
+        console.error("Received proposal without chatId:", msg);
+        return;
+      }
+      
+      const chat = this.getChat(msg.chatId);
+      if (chat) {
+        const existingMessage = chat.messages.find(m => m.id === msg.messageId);
+        if (!existingMessage) {
+          chat.messages.push(this.createMessage(msg, MessageType.Proposal));
+        }
+      } else {
+        console.warn("Chat not found for proposal:", msg.chatId);
+      }
     });
   };
 
   handleAccept = (msg: AcceptProposal) => {
     console.log("Accepting proposal:", msg);
     runInAction(() => {
-      const chat = this.getChat(msg.chatId!);
+      if (!msg.chatId) return;
+      
+      const chat = this.getChat(msg.chatId);
       const message = chat?.messages.find(m => m.id === msg.messageId);
       if (message) {
         message.isAccepted = true;
@@ -80,7 +104,9 @@ export default class MessageStore {
   handleReject = (msg: RejectProposal) => {
     console.log("Rejecting proposal:", msg);
     runInAction(() => {
-      const chat = this.getChat(msg.chatId!);
+      if (!msg.chatId) return;
+      
+      const chat = this.getChat(msg.chatId);
       const message = chat?.messages.find(m => m.id === msg.messageId);
       if (message) message.isAccepted = false;
     });
@@ -89,19 +115,21 @@ export default class MessageStore {
   handleRead = (msg: ReadMessage) => {
     console.log("Marking message as read:", msg);
     runInAction(() => {
-    const chat = this.getChat(msg.chatId!);
-    const message = chat?.messages.find(m => m.id === msg.messageId);
-    if (message) {
-      message.isRead = true;
-      message.readBy = msg.readBy;
-      message.readAt = new Date().toISOString();
-    }
-  });
-};
+      if (!msg.chatId) return;
+      
+      const chat = this.getChat(msg.chatId);
+      const message = chat?.messages.find(m => m.id === msg.messageId);
+      if (message) {
+        message.isRead = true;
+        message.readBy = msg.readBy;
+        message.readAt = new Date().toISOString();
+      }
+    });
+  };
 
   createMessage(msg: CommonMessage | ProposalMessage, type: MessageType): Message {
     return {
-      id: '',
+      id: msg.messageId || '',
       chatId: msg.chatId!,
       content: msg.content,
       isRead: false,
@@ -118,7 +146,6 @@ export default class MessageStore {
     };
   }
 
-  // Methods to send messages via SignalR
   sendMessage = async (chatId: string | undefined, content: string, receiverId: string, senderId: string) => {
     try {
       await this.chatHub.sendMessage({

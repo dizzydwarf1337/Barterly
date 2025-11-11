@@ -1,4 +1,6 @@
+
 export interface CommonMessage {
+  messageId?: string; 
   senderId: string;
   receiverId: string;
   content: string;
@@ -7,6 +9,7 @@ export interface CommonMessage {
 }
 
 export interface ProposalMessage {
+  messageId?: string;  
   senderId: string;
   receiverId: string;
   content: string;
