@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands.Chat.SendPropose;
 
-public class SendProposeCommandHandler : IRequestHandler<SendProposeCommand, Unit>
+// ✅ ИСПРАВЛЕНО: Возвращаем Message вместо Unit
+public class SendProposeCommandHandler : IRequestHandler<SendProposeCommand, Message>
 {
     private readonly IChatQueryRepository  _chatQueryRepository;
     private readonly IChatCommandRepository _chatCommandRepository;
@@ -20,7 +21,7 @@ public class SendProposeCommandHandler : IRequestHandler<SendProposeCommand, Uni
         _messageCommandRepository = messageCommandRepository;
     }
     
-    public async Task<Unit> Handle(SendProposeCommand request, CancellationToken cancellationToken)
+    public async Task<Message> Handle(SendProposeCommand request, CancellationToken cancellationToken)
     {
         var message = new Message()
         {
@@ -35,20 +36,25 @@ public class SendProposeCommandHandler : IRequestHandler<SendProposeCommand, Uni
         var chat = await _chatQueryRepository.GetChats()
             .FirstOrDefaultAsync(x=> (x.User1 == request.Message.SenderId && x.User2 == request.Message.ReceiverId)
                                      || (x.User1 == request.Message.ReceiverId && x.User2 == request.Message.SenderId), cancellationToken);
+        
         if (chat == null)
         {
             var chatToAdd = new Domain.Entities.Chat.Chat()
             {
+                Id = Guid.NewGuid(), 
                 User1 = request.Message.SenderId,
                 User2 = request.Message.ReceiverId
             };
+            message.ChatId = chatToAdd.Id; 
             chatToAdd.Messages.Add(message);
             await _chatCommandRepository.CreateChat(chatToAdd, cancellationToken);
-            return Unit.Value;
+            
+            return message;
         }
-
+        
         message.ChatId = chat.Id;
         await _messageCommandRepository.SaveMessage(message, cancellationToken);
-        return Unit.Value;
+        
+        return message;
     }
 }

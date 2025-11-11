@@ -34,20 +34,43 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
     
     public async Task SendMessage(HubDto.CommonMessage message)
     {
-        await _mediator.Send(new SendMessageCommand
+        var savedMessage = await _mediator.Send(new SendMessageCommand
         {
             Message = message
         });
-        await Clients.Users(message.ReceiverId.ToString(), message.SenderId.ToString()).SendAsync("ReceiveMessage", message);
+        
+        var messageDto = new HubDto.CommonMessage(
+            SenderId: savedMessage.SenderId,
+            ReceiverId: savedMessage.ReceiverId,
+            Content: savedMessage.Content,
+            ChatId: savedMessage.ChatId,
+            PostId: savedMessage.PostId,
+            MessageId: savedMessage.Id 
+        );
+        
+        await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
+            .SendAsync("ReceiveMessage", messageDto);
     }
 
     public async Task SendPropose(HubDto.ProposalMessage message)
     {
-            await _mediator.Send(new SendProposeCommand
-            {
-                Message = message
-            });
-            await Clients.Users(message.ReceiverId.ToString(), message.SenderId.ToString()).SendAsync("ReceivePropose", message);
+        var savedMessage = await _mediator.Send(new SendProposeCommand
+        {
+            Message = message
+        });
+        
+        var proposalDto = new HubDto.ProposalMessage(
+            SenderId: savedMessage.SenderId,
+            ReceiverId: savedMessage.ReceiverId,
+            Content: savedMessage.Content,
+            Price: savedMessage.Price ?? 0,
+            PostId: savedMessage.PostId,
+            ChatId: savedMessage.ChatId, 
+            MessageId: savedMessage.Id   
+        );
+        
+        await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
+            .SendAsync("ReceivePropose", proposalDto);
     }
 
     public async Task AcceptPropose(HubDto.AcceptProposal accept)
@@ -56,7 +79,8 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         {
             AcceptPropose = accept
         });
-        await Clients.Users(accept.ReceiverId.ToString(), accept.SenderId.ToString()).SendAsync("ProposeAccepted", accept);
+        await Clients.Users(accept.ReceiverId.ToString(), accept.SenderId.ToString())
+            .SendAsync("ProposeAccepted", accept);
     }
 
     public async Task RejectPropose(HubDto.RejectProposal reject)
@@ -65,7 +89,8 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         {
             Reject = reject
         });
-        await Clients.Users(reject.ReceiverId.ToString(), reject.SenderId.ToString()).SendAsync("ProposeRejected", reject);
+        await Clients.Users(reject.ReceiverId.ToString(), reject.SenderId.ToString())
+            .SendAsync("ProposeRejected", reject);
     }
 
     public async Task ReadMessage(HubDto.ReadMessage message)
@@ -74,6 +99,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         {
             ReadMessage = message
         });
-        await  Clients.User(message.SenderId.ToString()).SendAsync("ReceiveMessage", message);
+        await Clients.User(message.SenderId.ToString())
+            .SendAsync("ReadMessage", message);
     }
 }
