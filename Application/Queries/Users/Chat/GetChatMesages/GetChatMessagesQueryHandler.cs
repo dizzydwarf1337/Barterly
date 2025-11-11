@@ -33,7 +33,7 @@ public class GetChatMessagesQueryHandler : IRequestHandler<GetChatMessagesQuery,
         {
             Items = await messages
                 .OrderBy(x => x.SentAt)
-                .Skip(request.Page -1)
+                .Skip((request.Page - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => 
                     new GetChatMessagesQuery.Message(
@@ -54,7 +54,7 @@ public class GetChatMessagesQueryHandler : IRequestHandler<GetChatMessagesQuery,
                 )
                 .ToListAsync(cancellationToken),
             TotalCount = messagesCount,
-            TotalPages = messagesCount / request.PageSize
+            TotalPages = (int)Math.Ceiling((double)messagesCount / request.PageSize)
         });
     }
 }
