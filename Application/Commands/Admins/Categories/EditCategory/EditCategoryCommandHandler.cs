@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Commands.Admins.Categories.EditCategory;
 
-public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ApiResponse<Category>>
+public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, ApiResponse<Unit>>
 {
     private readonly ICategoryCommandRepository _categoryCommandRepository;
     private readonly IMapper _mapper;
@@ -17,23 +17,23 @@ public class EditCategoryCommandHandler : IRequestHandler<EditCategoryCommand, A
         _mapper = mapper;
     }
 
-    public async Task<ApiResponse<Category>> Handle(EditCategoryCommand request,
+    public async Task<ApiResponse<Unit>> Handle(EditCategoryCommand request,
         CancellationToken cancellationToken)
     {
-        return ApiResponse<Category>.Success(await UpdateAndSaveCategory(request, cancellationToken));
+        return ApiResponse<Unit>.Success(await UpdateAndSaveCategory(request, cancellationToken));
     }
 
-    private async Task<Category> UpdateAndSaveCategory(EditCategoryCommand category, CancellationToken token)
+    private async Task<Unit> UpdateAndSaveCategory(EditCategoryCommand category, CancellationToken token)
     {
         var categoryToEdit = await _categoryCommandRepository.UpdateCategoryAsync(
             new Category
             {
                 Id = category.Id,
                 Description = category.Description,
-                NameEN = category.NameEN,
-                NamePL = category.NamePL,
+                NameEN = category.NameEn,
+                NamePL = category.NamePl,
                 SubCategories = _mapper.Map<List<SubCategory>>(category.SubCategories)
             }, token);
-        return categoryToEdit;
+        return Unit.Value;
     }
 }

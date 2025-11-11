@@ -7,14 +7,11 @@ public class LoginCommand : PublicRequest<LoginCommand.Result>
     public required string Email { get; set; }
     public required string Password { get; set; }
 
+
     public class Result
     {
-        public required string Id { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public required string Email { get; set; }
-        public string? ProfilePicturePath { get; set; }
-        public string? token { get; set; }
-        public string? Role { get; set; }
+        public string Token { get; set; }
+        public IReadOnlyCollection<string> Roles { get; set; }
     }
+    
 }

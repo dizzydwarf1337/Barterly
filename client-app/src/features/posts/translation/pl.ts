@@ -1,0 +1,32 @@
+export default {
+    favouritePosts: "Twoje ulubione posty",
+    common:{
+        itemsPerPage: "Liczba ogłoszeń na stronie",
+        loading:"Laduję..."
+    },
+    noFavouritePosts: "Brak ulubionych postów",
+    searchPlaceholder: "Szukaj...",
+    search:"Szukaj",
+    selectCategory:"Wybierz kategorię",
+    selectSubCategory:"Wybierz podkategorię",
+    clear:"Wyczyść",
+    city: "Miasto",
+    postType: "Typ ogłoszenia",
+    priceRange: "Przedział cenowy",
+    minPrice: "Cena minimalna",
+    maxPrice: "Cena maksymalna",
+    propertyDetails: "Szczegóły nieruchomości",
+    propertyType: "Typ nieruchomości",
+    any: "Dowolny",
+    numberOfRooms: "Liczba pokoi",
+    area: "Powierzchnia",
+    floor: "Piętro",
+    workDetails: "Szczegóły pracy",
+    workload: "Wymiar etatu",
+    workLocation: "Miejsce pracy",
+    minSalary: "Minimalne wynagrodzenie",
+    maxSalary: "Maksymalne wynagrodzenie",
+    experienceRequired: "Wymagane doświadczenie",
+    hideAdvancedFilters: "Ukryj zaawansowane filtry",
+    showAdvancedFilters: "Pokaż zaawansowane filtry"
+}

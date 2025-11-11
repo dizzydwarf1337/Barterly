@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Users;
+using Domain.Enums.Posts;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Queries.User;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,9 @@ public class UserFavPostQueryRepository : BaseQueryRepository<BarterlyDbContext>
     {
     }
 
-    public async Task<UserFavouritePost> GetUserFavPostByIdAsync(Guid id, CancellationToken token)
+    public async Task<UserFavouritePost> GetUserFavPostByIdAsync(Guid postId, Guid userId, CancellationToken token)
     {
-        return await _context.UserFavouritePosts.FindAsync(id, token) ??
+        return await _context.UserFavouritePosts.Where(x=>x.PostId == postId && x.UserId == userId).FirstOrDefaultAsync(token) ??
                throw new EntityNotFoundException("User favourite post");
     }
 
@@ -26,6 +27,6 @@ public class UserFavPostQueryRepository : BaseQueryRepository<BarterlyDbContext>
     public async Task<ICollection<UserFavouritePost>> GetUserFavPostsByUserIdAsync(Guid userId,
         CancellationToken token)
     {
-        return await _context.UserFavouritePosts.Where(x => x.UserId == userId).ToListAsync(token);
+        return await _context.UserFavouritePosts.Where(x => x.UserId == userId && x.Post.PostSettings.postStatusType == PostStatusType.Published).ToListAsync(token);
     }
 }

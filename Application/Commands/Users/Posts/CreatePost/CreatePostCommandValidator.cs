@@ -9,9 +9,6 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
         RuleFor(x => x.SubCategoryId)
             .NotEmpty().WithMessage("SubCategoryId is required");
 
-        RuleFor(x => x.OwnerId)
-            .NotEmpty().WithMessage("OwnerId is required");
-
         RuleFor(x => x.PostType)
             .NotEmpty().WithMessage("PostType is required");
 

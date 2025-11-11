@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.Users;
 using Domain.Exceptions.BusinessExceptions;
 using Domain.Interfaces.Commands.User;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Database;
 
 namespace Persistence.Repositories.Commands.Users;
@@ -19,8 +20,8 @@ public class UserCommandRepository : BaseCommandRepository<BarterlyDbContext>, I
 
     public async Task DeleteUser(Guid userId, CancellationToken token)
     {
-        var user = await _context.Users.FindAsync(userId, token) ?? throw new EntityNotFoundException("User");
-        _context.Users.Remove(user);
+        var userSettings = await _context.UserSettings.FirstOrDefaultAsync(x=>x.UserId == userId, token) ?? throw new EntityNotFoundException("User");
+        userSettings.IsDeleted = true;
         await _context.SaveChangesAsync(token);
     }
 

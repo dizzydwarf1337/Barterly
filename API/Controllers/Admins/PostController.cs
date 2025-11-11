@@ -1,12 +1,14 @@
 ﻿using Application.Commands.Admins.Posts.ApprovePost;
 using Application.Commands.Admins.Posts.DeletePost;
 using Application.Commands.Admins.Posts.RejectPost;
+using Application.Commands.Admins.Posts.UpdatePostSettings;
 using Application.Queries.Admins.Posts.GetPostById;
+using Application.Queries.Admins.Posts.GetPostFiltredPaginated;
 using Application.Queries.Public.Posts.GetPostImages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Admins;
 
 [Route("admin/posts")]
 [Authorize(Policy = "Admin")]
@@ -47,4 +49,13 @@ public class AdminPostController : BaseController
     {
         return HandleResponse(await Mediator.Send(new GetPostImagesCommand { PostId = postId }));
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> GetPosts([FromBody] GetPostsQuery request)
+        => HandleResponse(await Mediator.Send(request));
+
+    [HttpPut]
+    [Route("update-settings")]
+    public async Task<IActionResult> UpdatePostSettings([FromBody] UpdatePostSettingsCommand request)
+        => HandleResponse(await Mediator.Send(request));
 }

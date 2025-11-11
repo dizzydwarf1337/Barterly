@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -13,24 +13,25 @@ import {
   Tabs,
   Tab,
   Container,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
   Google as GoogleIcon,
   Email as EmailIcon,
   Lock as LockIcon,
-  Person as PersonIcon,
-} from '@mui/icons-material';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { LoginRequestDTO, LoginWithGoogleRequestDTO, RegisterRequestDTO } from '../dto/authDto';
-import authApi from '../api/authApi';
-import { useNavigate } from 'react-router';
-import { values } from 'mobx';
-
+} from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
+import { useGoogleLogin } from "@react-oauth/google";
+import { observer } from "mobx-react-lite";
+import { LoginRequestDTO, LoginWithGoogleRequestDTO } from "../dto/authDto";
+import authApi from "../api/authApi";
+import { useNavigate } from "react-router";
+import useStore from "../../../app/stores/store";
+import RegistrationForm from "../components/registrationForm";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -41,14 +42,6 @@ interface TabPanelProps {
 interface LoginFormData {
   email: string;
   password: string;
-}
-
-interface RegisterFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -66,72 +59,41 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC = observer(() => {
   const { t } = useTranslation();
+  const { authStore, uiStore } = useStore();
   const [tabValue, setTabValue] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Схемы валидации
+  useEffect(() => {
+    if (authStore.isLoggedIn) {
+      navigate("/");
+    }
+  }, [authStore.isLoggedIn, navigate]);
+
   const loginSchema = Yup.object({
     email: Yup.string()
-      .email(t('validation.invalidEmail'))
-      .required(t('validation.required')),
+      .email(t("validation.invalidEmail"))
+      .required(t("validation.required")),
     password: Yup.string()
-      .min(6, t('validation.passwordMinLength'))
-      .required(t('validation.required')),
+      .min(6, t("validation.passwordMinLength"))
+      .required(t("validation.required")),
   });
 
-  const registerSchema = Yup.object({
-    firstName: Yup.string()
-      .min(2, t('validation.nameMinLength'))
-      .required(t('validation.required')),
-    lastName: Yup.string()
-      .min(2, t('validation.nameMinLength'))
-      .required(t('validation.required')),
-    email: Yup.string()
-      .email(t('validation.invalidEmail'))
-      .required(t('validation.required')),
-    password: Yup.string()
-      .min(6, t('validation.passwordMinLength'))
-      .required(t('validation.required')),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], t('validation.passwordsDoNotMatch'))
-      .required(t('validation.required')),
-  });
-
-  // Форма логина
   const {
     control: loginControl,
     handleSubmit: handleLoginSubmit,
     reset: resetLogin,
-    formState: { errors: loginErrors }
+    formState: { errors: loginErrors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  // Форма регистрации
-  const {
-    control: registerControl,
-    handleSubmit: handleRegisterSubmit,
-    reset: resetRegister,
-    formState: { errors: registerErrors }
-  } = useForm<RegisterFormData>({
-    resolver: yupResolver(registerSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -143,130 +105,125 @@ const LoginPage: React.FC = () => {
         email: data.email,
         password: data.password,
       };
-      
+
       const response = await authApi.login(loginData);
-      
-      if (response.isSuccess) {
-        setSuccess(t('auth.loginSuccess'));
-        localStorage.setItem('token', response.value.token);
-        
+
+      if (response.isSuccess && response.value) {
+        await authStore.login(response.value.token);
+        uiStore.showSnackbar(t("auth.loginSuccess"), "success", "center");
+        navigate("/");
       } else {
-        setError(response.error || t('auth.loginError'));
+        setError(response.error || t("auth.loginError"));
       }
-    } catch (err: any) {
-      setError(err.message || t('auth.loginError'));
+    } catch {
+      setError(t("auth.loginError"));
     } finally {
       setLoading(false);
     }
   };
 
-  // Обработчик регистрации
-  const onRegisterSubmit = async (data: RegisterFormData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const registerData: RegisterRequestDTO = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
-      };
-      
-      const response = await authApi.register(registerData);
-      
-      if (response.isSuccess) {
-        setSuccess(t('auth.registerSuccess'));
-        navigate(`/auth/email-confirm/${response.value.email}`);
-      } else {
-        setError(response.error || t('auth.registerError'));
-      }
-    } catch (err: any) {
-      setError(err.message || t('auth.registerError'));
-    } finally {
-      setLoading(false);
-    }
+  const handleRegistrationSuccess = (email: string) => {
+    navigate(`resend-email-confirmation/${email}`);
+    setSuccess(t("auth.registerSuccess"));
   };
 
-  // Логин через Google
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Здесь должна быть интеграция с Google OAuth
-      // Для примера используем mock токен
-      const googleToken = await getGoogleToken(); // Ваша функция получения токена от Google
-      
-      const googleLoginData: LoginWithGoogleRequestDTO = {
-        token: googleToken,
-      };
-      
-      const response = await authApi.loginWithGoogle(googleLoginData);
-      
-      if (response.isSuccess) {
-        setSuccess(t('auth.googleLoginSuccess'));
-        localStorage.setItem('token', response.value.token);
-      } else {
-        setError(response.error || t('auth.googleLoginError'));
-      }
-    } catch (err: any) {
-      setError(err.message || t('auth.googleLoginError'));
-    } finally {
-      setLoading(false);
-    }
+  const handleRegistrationError = (errorMessage: string) => {
+    setError(errorMessage);
   };
 
-  const getGoogleToken = async (): Promise<string> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve('mock-google-token'), 1000);
-    });
-  };
+  // Google login hook
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const googleLoginData: LoginWithGoogleRequestDTO = {
+          token: codeResponse.code,
+        };
+
+        const response = await authApi.loginWithGoogle(googleLoginData);
+
+        if (response.isSuccess) {
+          authStore.loginWithGoogle(response.value.token);
+          setSuccess(t("auth.googleLoginSuccess"));
+          uiStore.showSnackbar(
+            t("auth.googleLoginSuccess"),
+            "success",
+            "center"
+          );
+          navigate("/");
+        } else {
+          setError(response.error || t("auth.googleLoginError"));
+        }
+      } catch (err: any) {
+        setError(err.message || t("auth.googleLoginError"));
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.log("Google Login Failed:", error);
+      setError(t("auth.googleLoginError"));
+    },
+    flow: "auth-code",
+  });
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
     setError(null);
     setSuccess(null);
     resetLogin();
-    resetRegister();
   };
+
+  // Если пользователь уже залогинен, не показываем форму
+  if (authStore.isLoggedIn) {
+    return null;
+  }
 
   return (
     <Container maxWidth="sm">
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 3,
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Paper
           elevation={3}
           sx={{
             p: 4,
-            width: '100%',
+            width: "100%",
             maxWidth: 480,
             borderRadius: 3,
           }}
         >
-          {/* Заголовок */}
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Box sx={{ textAlign: "center", mb: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-              {t('auth.welcome')}
+              {t("auth.welcome")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {t('auth.subtitle')}
+              {t("auth.subtitle")}
             </Typography>
           </Box>
 
           {/* Уведомления */}
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+            <Alert
+              severity="error"
+              sx={{ mb: 2 }}
+              onClose={() => setError(null)}
+            >
               {error}
             </Alert>
           )}
           {success && (
-            <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
+            <Alert
+              severity="success"
+              sx={{ mb: 2 }}
+              onClose={() => setSuccess(null)}
+            >
               {success}
             </Alert>
           )}
@@ -278,8 +235,8 @@ const LoginPage: React.FC = () => {
             centered
             sx={{ mb: 2 }}
           >
-            <Tab label={t('auth.login')} />
-            <Tab label={t('auth.register')} />
+            <Tab label={t("auth.login")} />
+            <Tab label={t("auth.register")} />
           </Tabs>
 
           {/* Панель логина */}
@@ -292,7 +249,7 @@ const LoginPage: React.FC = () => {
                   <TextField
                     {...field}
                     fullWidth
-                    label={t('auth.email')}
+                    label={t("auth.email")}
                     type="email"
                     error={!!loginErrors.email}
                     helperText={loginErrors.email?.message}
@@ -315,8 +272,8 @@ const LoginPage: React.FC = () => {
                   <TextField
                     {...field}
                     fullWidth
-                    label={t('auth.password')}
-                    type={showPassword ? 'text' : 'password'}
+                    label={t("auth.password")}
+                    type={showPassword ? "text" : "password"}
                     error={!!loginErrors.password}
                     helperText={loginErrors.password?.message}
                     InputProps={{
@@ -349,155 +306,23 @@ const LoginPage: React.FC = () => {
                 disabled={loading}
                 sx={{ mb: 2 }}
               >
-                {loading ? <CircularProgress size={24} /> : t('auth.login')}
+                {loading ? <CircularProgress size={24} /> : t("auth.login")}
               </Button>
             </Box>
           </TabPanel>
 
           {/* Панель регистрации */}
           <TabPanel value={tabValue} index={1}>
-            <Box component="form" onSubmit={handleRegisterSubmit(onRegisterSubmit)}>
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <Controller
-                  name="firstName"
-                  control={registerControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t('auth.firstName')}
-                      error={!!registerErrors.firstName}
-                      helperText={registerErrors.firstName?.message}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <PersonIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="lastName"
-                  control={registerControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t('auth.lastName')}
-                      error={!!registerErrors.lastName}
-                      helperText={registerErrors.lastName?.message}
-                    />
-                  )}
-                />
-              </Box>
-
-              <Controller
-                name="email"
-                control={registerControl}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label={t('auth.email')}
-                    type="email"
-                    error={!!registerErrors.email}
-                    helperText={registerErrors.email?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EmailIcon color="action" />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ mb: 2 }}
-                  />
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={registerControl}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label={t('auth.password')}
-                    type={showPassword ? 'text' : 'password'}
-                    error={!!registerErrors.password}
-                    helperText={registerErrors.password?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ mb: 2 }}
-                  />
-                )}
-              />
-
-              <Controller
-                name="confirmPassword"
-                control={registerControl}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label={t('auth.confirmPassword')}
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    error={!!registerErrors.confirmPassword}
-                    helperText={registerErrors.confirmPassword?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            edge="end"
-                          >
-                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ mb: 3 }}
-                  />
-                )}
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={loading}
-                sx={{ mb: 2 }}
-              >
-                {loading ? <CircularProgress size={24} /> : t('auth.register')}
-              </Button>
-            </Box>
+            <RegistrationForm
+              onSuccess={(email) => handleRegistrationSuccess(email)}
+              onError={handleRegistrationError}
+            />
           </TabPanel>
 
           {/* Разделитель */}
           <Divider sx={{ my: 3 }}>
             <Typography variant="body2" color="text.secondary">
-              {t('auth.or')}
+              {t("auth.or")}
             </Typography>
           </Divider>
 
@@ -507,23 +332,23 @@ const LoginPage: React.FC = () => {
             variant="outlined"
             size="large"
             startIcon={<GoogleIcon />}
-            onClick={handleGoogleLogin}
+            onClick={() => googleLogin()}
             disabled={loading}
             sx={{
-              borderColor: '#4285f4',
-              color: '#4285f4',
-              '&:hover': {
-                borderColor: '#3367d6',
-                backgroundColor: 'rgba(66, 133, 244, 0.04)',
+              borderColor: "#4285f4",
+              color: "#4285f4",
+              "&:hover": {
+                borderColor: "#3367d6",
+                backgroundColor: "rgba(66, 133, 244, 0.04)",
               },
             }}
           >
-            {t('auth.continueWithGoogle')}
+            {t("auth.continueWithGoogle")}
           </Button>
         </Paper>
       </Box>
     </Container>
   );
-};
+});
 
 export default LoginPage;

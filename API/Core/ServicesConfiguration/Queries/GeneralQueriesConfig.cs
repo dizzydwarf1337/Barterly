@@ -1,6 +1,8 @@
-﻿using Domain.Interfaces.Queries.General;
+﻿using Domain.Interfaces.Queries.Chat;
+using Domain.Interfaces.Queries.General;
 using Domain.Interfaces.Queries.Post;
 using Domain.Interfaces.Queries.User;
+using Persistence.Repositories.Queries.Chat;
 using Persistence.Repositories.Queries.General;
 using Persistence.Repositories.Queries.Post;
 using Persistence.Repositories.Queries.Users;
@@ -16,6 +18,8 @@ public static class GeneralQueriesConfig
         services.AddScoped<ICategoryQueryRepository, CategoryQueryRepository>();
         services.AddScoped<IGlobalNotificationQueryRepository, GlobalNotificationQueryRepository>();
         services.AddScoped<INotificationQueryRepository, NotificationQueryRepository>();
+        services.AddScoped<IChatQueryRepository, ChatQueryRepository>();
+        services.AddScoped<IMessageQueryRepository, MessageQueryRepository>();
 
         return services;
     }

@@ -32,25 +32,22 @@ export const EmailConfirmLink = () => {
   const [status, setStatus] = useState<ConfirmationStatus>('loading');
   const [countdown, setCountdown] = useState(5);
 
-  const email = searchParams.get("email");
+  const email = searchParams.get("email")?.replace(/ /g, "+");
   const token = searchParams.get("token")?.replace(/ /g, "+");
 
   useEffect(() => {
-    // Валидация параметров
     if (!email || !token) {
       setStatus('invalid');
       uiStore.showSnackbar(t("invalidConfirmationLink"), "error", "center");
       return;
     }
 
-    // Подтверждение email
     const confirmEmail = async () => {
       try {
         await authApi.confirmEmail({ userMail: email, token });
         setStatus('success');
         uiStore.showSnackbar(t("confirmationMailSuccess"), "success", "center");
         
-        // Автоматический редирект через 5 секунд
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -65,7 +62,7 @@ export const EmailConfirmLink = () => {
         return () => clearInterval(timer);
       } catch (error: any) {
         setStatus('error');
-        uiStore.showSnackbar(t("confirmationMailFailed"), "error", "center");
+        uiStore.showSnackbar(error.message || t("confirmationMailFailed"), "error", "center");
       }
     };
 

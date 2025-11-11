@@ -7,7 +7,13 @@ public static class CorsPolicies
         services.AddCors(opt =>
         {
             opt.AddPolicy("CorsPolicy",
-                policy => { policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
+                policy => { 
+                    policy
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+                });
         });
 
         return services;

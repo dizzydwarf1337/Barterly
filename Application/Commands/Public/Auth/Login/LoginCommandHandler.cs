@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities.Users;
 using Domain.Enums.Common;
 using Domain.Exceptions.BusinessExceptions;
+using Domain.Interfaces.Queries.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,16 +13,15 @@ namespace Application.Commands.Public.Auth.Login;
 public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<LoginCommand.Result>>
 {
     private readonly ILogService _logService;
-    private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
+    private readonly IUserSettingQueryRepository _userSettingQueryRepository;
     private readonly UserManager<User> _userManager;
 
-    public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, IMapper mapper,
-        ILogService logService)
+    public LoginCommandHandler(UserManager<User> userManager, ITokenService tokenService, ILogService logService, IUserSettingQueryRepository userSettingQueryRepository)
     {
         _userManager = userManager;
         _tokenService = tokenService;
-        _mapper = mapper;
+        _userSettingQueryRepository = userSettingQueryRepository;
         _logService = logService;
     }
 
@@ -29,7 +29,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<Log
         CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new EntityNotFoundException("User");
-
+        var settings = await _userSettingQueryRepository.GetUserSettingByUserIdAsync(user.Id,cancellationToken);
+        if(settings.IsDeleted)
+            return ApiResponse<LoginCommand.Result>.Failure("User deleted");
+        var roles =  (await _userManager.GetRolesAsync(user)).ToList();
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
         var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         if (!isPasswordCorrect) return ApiResponse<LoginCommand.Result>.Failure("Wrong password");
@@ -40,17 +43,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<Log
         await _userManager.UpdateAsync(user);
         await _logService.CreateLogAsync("User logged in", cancellationToken, LogType.Information, userId: user.Id);
         var token = await _tokenService.GetLoginToken(user.Id, cancellationToken);
-        var roles = await _userManager.GetRolesAsync(user);
-        return ApiResponse<LoginCommand.Result>.Success(new LoginCommand.Result
+        return ApiResponse<LoginCommand.Result>.Success(new LoginCommand.Result()
         {
-            Email = user.Email,
-            FirstName = user.FirstName,
-            Id = user.Id.ToString(),
-            LastName = user.LastName,
-            ProfilePicturePath = user.ProfilePicturePath,
-            Role = roles.Contains("Admin") ? "Admin" :
-                roles.Contains("Moderator") ? "Moderator" : "User",
-            token = token
+            Token = token,
+            Roles = roles,
         });
     }
 }

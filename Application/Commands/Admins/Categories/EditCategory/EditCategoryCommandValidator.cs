@@ -9,10 +9,10 @@ public class EditCategoryCommandValidator : AbstractValidator<EditCategoryComman
         RuleFor(x => x.Id)
             .NotEmpty()
             .Must(x => x != Guid.Empty).WithMessage("Id cannot be empty");
-        RuleFor(x => x.NameEN)
+        RuleFor(x => x.NameEn)
             .NotEmpty().WithMessage("English name is required.")
             .MaximumLength(100).WithMessage("English name must not exceed 100 characters.");
-        RuleFor(x => x.NamePL)
+        RuleFor(x => x.NamePl)
             .NotEmpty().WithMessage("Polish name is required.")
             .MaximumLength(100).WithMessage("Polish name must not exceed 100 characters.");
         RuleFor(x => x.Description)

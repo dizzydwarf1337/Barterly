@@ -5,11 +5,11 @@ import LoginPage from "../pages/loginPage";
 
 export const authRoutes: RouteObject[] = [
     {
-        path:'auth/resend-email-confirmation/:email',
+        path:'login/resend-email-confirmation/:email',
         element: <EmailConfirm/>
     },
     {
-        path:'auth/email-confirm/:email',
+        path:'confirm',
         element: <EmailConfirmLink/>
     },
     {

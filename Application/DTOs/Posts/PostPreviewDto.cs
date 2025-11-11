@@ -27,7 +27,9 @@ public class PostPreviewDto
     public PostCurrency? Currency { get; set; }
     public int? NumberOfRooms { get; set; }
     public decimal? Area { get; set; }
-
+    public int? ViewsCount { get; set; }
+    public DateTime? CreatedAt { get; set; }
     public int? Floor { get; set; }
     public string? PostType { get; set; }
+    public string? OwnerName { get; set; }
 }

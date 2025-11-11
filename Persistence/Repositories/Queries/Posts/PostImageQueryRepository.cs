@@ -24,6 +24,15 @@ public class PostImageQueryRepository : BaseQueryRepository<BarterlyDbContext>, 
 
     public async Task<ICollection<PostImage>> GetPostImagesByPostIdAsync(Guid postId, CancellationToken token)
     {
-        return await _context.PostImages.Where(x => x.PostId == postId).AsNoTracking().ToListAsync(token);
+        var images = await _context.PostImages.Where(x => x.PostId == postId).AsNoTracking().ToListAsync(token);
+        var post = await _context.Posts.Where(x => x.Id == postId).FirstOrDefaultAsync(token);
+        if(post!=null && post.MainImageUrl != null)
+            images.Add(new PostImage()
+            {
+                ImageUrl = post.MainImageUrl,
+                PostId = postId,
+            });
+        images.Reverse();
+        return images;
     }
 }

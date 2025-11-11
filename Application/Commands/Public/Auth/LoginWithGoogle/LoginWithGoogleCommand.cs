@@ -15,5 +15,7 @@ public class LoginWithGoogleCommand : PublicRequest<LoginWithGoogleCommand.Resul
         public string? ProfilePicturePath { get; set; }
         public string? token { get; set; }
         public string? Role { get; set; }
+        public int FavPostsCount { get; set; } = 0;
+        public int NotificationCount { get; set; } = 0;
     }
 }

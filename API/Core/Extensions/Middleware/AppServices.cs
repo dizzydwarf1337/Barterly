@@ -1,4 +1,5 @@
-﻿namespace API.Core.Extensions.Middleware;
+﻿
+namespace API.Core.Extensions.Middleware;
 
 public static class AppServices
 {

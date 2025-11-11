@@ -27,7 +27,10 @@ public class CategoryCommandRepository : BaseCommandRepository<BarterlyDbContext
 
     public async Task DeleteCategoryAsync(Guid id, CancellationToken token)
     {
-        var category = await _context.Categories.FindAsync(id) ?? throw new EntityNotFoundException("Category");
+        var category = await _context.Categories.FirstOrDefaultAsync(x=>x.Id == id, token) ?? throw new EntityNotFoundException("Category");
+        var postExists = await _context.Posts.Include(x=>x.SubCategory).AnyAsync(x => x.SubCategory.CategoryId == category.Id, token);
+        if (postExists)
+            throw new ApplicationException("Cannot remove category with provided posts");
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync(token);
     }
@@ -41,24 +44,17 @@ public class CategoryCommandRepository : BaseCommandRepository<BarterlyDbContext
     public async Task<Category> UpdateCategoryAsync(Category category, CancellationToken token)
     {
         var categoryOld = await _context.Categories
-            .Include(c => c.SubCategories)
-            .FirstOrDefaultAsync(c => c.Id == category.Id) ?? throw new EntityNotFoundException("Category");
-
-        if (categoryOld.SubCategories != null) _context.SubCategories.RemoveRange(categoryOld.SubCategories);
-
-        if (category.SubCategories != null)
-        {
-            foreach (var sub in category.SubCategories) sub.CategoryId = category.Id;
-
-            await _context.SubCategories.AddRangeAsync(category.SubCategories.Where(s =>
-                !string.IsNullOrWhiteSpace(s.TitlePL) && !string.IsNullOrWhiteSpace(s.TitleEN)));
-        }
-
+                              .Include(c => c.SubCategories)
+                              .FirstOrDefaultAsync(c => c.Id == category.Id, token)
+                          ?? throw new EntityNotFoundException("Category");
+        
         categoryOld.NameEN = category.NameEN;
         categoryOld.NamePL = category.NamePL;
         categoryOld.Description = category.Description;
+        
+        categoryOld.SubCategories = category.SubCategories;
 
         await _context.SaveChangesAsync(token);
-        return category;
+        return categoryOld;
     }
 }

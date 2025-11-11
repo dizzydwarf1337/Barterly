@@ -25,7 +25,11 @@ public class AutoMapperProfiler : Profile
         CreateMap<LogDto, Log>();
         CreateMap<Post, PostDto>()
             .ForMember(x => x.PostImages, opt => opt.MapFrom(x => x.PostImages))
-            .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
+            .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory))
+            .ForMember(x => x.PostType, opt => opt.MapFrom(x =>
+                x is WorkPost ? "Work" :
+                x is RentPost ? "Rent" :
+                "Common"));
         CreateMap<WorkPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<RentPost, PostDto>().IncludeBase<Post, PostDto>();
         CreateMap<CommonPost, PostDto>().IncludeBase<Post, PostDto>();
@@ -42,7 +46,9 @@ public class AutoMapperProfiler : Profile
             .ForMember(x => x.PostType, opt => opt.MapFrom(x =>
                 x is WorkPost ? "Work" :
                 x is RentPost ? "Rent" :
-                "Common"));
+                "Common"))
+            .ForMember(x => x.CreatedAt, opt => opt.MapFrom(y => y.CreatedAt))
+            .ForMember(x => x.OwnerName, opt => opt.MapFrom(x => $"{x.Owner.FirstName} {x.Owner.LastName}"));
         CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
@@ -51,7 +57,10 @@ public class AutoMapperProfiler : Profile
             .ForMember(x => x.SubCategory, opt => opt.MapFrom(x => x.SubCategory));
 
         CreateMap<PostPreviewDto, Post>();
-        CreateMap<PostImage, PostImageDto>();
+        CreateMap<PostImage, PostImageDto>()
+            .ForMember(x=>x.ImageUrl, opt => opt.MapFrom(x=>x.ImageUrl))
+            .ForMember(x=>x.Id, opt=>opt.MapFrom(x=>x.Id));
+        CreateMap<PostImageDto, PostImage>();
         CreateMap<Promotion, PromotionDto>();
         CreateMap<PostOpinion, PostOpinionDto>();
         CreateMap<CreatePostDto, Post>();
@@ -63,8 +72,12 @@ public class AutoMapperProfiler : Profile
         CreateMap<ReportPost, ReportDto>().ForMember(x => x.SubjectId, opt => opt.MapFrom(x => x.ReportedPostId))
             .ForMember(x => x.CreatedAt, opt => opt.MapFrom(x => x.CreatedAt));
 
-        CreateMap<SubCategory, SubCategoryDto>();
-        CreateMap<SubCategoryDto, SubCategory>();
+        CreateMap<SubCategory, SubCategoryDto>()
+            .ForMember(x=>x.NameEN, opt => opt.MapFrom(y=>y.TitleEN))
+            .ForMember(x=>x.NamePL, opt => opt.MapFrom(y=>y.TitlePL));
+        CreateMap<SubCategoryDto, SubCategory>()
+            .ForMember(x=>x.TitleEN, opt => opt.MapFrom(y=>y.NameEN))
+            .ForMember(x=>x.TitlePL, opt => opt.MapFrom(y=> y.NamePL));
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.token, opt => opt.Ignore());
         CreateMap<UserSettings, UserSettingsDto>();

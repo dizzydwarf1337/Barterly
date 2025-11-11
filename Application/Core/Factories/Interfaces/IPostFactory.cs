@@ -14,6 +14,7 @@ public interface IPostFactory
         string fullDescription,
         string shortDescription,
         CancellationToken token,
+        PostCurrency currency,
         string? city = null,
         string? region = null,
         string? country = null,

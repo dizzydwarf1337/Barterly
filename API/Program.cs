@@ -7,6 +7,7 @@ using API.Core.ServicesConfiguration.Commands;
 using API.Core.ServicesConfiguration.Infrastructure;
 using API.Core.ServicesConfiguration.Queries;
 using API.Core.ServicesConfiguration.Services;
+using Application.Hub;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Seed;
 
@@ -48,6 +49,7 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 app.UseStaticFiles();
 
 

@@ -22,7 +22,9 @@ public class ExceptionHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        _logger.LogWarning("Entering exception handling behavior for request type {0}", typeof(TRequest).Name);
+        _logger.LogWarning("Entering exception handling behavior for request type {0}", typeof(TRequest));
+        
+        _logger.LogWarning("TResponse{0}", typeof(TResponse));
 
         try
         {

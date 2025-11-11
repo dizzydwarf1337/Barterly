@@ -69,9 +69,6 @@ public class TokenService : ITokenService
         var result = false;
         switch (tokenType)
         {
-            case TokenType.Auth:
-                result = await _userManager.VerifyUserTokenAsync(user, "App", " ", token);
-                break;
             case TokenType.EmailConfirmation:
                 result = await _userManager.VerifyUserTokenAsync(user, "App", "EmailConfirmation", token);
                 break;
@@ -87,11 +84,10 @@ public class TokenService : ITokenService
 
     public async Task<string> GetLoginToken(Guid userId, CancellationToken cancToken)
     {
-        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId) ??
+        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId, cancToken) ??
                    throw new EntityNotFoundException("User");
 
-        var token = await _userManager.GetAuthenticationTokenAsync(user, "App", "JWT");
-        if (string.IsNullOrEmpty(token)) token = await GenerateAuthToken(userId, cancToken);
+        var token= await GenerateAuthToken(userId, cancToken);
         return token;
     }
 
@@ -104,7 +100,7 @@ public class TokenService : ITokenService
             _issuer,
             _audience,
             claims,
-            expires: DateTime.UtcNow.AddDays(4),
+            expires: DateTime.UtcNow.AddHours(3),
             signingCredentials: credentials
         );
 
@@ -124,7 +120,6 @@ public class TokenService : ITokenService
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var token = CreateJwtToken(userId, claims);
-        await _userManager.SetAuthenticationTokenAsync(user, "App", "JWT", token);
         await _logService.CreateLogAsync("Generated auth token", cancellationToken, LogType.Information, null,
             Guid.Empty, userId);
         return token;

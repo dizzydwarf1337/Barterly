@@ -1,13 +1,14 @@
-﻿using Application.Core.ApiResponse;
+﻿using System.Text.Json.Serialization;
 using Domain.Enums.Users;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Core.MediatR.Requests;
 
-public class AuthorizedRequest<T> : IRequest<ApiResponse<T>>
+public class AuthorizedRequest<T> : IRequest<T>
 {
-    public AuthorizeData AuthorizeData { get; set; } = default!;
+    [JsonIgnore]
+    public AuthorizeData? AuthorizeData { get; set; } = default!;
 }
 
 public class AuthorizeData

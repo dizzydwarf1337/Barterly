@@ -1,6 +1,8 @@
 ﻿using Domain.Interfaces.Queries.Post;
+using Domain.Interfaces.Queries.User;
 using Persistence.Repositories.Queries.Post;
 using Persistence.Repositories.Queries.Posts;
+using Persistence.Repositories.Queries.Users;
 
 namespace API.Core.ServicesConfiguration.Queries;
 
@@ -15,7 +17,7 @@ public static class PostQueriesConfig
         services.AddScoped<IPostImageQueryRepository, PostImageQueryRepository>();
         services.AddScoped<IPromotionQueryRepository, PromotionQueryRepository>();
         services.AddScoped<IPostSettingsQueryRepository, PostSettingsQueryRepository>();
-
+        services.AddScoped<IUserFavPostQueryRepository, UserFavPostQueryRepository>();
         return services;
     }
 }

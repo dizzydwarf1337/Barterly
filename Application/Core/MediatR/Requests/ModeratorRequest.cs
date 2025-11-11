@@ -1,5 +1,7 @@
-﻿namespace Application.Core.MediatR.Requests;
+﻿using Application.Core.ApiResponse;
 
-public class ModeratorRequest<T> : AuthorizedRequest<T>
+namespace Application.Core.MediatR.Requests;
+
+public class ModeratorRequest<T> : AuthorizedRequest<ApiResponse<T>>
 {
 }

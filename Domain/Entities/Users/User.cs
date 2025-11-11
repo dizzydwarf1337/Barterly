@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Entities.Chat;
 using Domain.Entities.Common;
 using Domain.Entities.Posts;
 using Microsoft.AspNetCore.Identity;
@@ -35,7 +36,9 @@ public class User : IdentityUser<Guid>
 
     [ForeignKey("UserSettingId")] public virtual UserSettings? Setting { get; set; }
 
-    public virtual ICollection<UserChat>? UserChats { get; set; }
+    public virtual ICollection<Chat.Chat>? UserChats { get; set; }
+    public virtual ICollection<Message> MessagesSent { get; set; }
+    public virtual ICollection<Message> MessagesReceived { get; set; }
     public virtual ICollection<UserFavouritePost>? FavouritePosts { get; set; }
     public virtual ICollection<FavouriteCategory>? FavouriteCategories { get; set; }
     public virtual ICollection<VisitedPost>? VisitedPosts { get; set; }

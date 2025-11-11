@@ -1,67 +1,41 @@
-import {Box, ThemeProvider} from '@mui/material'
-import './index.css'
-import {useEffect} from 'react';
-import {Outlet} from 'react-router';
-import { observer } from 'mobx-react-lite';
-import useStore from './app/stores/store';
-import NavBar from './app/layout/navBar';
-import Footer from './app/layout/footer';
-import CustromSnackbar from './app/layout/CustromSnackbar';
+import { Box, ThemeProvider } from "@mui/material";
+import "./index.css";
+import { useEffect } from "react";
+import { Outlet } from "react-router";
+import { observer } from "mobx-react-lite";
+import useStore from "./app/stores/store";
+import CustromSnackbar from "./app/layout/CustromSnackbar";
 
 export default observer(function App() {
-    const {uiStore} = useStore();
-    const theme = uiStore.getTheme();
-    useEffect(() => {
-        document.body.style.backgroundColor = theme.palette.background.default;
-    }, [theme]);
+  const { uiStore } = useStore();
+  const theme = uiStore.getTheme();
 
+  useEffect(() => {
+    document.body.style.backgroundColor = theme.palette.background.default;
+  }, [theme]);
 
-    return (
-        <ThemeProvider theme={theme}>
-            <Box display="flex" flexDirection="column" width="100%" height="100%" justifyContent="space-between">
-                <NavBar/>
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    minHeight="100vh"
-                    width="99vw"
-                    mt={uiStore.isMobile ? "50px" : "20px"}
-                >
-                    <Box
-                        flex="1"
-                        display="flex"
-                        flexDirection="column"
-                        m="10px"
-                        p={uiStore.isMobile ? "10px" : "36px"}
-                        overflow="hidden"
-                    >
-                        <Outlet/>
-                    </Box>
+  return (
+    <ThemeProvider theme={theme}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        width="99vw"
+        minHeight="99vh"
+        sx={{
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <Outlet />
 
-                    <Box
-                        sx={{
-                            backgroundColor: 'black',
-                            color: 'white',
-                            mt: "20px",
-                            position: 'relative',
-                            width: "100%"
-
-                        }}
-                    >
-                        <Footer/>
-                    </Box>
-
-                    <CustromSnackbar
-                        message={uiStore.snackbarMessage}
-                        severity={uiStore.snackbarSeverity}
-                        open={uiStore.snackbarOpen}
-                        side={uiStore.snackbarPosition}
-                        onClose={() => uiStore.closeSnackbar()}
-                    />
-                </Box>
-            </Box>
-        </ThemeProvider>
-    )
-})
-
-
+        <CustromSnackbar
+          message={uiStore.snackbarMessage}
+          severity={uiStore.snackbarSeverity}
+          open={uiStore.snackbarOpen}
+          side={uiStore.snackbarPosition}
+          onClose={() => uiStore.closeSnackbar()}
+        />
+      </Box>
+    </ThemeProvider>
+  );
+});

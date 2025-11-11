@@ -1,6 +1,8 @@
-﻿using Domain.Interfaces.Commands.General;
+﻿using Domain.Interfaces.Commands.Chat;
+using Domain.Interfaces.Commands.General;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Commands.User;
+using Persistence.Repositories.Commands.Chat;
 using Persistence.Repositories.Commands.General;
 using Persistence.Repositories.Commands.Post;
 using Persistence.Repositories.Commands.Users;
@@ -15,6 +17,8 @@ public static class GeneralCommandsConfig
         services.AddScoped<ICategoryCommandRepository, CategoryCommandRepository>();
         services.AddScoped<IGlobalNotificationCommandRepository, GlobalNotificationCommandRepository>();
         services.AddScoped<INotificationCommandRepository, NotificationCommandRepository>();
+        services.AddScoped<IChatCommandRepository, ChatCommandRepository>();
+        services.AddScoped<IMessageCommandRepository, MessageCommandRepository>();
         return services;
     }
 }

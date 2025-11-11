@@ -36,8 +36,8 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, ApiRe
     {
         var post = _mapper.Map<Post>(request.Post);
         await _postCommandRepository.UpdatePostAsync(post, cancellationToken);
-        await _postSettingsCommandRepository.UpdatePostSettings(post.Id, true, false, PostStatusType.ReSubmitted,
-            "", cancellationToken);
+        await _postSettingsCommandRepository.UpdatePostSettings(post.Id, cancellationToken, true, false, PostStatusType.ReSubmitted,
+            "");
         await _mediator.Publish(new PostUpdatedEvent { PostId = post.Id, UserId = post.OwnerId });
         await _logService.CreateLogAsync($"Post updated title: {post.Title}", cancellationToken,
             LogType.Information, postId: post.Id, userId: post.OwnerId);

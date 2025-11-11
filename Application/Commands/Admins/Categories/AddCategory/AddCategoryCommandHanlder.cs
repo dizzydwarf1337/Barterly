@@ -24,10 +24,26 @@ public class AddCategoryCommandHanlder : IRequestHandler<AddCategoryCommand, Api
 
     public async Task<ApiResponse<Unit>> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
     {
-        var categoryToAdd = _mapper.Map<Category>(request);
+        var categoryToAdd = new Category()
+        {
+            NameEN = request.NameEN,
+            NamePL = request.NamePL,
+            Description = request.Description
+        };
 
         categoryToAdd = AddDefaultSubCategory(categoryToAdd);
-
+        if (request.SubCategories.Count > 0)
+        {
+            foreach (var x in request.SubCategories)
+            {
+                categoryToAdd.SubCategories.Add(new SubCategory
+                {
+                    CategoryId = categoryToAdd.Id,
+                    TitleEN = x.NameEn,
+                    TitlePL = x.NamePl
+                });
+            }
+        }
         await SaveCategory(categoryToAdd, cancellationToken);
 
         return ApiResponse<Unit>.Success(Unit.Value, 201);
@@ -37,7 +53,6 @@ public class AddCategoryCommandHanlder : IRequestHandler<AddCategoryCommand, Api
     {
         var subCategory = new SubCategory
         {
-            Id = new Guid(),
             CategoryId = category.Id,
             TitleEN = "All",
             TitlePL = "Wszystkie"

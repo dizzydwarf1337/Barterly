@@ -2,11 +2,12 @@
 using Application.DTOs.Posts;
 using Application.Interfaces.CommandInterfaces;
 using Domain.Enums.Posts;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Commands.Users.Posts.CreatePost;
 
-public class CreatePostCommand : UserRequest<PostDto>, IHasOwner
+public class CreatePostCommand : UserRequest<Unit>
 {
     public Guid SubCategoryId { get; set; }
     public string PostType { get; set; }
@@ -28,9 +29,9 @@ public class CreatePostCommand : UserRequest<PostDto>, IHasOwner
     public int? Floor { get; set; }
     public WorkloadType? Workload { get; set; }
     public WorkLocationType? WorkLocation { get; set; }
+    public PostCurrency Currency { get; set; }
     public decimal? MinSalary { get; set; }
     public decimal? MaxSalary { get; set; }
     public string? BuildingNumber { get; set; }
     public bool? ExperienceRequired { get; set; }
-    public Guid OwnerId { get; set; }
 }

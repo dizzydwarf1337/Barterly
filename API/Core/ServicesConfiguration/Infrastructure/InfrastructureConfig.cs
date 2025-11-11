@@ -4,7 +4,9 @@ using Application.Core.Factories.OpinionFactory;
 using Application.Core.Factories.PostFactory;
 using Application.Core.Factories.ReportFactory;
 using Application.Core.Factories.UserFactory;
+using Application.Core.Hub;
 using Application.Core.Mapper;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Core.ServicesConfiguration.Infrastructure;
 
@@ -23,10 +25,11 @@ public static class InfrastructureConfig
             cfg.AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
             cfg.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            cfg.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             cfg.AddOpenBehavior(typeof(MessagesValidationBehavior<,>));
 
         });
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
+        services.AddSignalR();
         return services;
     }
 }

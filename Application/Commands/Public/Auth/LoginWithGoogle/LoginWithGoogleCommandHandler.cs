@@ -1,5 +1,6 @@
 ﻿using Application.Core.ApiResponse;
 using Application.Interfaces;
+using Domain.Interfaces.Queries.User;
 using MediatR;
 
 namespace Application.Commands.Public.Auth.LoginWithGoogle;
@@ -10,11 +11,17 @@ public class
 {
     private readonly IAuthService _authService;
     private readonly IMailService _mailService;
+    private readonly IUserFavPostQueryRepository _favPostQueryRepository;
+    private readonly INotificationQueryRepository _notificationQueryRepository;
 
-    public LoginWithGoogleCommandHandler(IAuthService authService, IMailService mailService)
+    public LoginWithGoogleCommandHandler(IAuthService authService, IMailService mailService,
+        IUserFavPostQueryRepository favPostQueryRepository,
+        INotificationQueryRepository notificationQueryRepository)
     {
         _authService = authService;
         _mailService = mailService;
+        _favPostQueryRepository = favPostQueryRepository;
+        _notificationQueryRepository = notificationQueryRepository;
     }
 
     public async Task<ApiResponse<LoginWithGoogleCommand.Result>> Handle(LoginWithGoogleCommand request,
@@ -48,6 +55,8 @@ public class
                 </body>"
             );
 
+        var favPostsCount = (await _favPostQueryRepository.GetUserFavPostsByUserIdAsync(Guid.Parse(loginResponse.UserDto.Id), cancellationToken)).Count;
+        var notificationCount = (await _notificationQueryRepository.GetNotificationsByUserIdAsync(Guid.Parse(loginResponse.UserDto.Id),cancellationToken)).Count();
         return ApiResponse<LoginWithGoogleCommand.Result>.Success(
             new LoginWithGoogleCommand.Result
             {
@@ -57,7 +66,9 @@ public class
                 Id = loginResponse.UserDto.Id,
                 ProfilePicturePath = loginResponse.UserDto.ProfilePicturePath,
                 Role = loginResponse.UserDto.Role,
-                token = loginResponse.UserDto.token
+                token = loginResponse.UserDto.token,
+                FavPostsCount = favPostsCount,
+                NotificationCount = notificationCount,
             });
     }
 }
