@@ -18,10 +18,15 @@ export default class MessageStore {
     chatHub.setHandler("ProposeAccepted", this.handleAccept);
     chatHub.setHandler("ProposeRejected", this.handleReject);
     chatHub.setHandler("ReadMessage", this.handleRead);
+    chatHub.setHandler("ProposePaid", this.handlePaid);
   }
 
   private getChat(chatId: string) {
     return this.chats.find(c => c.id === chatId);
+  }
+  
+  private sortMessages(messages: Message[]): Message[] {
+    return messages.sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime());
   }
 
   setSelectedUserForChat = (userId: string, currentUserId: string) => {
@@ -60,6 +65,7 @@ export default class MessageStore {
         const existingMessage = chat.messages.find(m => m.id === msg.messageId);
         if (!existingMessage) {
           chat.messages.push(this.createMessage(msg, MessageType.Common));
+          chat.messages = this.sortMessages(chat.messages);
         }
       } else {
         console.warn("Chat not found for message:", msg.chatId);
@@ -80,6 +86,7 @@ export default class MessageStore {
         const existingMessage = chat.messages.find(m => m.id === msg.messageId);
         if (!existingMessage) {
           chat.messages.push(this.createMessage(msg, MessageType.Proposal));
+          chat.messages = this.sortMessages(chat.messages);
         }
       } else {
         console.warn("Chat not found for proposal:", msg.chatId);
@@ -109,6 +116,19 @@ export default class MessageStore {
       const chat = this.getChat(msg.chatId);
       const message = chat?.messages.find(m => m.id === msg.messageId);
       if (message) message.isAccepted = false;
+    });
+  };
+  
+  handlePaid = (msg: { messageId: string; chatId: string }) => {
+    console.log("Payment confirmed:", msg);
+    runInAction(() => {
+      if (!msg.chatId) return;
+      
+      const chat = this.getChat(msg.chatId);
+      const message = chat?.messages.find(m => m.id === msg.messageId);
+      if (message) {
+        message.isPaid = true;
+      }
     });
   };
 
@@ -142,6 +162,7 @@ export default class MessageStore {
       readBy: null,
       price: "price" in msg ? msg.price : null,
       isAccepted: null,
+      isPaid: false,  
       postId: msg.postId
     };
   }
@@ -191,6 +212,15 @@ export default class MessageStore {
       await this.chatHub.rejectProposal(reject);
     } catch (error) {
       console.error("Failed to reject proposal:", error);
+      throw error;
+    }
+  };
+
+  payProposal = async (messageId: string, chatId: string) => {
+    try {
+      await this.chatHub.payProposal({ messageId, chatId });
+    } catch (error) {
+      console.error("Failed to pay proposal:", error);
       throw error;
     }
   };

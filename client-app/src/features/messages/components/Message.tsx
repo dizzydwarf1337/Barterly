@@ -1,12 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useTranslation } from "react-i18next";
-import { Box, Paper, Typography, Button, Chip } from "@mui/material";
+import { 
+  Box, 
+  Paper, 
+  Typography, 
+  Button, 
+  Chip, 
+  Card,
+  CardContent,
+  CircularProgress,
+  alpha
+} from "@mui/material";
 import {
   Done as DoneIcon,
   DoneAll as DoneAllIcon,
   Check as CheckIcon,
   Close as CloseIcon,
+  Payment as PaymentIcon,
+  HourglassEmpty as PendingIcon,
 } from "@mui/icons-material";
 import {
   Message as MessageType,
@@ -18,18 +30,23 @@ import {
   RejectProposal,
 } from "../../../app/signalR/HubTypes";
 import useStore from "../../../app/stores/store";
+import PostSmallItem from "../../posts/components/PostSmallItem";
+import userApi from "../../users/api/userApi";
+import { PostPreview } from "../../posts/types/postTypes";
 
 interface MessageProps {
   message: MessageType;
 }
 
 const Message = observer(({ message }: MessageProps) => {
-  const { authStore, messageStore } = useStore();
+  const { authStore, messageStore, uiStore } = useStore();
   const { t } = useTranslation();
   const isOwnMessage = message.senderId === authStore.user?.id;
+  const [post, setPost] = useState<PostPreview | null>(null);
+  const [loadingPost, setLoadingPost] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
-    // Mark message as read when it comes into view
     if (!isOwnMessage && !message.isRead && authStore.user) {
       const readMessage: ReadMessage = {
         messageId: message.id,
@@ -40,6 +57,33 @@ const Message = observer(({ message }: MessageProps) => {
       messageStore.markAsRead(readMessage);
     }
   }, []);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      if (message.type === MsgType.Proposal && message.postId) {
+        setLoadingPost(true);
+        try {
+          const ownerId = isOwnMessage ? message.receiverId : message.senderId;
+          const ownerResponse = await userApi.getPostOwner({ id: ownerId });
+          
+          if (ownerResponse.isSuccess && ownerResponse.value?.posts) {
+            const foundPost = ownerResponse.value.posts.find(
+              (p: PostPreview) => p.id === message.postId
+            );
+            if (foundPost) {
+              setPost(foundPost);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load post:", error);
+        } finally {
+          setLoadingPost(false);
+        }
+      }
+    };
+
+    loadPost();
+  }, [message.postId, message.type]);
 
   const handleAcceptProposal = async () => {
     if (!authStore.user) return;
@@ -52,8 +96,10 @@ const Message = observer(({ message }: MessageProps) => {
         chatId: message.chatId,
       };
       await messageStore.acceptProposal(accept);
+      uiStore.showSnackbar(t("chat.proposalAcceptedSuccess"), "success");
     } catch (error) {
       console.error("Failed to accept proposal:", error);
+      uiStore.showSnackbar(t("chat.failedToAcceptProposal"), "error");
     }
   };
 
@@ -68,8 +114,27 @@ const Message = observer(({ message }: MessageProps) => {
         chatId: message.chatId,
       };
       await messageStore.rejectProposal(reject);
+      uiStore.showSnackbar(t("chat.proposalRejectedSuccess"), "success");
     } catch (error) {
       console.error("Failed to reject proposal:", error);
+      uiStore.showSnackbar(t("chat.failedToRejectProposal"), "error");
+    }
+  };
+
+  const handlePayProposal = async () => {
+    if (!authStore.user) return;
+
+    setPaying(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      await messageStore.payProposal(message.id, message.chatId);
+      uiStore.showSnackbar(t("chat.paymentSuccess"), "success");
+    } catch (error) {
+      console.error("Failed to pay proposal:", error);
+      uiStore.showSnackbar(t("chat.failedToPayProposal"), "error");
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -90,12 +155,24 @@ const Message = observer(({ message }: MessageProps) => {
   const renderProposalActions = () => {
     if (message.type !== MsgType.Proposal || isOwnMessage) return null;
 
-    if (message.isAccepted === true) {
+    if (message.isPaid) {
       return (
         <Chip
           icon={<CheckIcon />}
-          label={t("chat.proposalAccepted")}
+          label={t("chat.paid")}
           color="success"
+          size="small"
+          sx={{ mt: 1 }}
+        />
+      );
+    }
+
+    if (message.isAccepted === true) {
+      return (
+        <Chip
+          icon={<PendingIcon />}
+          label={t("chat.pendingPayment")}
+          color="warning"
           size="small"
           sx={{ mt: 1 }}
         />
@@ -141,15 +218,31 @@ const Message = observer(({ message }: MessageProps) => {
   const renderProposalStatus = () => {
     if (message.type !== MsgType.Proposal || !isOwnMessage) return null;
 
-    if (message.isAccepted === true) {
+    if (message.isPaid) {
       return (
         <Chip
           icon={<CheckIcon />}
-          label={t("chat.proposalAccepted")}
+          label={t("chat.paid")}
           color="success"
           size="small"
           sx={{ mt: 1 }}
         />
+      );
+    }
+
+    if (message.isAccepted === true) {
+      return (
+        <Button
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={handlePayProposal}
+          disabled={paying}
+          startIcon={paying ? <CircularProgress size={16} /> : <PaymentIcon />}
+          sx={{ mt: 1 }}
+        >
+          {paying ? t("chat.processing") : t("chat.pay")}
+        </Button>
       );
     }
 
@@ -202,6 +295,26 @@ const Message = observer(({ message }: MessageProps) => {
             <Typography variant="h6" sx={{ mt: 0.5 }}>
               ${message.price}
             </Typography>
+            
+            {loadingPost && (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+            
+            {post && (
+              <Card 
+                sx={{ 
+                  mt: 1, 
+                  bgcolor: alpha(isOwnMessage ? "#fff" : "background.default", 0.7),
+                  cursor: "default"
+                }}
+              >
+                <CardContent sx={{ p: 1, "&:last-child": { pb: 1 } }}>
+                  <PostSmallItem post={post} />
+                </CardContent>
+              </Card>
+            )}
           </Box>
         )}
 
