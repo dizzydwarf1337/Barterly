@@ -1,4 +1,3 @@
-
 export interface Chat {
     id: string;
     createdAt: string;
@@ -21,6 +20,7 @@ export interface Message {
     acceptedAt: string | null;
     price: number | null;
     isAccepted: boolean | null;
+    isPaid: boolean | null; 
     postId: string | null;
 }
 

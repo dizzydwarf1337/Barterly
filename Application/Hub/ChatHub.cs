@@ -1,4 +1,5 @@
 using Application.Commands.Chat.AcceptPropose;
+using Application.Commands.Chat.PayPropose;
 using Application.Commands.Chat.ReadMessage;
 using Application.Commands.Chat.RejectPropose;
 using Application.Commands.Chat.SendMessage;
@@ -45,7 +46,7 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
             Content: savedMessage.Content,
             ChatId: savedMessage.ChatId,
             PostId: savedMessage.PostId,
-            MessageId: savedMessage.Id 
+            MessageId: savedMessage.Id
         );
         
         await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
@@ -65,8 +66,8 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
             Content: savedMessage.Content,
             Price: savedMessage.Price ?? 0,
             PostId: savedMessage.PostId,
-            ChatId: savedMessage.ChatId, 
-            MessageId: savedMessage.Id   
+            ChatId: savedMessage.ChatId,
+            MessageId: savedMessage.Id
         );
         
         await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
@@ -91,6 +92,17 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
         });
         await Clients.Users(reject.ReceiverId.ToString(), reject.SenderId.ToString())
             .SendAsync("ProposeRejected", reject);
+    }
+    
+    public async Task PayPropose(HubDto.PayProposal payment)
+    {
+        await _mediator.Send(new PayProposeCommand
+        {
+            MessageId = payment.MessageId
+        });
+        
+        await Clients.Group(payment.ChatId.ToString())
+            .SendAsync("ProposePaid", new { messageId = payment.MessageId, chatId = payment.ChatId });
     }
 
     public async Task ReadMessage(HubDto.ReadMessage message)

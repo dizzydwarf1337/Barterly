@@ -10,6 +10,7 @@ export class ChatHub {
     ProposeAccepted: (_: AcceptProposal) => {},
     ProposeRejected: (_: RejectProposal) => {},
     ReadMessage: (_: ReadMessage) => {},
+    ProposePaid: (_: { messageId: string; chatId: string }) => {}, 
   };
 
   setHandler<T extends keyof typeof this.handlers>(
@@ -72,6 +73,11 @@ export class ChatHub {
   rejectProposal(msg: RejectProposal) {
     console.log("Rejecting proposal:", msg);
     return this.invoke("RejectPropose", msg);
+  }
+
+  payProposal(msg: { messageId: string; chatId: string }) {
+    console.log("Paying proposal:", msg);
+    return this.invoke("PayPropose", msg);
   }
 
   readMessage(msg: ReadMessage) {
