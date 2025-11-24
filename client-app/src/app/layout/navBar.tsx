@@ -202,9 +202,15 @@ export default observer(function NavBar() {
             </IconButton>
           </Tooltip>
 
-          <UserInfo>
+          <UserInfo onClick={() => navigate('/profile')} sx={{
+            '&:hover':{
+              cursor:"pointer"
+            }
+          }}>
             <Avatar
-              src={authStore.user?.profilePicturePath ?? undefined}
+              src={authStore.user?.profilePicturePath ?
+                 `${import.meta.env.VITE_API_URL}/${authStore.user?.profilePicturePath}`
+                  : undefined}
               sx={{
                 width: 32,
                 height: 32,

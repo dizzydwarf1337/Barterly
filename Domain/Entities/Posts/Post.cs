@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Entities.Categories;
+using Domain.Entities.Orders;
 using Domain.Entities.Users;
 using Domain.Enums.Posts;
 
@@ -54,6 +55,8 @@ public class Post
     public virtual ICollection<PostOpinion>? PostOpinions { get; set; } = new List<PostOpinion>();
     public virtual ICollection<ReportPost>? PostReports { get; set; } = new List<ReportPost>();
     public virtual ICollection<VisitedPost>? VisitedPosts { get; set; } = new List<VisitedPost>();
+    
+    public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
 
     public override bool Equals(object? obj)
     {

@@ -5,7 +5,7 @@ using Application.Queries.Admins.Categories.GetAllCategories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace API.Controllers.Admins;
 
 [Route("admin/categories")]
 [Authorize(Policy = "Admin")]

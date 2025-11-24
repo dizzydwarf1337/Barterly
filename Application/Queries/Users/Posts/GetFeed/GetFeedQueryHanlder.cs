@@ -21,7 +21,7 @@ public class GetFeedQueryHanlder : IRequestHandler<GetFeedQuery, ApiResponse<ICo
         CancellationToken cancellationToken)
     {
         var posts = _postQueryRepository.GetAllPosts();
-        posts = posts.OrderByDescending(x => x.VisitedPosts.Count).OrderByDescending(x => x.ViewsCount);
+        posts = posts.OrderByDescending(x => x.ViewsCount).Take(5);
         return ApiResponse<ICollection<PostPreviewDto>>.Success(_mapper.Map<List<PostPreviewDto>>(await posts.ToListAsync(cancellationToken)));
     }
 }

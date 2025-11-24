@@ -1,21 +1,33 @@
-import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
-import { AcceptProposal, CommonMessage, ProposalMessage, ReadMessage, RejectProposal } from "./HubTypes";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from "@microsoft/signalr";
+import {
+  AcceptProposal,
+  CommonMessage,
+  ProposalMessage,
+  ReadMessage,
+  RejectProposal,
+} from "./HubTypes";
 
 export class ChatHub {
   private connection: HubConnection | null = null;
 
   private handlers = {
     ReceiveMessage: (_: CommonMessage) => {},
-    ReceiveProposal: (_: ProposalMessage) => {},
+    ReceivePropose: (_: ProposalMessage) => {},
     ProposeAccepted: (_: AcceptProposal) => {},
     ProposeRejected: (_: RejectProposal) => {},
     ReadMessage: (_: ReadMessage) => {},
-    ProposePaid: (_: { messageId: string; chatId: string }) => {}, 
+    ProposePaid: (_: { messageId: string; chatId: string }) => {},
+    OrderExistsError: () => {},
   };
 
   setHandler<T extends keyof typeof this.handlers>(
     event: T,
-    handler: typeof this.handlers[T]
+    handler: (typeof this.handlers)[T]
   ) {
     this.handlers[event] = handler;
     if (this.connection) {

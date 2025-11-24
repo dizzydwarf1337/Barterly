@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import postApi from "../api/postApi";
 import { SearchFilters } from "../dto/postDto";
+import userPostApi from "../api/userPostApi";
 
 const SearchPostsPage = () => {
     const { t } = useTranslation();
@@ -23,7 +24,7 @@ const SearchPostsPage = () => {
         const fetchPosts = async () => {
             try {
                 setIsLoading(true);
-                const response = await postApi.getPosts({
+                const response = await userPostApi.getPosts({
                     filterBy: {
                         pageNumber: page,
                         pageSize: pageSize,

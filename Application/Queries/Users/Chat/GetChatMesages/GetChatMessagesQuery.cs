@@ -6,6 +6,9 @@ namespace Application.Queries.Users.Chat.GetChatMesages;
 public class GetChatMessagesQuery : UserRequest<GetChatMessagesQuery.Result>
 {
     public Guid ChatId { get; set; }
+    
+    public DateTime? LastSentAt { get; set; }
+    
     public int Page { get; set; }
     public int PageSize { get; set; }
     
@@ -29,5 +32,6 @@ public class GetChatMessagesQuery : UserRequest<GetChatMessagesQuery.Result>
         DateTime? AcceptedAt,
         decimal? Price,
         bool? IsAccepted,
+        bool? IsPaid, 
         Guid? PostId);
 }

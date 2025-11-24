@@ -84,7 +84,7 @@ const ChatDashboard = observer(({ onChatSelect }: ChatDashboardProps) => {
           p: 3,
         }}
       >
-        <Typography color="text.secondary">{t("chat.noChats")}</Typography>
+        <Typography color="text.secondary">{t("chat:noChats")}</Typography>
       </Box>
     );
   }
@@ -106,7 +106,7 @@ const ChatDashboard = observer(({ onChatSelect }: ChatDashboardProps) => {
                     color="primary"
                     overlap="circular"
                   >
-                    <Avatar src={otherUser.imagePath || undefined}>
+                    <Avatar src={otherUser.imagePath ? `${import.meta.env.VITE_API_URL}/${otherUser.imagePath}` :  undefined}>
                       {(!otherUser.imagePath && otherUser.firstName?.charAt(0).toUpperCase())}
                     </Avatar>
                   </Badge>
@@ -130,7 +130,7 @@ const ChatDashboard = observer(({ onChatSelect }: ChatDashboardProps) => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {lastMessage?.content || t("chat.noMessages")}
+                      {lastMessage?.content || t("chat:noMessages")}
                     </Typography>
                   }
                 />

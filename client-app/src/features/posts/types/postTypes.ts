@@ -64,6 +64,7 @@ export enum WorkLocationType {
 export interface PostPreview {
     id: string;
     subCategoryId: string;
+    isHidden: boolean;
     ownerId: string;
     title: string;
     city: string | null;

@@ -131,7 +131,6 @@ const LoginPage: React.FC = observer(() => {
     setError(errorMessage);
   };
 
-  // Google login hook
   const googleLogin = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       setLoading(true);
@@ -142,7 +141,6 @@ const LoginPage: React.FC = observer(() => {
         };
 
         const response = await authApi.loginWithGoogle(googleLoginData);
-
         if (response.isSuccess) {
           authStore.loginWithGoogle(response.value.token);
           setSuccess(t("auth.googleLoginSuccess"));

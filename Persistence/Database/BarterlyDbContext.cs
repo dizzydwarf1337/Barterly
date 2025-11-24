@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.Categories;
 using Domain.Entities.Chat;
 using Domain.Entities.Common;
+using Domain.Entities.Orders;
 using Domain.Entities.Posts;
 using Domain.Entities.Posts.PostTypes;
 using Domain.Entities.Users;
@@ -41,6 +42,7 @@ public class BarterlyDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gui
     public DbSet<GlobalNotification> GlobalNotifications { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Chat> Chats { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -94,6 +96,18 @@ public class BarterlyDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gui
             .HasMany(x => x.Messages)
             .WithOne(x => x.Chat)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Order>()
+            .HasOne(x => x.Customer)
+            .WithMany(x => x.MyOrders)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Order>()
+            .HasOne(x => x.Seller)
+            .WithMany(x => x.PlacedOrders)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Order>()
+            .HasOne(x => x.Post)
+            .WithMany(x => x.Orders)
+            .OnDelete(DeleteBehavior.Restrict);
         base.OnModelCreating(modelBuilder);
     }
 }

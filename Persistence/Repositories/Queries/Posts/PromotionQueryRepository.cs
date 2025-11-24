@@ -12,6 +12,11 @@ public class PromotionQueryRepository : BaseQueryRepository<BarterlyDbContext>, 
     {
     }
 
+    public IQueryable<Promotion> GetPromotions()
+    {
+        return _context.Promotions.AsQueryable();
+    }
+    
     public async Task<Promotion> GetPromotionByIdAsync(Guid id, CancellationToken token)
     {
         return await _context.Promotions.FindAsync(id, token) ??

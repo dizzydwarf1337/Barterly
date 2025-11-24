@@ -22,37 +22,45 @@ public class GetChatMessagesQueryHandler : IRequestHandler<GetChatMessagesQuery,
     {
         var chat = await _chatQueryRepository.GetChats().FirstOrDefaultAsync(x =>
             x.Id == request.ChatId &&
-            (x.User1 == request.AuthorizeData.UserId || x.User2 == request.AuthorizeData.UserId), cancellationToken);
+            (x.User1 == request.AuthorizeData!.UserId || x.User2 == request.AuthorizeData.UserId), cancellationToken);
         
         if(chat is null)
             return ApiResponse<GetChatMessagesQuery.Result>.Failure("Chat not found", 404);
         
         var messages = _messageQueryRepository.GetMessages().Where(x => x.ChatId == chat.Id);
+        
+        if (request.LastSentAt != null)
+        {
+            messages = messages.Where(x => x.SentAt < request.LastSentAt);
+        }
+
         var messagesCount = await messages.CountAsync(cancellationToken);
+        var messagesItems = await messages
+            .OrderByDescending(x => x.SentAt)
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .Select(x =>
+                new GetChatMessagesQuery.Message(
+                    x.Id,
+                    x.ChatId,
+                    x.Content,
+                    x.Type,
+                    x.SenderId,
+                    x.ReceiverId,
+                    x.ReadBy,
+                    x.SentAt,
+                    x.ReadAt,
+                    x.AcceptedAt,
+                    x.Price,
+                    x.IsAccepted,
+                    x.IsPaid,
+                    x.PostId
+                )
+            )
+            .ToListAsync(cancellationToken);
         return ApiResponse<GetChatMessagesQuery.Result>.Success(new GetChatMessagesQuery.Result()
         {
-            Items = await messages
-                .OrderBy(x => x.SentAt)
-                .Skip((request.Page - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => 
-                    new GetChatMessagesQuery.Message(
-                        x.Id,
-                        x.ChatId,
-                        x.Content,
-                        x.Type,
-                        x.SenderId,
-                        x.ReceiverId,
-                        x.ReadBy,
-                        x.SentAt,
-                        x.ReadAt,
-                        x.AcceptedAt,
-                        x.Price,
-                        x.IsAccepted,
-                        x.PostId
-                    )
-                )
-                .ToListAsync(cancellationToken),
+            Items = messagesItems.OrderBy(x => x.SentAt).ToList(),
             TotalCount = messagesCount,
             TotalPages = (int)Math.Ceiling((double)messagesCount / request.PageSize)
         });

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Entities.Chat;
 using Domain.Entities.Common;
+using Domain.Entities.Orders;
 using Domain.Entities.Posts;
 using Microsoft.AspNetCore.Identity;
 
@@ -51,4 +52,6 @@ public class User : IdentityUser<Guid>
     public virtual ICollection<SearchHistory>? SearchHistory { get; set; }
     public virtual ICollection<Transaction>? Transactions { get; set; }
     public virtual ICollection<Payment>? Payments { get; set; }
+    public virtual ICollection<Order>? MyOrders { get; set; }
+    public virtual ICollection<Order>? PlacedOrders { get; set; }
 }

@@ -10,6 +10,10 @@ import userPostsEn from "../../features/posts/translation/en";
 import userPostsPl from "../../features/posts/translation/pl";
 import notificationsEn from "../../features/notifications/translation/en";
 import notificationsPl from "../../features/notifications/translation/pl";
+import messagesEn from "../../features/messages/translation/en";
+import messagesPl from "../../features/messages/translation/pl";
+import userEn from "../../features/users/translation/en";
+import userPl from "../../features/users/translation/pl";
 
 import LanguageDetector from "i18next-browser-languagedetector";
 
@@ -581,6 +585,9 @@ i18n.addResourceBundle("en", "posts", userPostsEn, true, true);
 i18n.addResourceBundle("pl", "posts", userPostsPl, true, true);
 i18n.addResourceBundle("en", "notifications", notificationsEn, true, true);
 i18n.addResourceBundle("pl", "notifications", notificationsPl, true, true);
-
+i18n.addResourceBundle("en", "chat", messagesEn, true, true);
+i18n.addResourceBundle("pl", "chat", messagesPl, true, true);
+i18n.addResourceBundle("en", "user", userEn, true, true);
+i18n.addResourceBundle("pl", "user", userPl, true, true);
 
 export default i18n;

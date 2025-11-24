@@ -1,9 +1,12 @@
 using Application.Commands.Chat.AcceptPropose;
 using Application.Commands.Chat.PayPropose;
+using Application.Commands.Chat.PlaceOrder;
 using Application.Commands.Chat.ReadMessage;
 using Application.Commands.Chat.RejectPropose;
 using Application.Commands.Chat.SendMessage;
 using Application.Commands.Chat.SendPropose;
+using Application.Queries.Сhats.Messages.GetMessage;
+using Application.Queries.Сhats.Orders.GetOrder;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -46,7 +49,8 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
             Content: savedMessage.Content,
             ChatId: savedMessage.ChatId,
             PostId: savedMessage.PostId,
-            MessageId: savedMessage.Id
+            MessageId: savedMessage.Id,
+            SentAt: savedMessage.SentAt
         );
         
         await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
@@ -55,10 +59,27 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
 
     public async Task SendPropose(HubDto.ProposalMessage message)
     {
+        if (!message.PostId.HasValue) return;
+        
+        var existingOrder = await _mediator.Send(new GetOrderQuery
+        {
+            SellerId = message.ReceiverId,
+            BuyerId = message.SenderId,
+            PostId = message.PostId.Value
+        });
+
+        if (existingOrder != null)
+        {
+            await Clients.Users(message.SenderId.ToString()).SendAsync("OrderExistsError");
+            return;
+        }
+        
         var savedMessage = await _mediator.Send(new SendProposeCommand
         {
             Message = message
         });
+
+        if (!savedMessage.PostId.HasValue) return;
         
         var proposalDto = new HubDto.ProposalMessage(
             SenderId: savedMessage.SenderId,
@@ -67,9 +88,10 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
             Price: savedMessage.Price ?? 0,
             PostId: savedMessage.PostId,
             ChatId: savedMessage.ChatId,
-            MessageId: savedMessage.Id
+            MessageId: savedMessage.Id,
+            SentAt: savedMessage.SentAt
         );
-        
+
         await Clients.Users(savedMessage.ReceiverId.ToString(), savedMessage.SenderId.ToString())
             .SendAsync("ReceivePropose", proposalDto);
     }
@@ -96,13 +118,33 @@ public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
     
     public async Task PayPropose(HubDto.PayProposal payment)
     {
+        var message = await _mediator.Send(new GetMessageQuery
+        {
+            Id = payment.MessageId
+        });
+        if (!message.PostId.HasValue || !message.Price.HasValue) return;
+        
+        var placeOrderResult = await _mediator.Send(new PlaceOrderCommand
+        {
+            CustomerId = message.SenderId,
+            PostId = message.PostId.Value,
+            SellerId = message.ReceiverId,
+            Price = message.Price.Value
+        });
+
+        if (!placeOrderResult)
+        {
+            await Clients.User(message.SenderId.ToString()).SendAsync("OrderExistsError");
+            return;
+        }
+        
         await _mediator.Send(new PayProposeCommand
         {
             MessageId = payment.MessageId
         });
         
-        await Clients.Group(payment.ChatId.ToString())
-            .SendAsync("ProposePaid", new { messageId = payment.MessageId, chatId = payment.ChatId });
+        await Clients.Users(message.ReceiverId.ToString(), message.SenderId.ToString())
+            .SendAsync("ProposePaid", new HubDto.PayProposal(payment.MessageId, payment.ChatId));
     }
 
     public async Task ReadMessage(HubDto.ReadMessage message)

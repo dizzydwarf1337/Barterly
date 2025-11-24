@@ -29,7 +29,7 @@ const ChatWidget = observer(() => {
       {!uiStore.isMessagesWidgetOpen && (
         <Fab
           color="primary"
-          aria-label={t("chat.openChat")}
+          aria-label={t("chat:openChat")}
           onClick={() =>
             uiStore.setIsMessagesWidgetOpen(!uiStore.isMessagesWidgetOpen)
           }
@@ -71,8 +71,8 @@ const ChatWidget = observer(() => {
           >
             <Typography variant="h6">
               {messageStore.selectedChatId
-                ? t("chat.conversation")
-                : t("chat.messages")}
+                ? t("chat:conversation")
+                : t("chat:messages")}
             </Typography>
             <IconButton
               size="small"

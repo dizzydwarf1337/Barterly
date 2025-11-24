@@ -299,7 +299,7 @@ export const PostCreatePage = observer(() => {
     try {
       await userPostApi.createPost(data);
       uiStore.showSnackbar("Post created successfully!", "success");
-      navigate("/posts");
+      navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
       uiStore.showSnackbar("Error creating post", "error");

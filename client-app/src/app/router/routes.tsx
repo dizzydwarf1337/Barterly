@@ -6,6 +6,7 @@ import { postRoutes } from "../../features/posts/routes/postRoutes";
 import { UserWrapper } from "../wrappers/userWrapper";
 import { AdminWrapper } from "../wrappers/adminWrapper";
 import { adminRoutes } from "./adminRoutes";
+import { userRoutes } from "../../features/users/routes/userRoutes";
 
 const routes: RouteObject[] = [
   {
@@ -29,6 +30,13 @@ const routes: RouteObject[] = [
         element:<AdminWrapper/>,
         children:[
           ...adminRoutes
+        ]
+      },
+      {
+        path:"/profile",
+        element:<UserWrapper/>,
+        children:[
+          ...userRoutes
         ]
       }
     ],

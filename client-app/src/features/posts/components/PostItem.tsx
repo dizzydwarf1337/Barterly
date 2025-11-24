@@ -42,6 +42,7 @@ export default observer(function PostItem({ post }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { uiStore, authStore } = useStore();
+  
   const renderPriceAndType = () => {
     const currencySymbol = post.currency ? PostCurrency[post.currency] : "";
     const priceTypeTranslation =
@@ -127,10 +128,20 @@ export default observer(function PostItem({ post }: Props) {
     }
   };
 
+  const getPromotionColor = () => {
+    if (post.postPromotionType === PostPromotionType.Top) {
+      return "#ffd905af";
+    } else if (post.postPromotionType === PostPromotionType.Highlight) {
+      return "#b74acbff";
+    }
+    return null;
+  };
+
   const postTypeInfo = getPostTypeInfo();
   const isPromoted =
     post.postPromotionType !== null &&
     post.postPromotionType !== PostPromotionType.None;
+  const promotionColor = getPromotionColor();
 
   return (
     <Box
@@ -150,8 +161,10 @@ export default observer(function PostItem({ post }: Props) {
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "&:hover": {
           transform: "translateY(-6px)",
-          boxShadow: (theme) =>
-            `0 20px 40px ${alpha(theme.palette.primary.main, 0.15)}`,
+          boxShadow: promotionColor
+            ? `0 20px 40px ${alpha(promotionColor, 0.3)}`
+            : (theme) =>
+                `0 20px 40px ${alpha(theme.palette.primary.main, 0.15)}`,
           borderColor: "primary.main",
           "& .post-image": {
             transform: "scale(1.05)",
@@ -167,18 +180,20 @@ export default observer(function PostItem({ post }: Props) {
         },
       }}
     >
-      {/* Promotion Badge */}
-      {isPromoted && (
+      {/* Colored Corner Triangle */}
+      {isPromoted && promotionColor && (
         <Box
           sx={{
             position: "absolute",
             top: 0,
-            left: 0,
             right: 0,
-            height: "4px",
-            background: (theme) =>
-              `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-            zIndex: 2,
+            width: 0,
+            height: 0,
+            borderStyle: "solid",
+            borderWidth: "0 40px 40px 0",
+            borderColor: `transparent ${promotionColor} transparent transparent`,
+            zIndex: 1,
+            borderTopRightRadius: "20px",
           }}
         />
       )}
@@ -218,18 +233,18 @@ export default observer(function PostItem({ post }: Props) {
                   fontSize: "0.75rem",
                 }}
               />
-              {isPromoted && (
+              {isPromoted && promotionColor && (
                 <Chip
                   icon={<TrendingUpIcon />}
                   label={t(
                     `promotion.${PostPromotionType[post.postPromotionType!]}`
                   )}
-                  color="primary"
                   size="small"
                   sx={{
                     fontWeight: 700,
-                    fontSize: "0.7rem",
+                    fontSize: "0.75rem",
                     textTransform: "uppercase",
+                    backgroundColor: promotionColor
                   }}
                 />
               )}
@@ -275,6 +290,7 @@ export default observer(function PostItem({ post }: Props) {
               opacity: 0,
               transform: "translateY(-10px)",
               transition: "all 0.3s ease",
+              zIndex: 2,
             }}
           >
             <Tooltip title={t("favorite")}>

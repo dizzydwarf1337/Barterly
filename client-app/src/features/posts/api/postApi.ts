@@ -20,6 +20,7 @@ const postApi = {
       `public/posts/images/${body.postId}`,
       true
     ),
+
 };
 
 export default postApi;

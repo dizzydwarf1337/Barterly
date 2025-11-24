@@ -47,6 +47,7 @@ public class AutoMapperProfiler : Profile
                 x is WorkPost ? "Work" :
                 x is RentPost ? "Rent" :
                 "Common"))
+            .ForMember(x => x.IsHidden, opt => opt.MapFrom(x => x.PostSettings.IsHidden))
             .ForMember(x => x.CreatedAt, opt => opt.MapFrom(y => y.CreatedAt))
             .ForMember(x => x.OwnerName, opt => opt.MapFrom(x => $"{x.Owner.FirstName} {x.Owner.LastName}"));
         CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();

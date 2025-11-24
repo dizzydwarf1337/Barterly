@@ -30,7 +30,7 @@ public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, ApiRe
         var settings = await _postSettingsQueryRepository.GetPostSettingsByPostId(request.PostId, cancellationToken);
         await _postSettingsCommandRepository.UpdatePostSettings(settings.Id, cancellationToken, false, true,
             PostStatusType.Deleted, null);
-        await _mediator.Publish(new PostDeletedEvent { postId = request.PostId });
+        await _mediator.Publish(new PostDeletedEvent { postId = request.PostId }, cancellationToken);
         await _logService.CreateLogAsync($"Post deleted id: {request.PostId}", cancellationToken,
             LogType.Information, postId: request.PostId, userId: request.AuthorizeData.UserId);
         return ApiResponse<Unit>.Success(Unit.Value);

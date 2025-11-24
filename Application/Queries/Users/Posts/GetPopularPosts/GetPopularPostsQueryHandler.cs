@@ -27,10 +27,10 @@ public class
         CancellationToken cancellationToken)
     {
         var userActivity =
-            await _userActivityQueryRepository.GetUserActivityByUserIdAsync(request.AuthorizeData.UserId,
+            await _userActivityQueryRepository.GetUserActivityByUserIdAsync(request.AuthorizeData!.UserId,
                 cancellationToken);
-        var city = userActivity.MostViewedCities.Count() > 0
-            ? userActivity.MostViewedCities[0].ToString()
+        var city = userActivity.MostViewedCities.Any()
+            ? userActivity.MostViewedCities.Trim().Split(",")[0]
             : null;
         var posts = _postQueryRepository.GetAllPosts();
 
@@ -38,12 +38,9 @@ public class
         
         if(city is not null)
         {
-            posts = posts.Where(x=>x.City.ToLower() == city.ToLower());
+            posts = posts.Where(x=> x.City.ToLower() == city.ToLower());
         }
 
         return ApiResponse<ICollection<PostPreviewDto>>.Success(_mapper.Map<List<PostPreviewDto>>(await posts.ToListAsync(cancellationToken)));
-
-
-
     }
 }

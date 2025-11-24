@@ -31,8 +31,8 @@ import {
 } from "../../../app/signalR/HubTypes";
 import useStore from "../../../app/stores/store";
 import PostSmallItem from "../../posts/components/PostSmallItem";
-import userApi from "../../users/api/userApi";
 import { PostPreview } from "../../posts/types/postTypes";
+import userPostApi from "../../posts/api/userPostApi";
 
 interface MessageProps {
   message: MessageType;
@@ -62,18 +62,10 @@ const Message = observer(({ message }: MessageProps) => {
     const loadPost = async () => {
       if (message.type === MsgType.Proposal && message.postId) {
         setLoadingPost(true);
-        try {
-          const ownerId = isOwnMessage ? message.receiverId : message.senderId;
-          const ownerResponse = await userApi.getPostOwner({ id: ownerId });
-          
-          if (ownerResponse.isSuccess && ownerResponse.value?.posts) {
-            const foundPost = ownerResponse.value.posts.find(
-              (p: PostPreview) => p.id === message.postId
-            );
-            if (foundPost) {
-              setPost(foundPost);
-            }
-          }
+        try {        
+            const result = await userPostApi.getPostPreview(message.postId);
+            if(result.isSuccess)
+              setPost(result.value);
         } catch (error) {
           console.error("Failed to load post:", error);
         } finally {
@@ -96,10 +88,10 @@ const Message = observer(({ message }: MessageProps) => {
         chatId: message.chatId,
       };
       await messageStore.acceptProposal(accept);
-      uiStore.showSnackbar(t("chat.proposalAcceptedSuccess"), "success");
+      uiStore.showSnackbar(t("chat:proposalAcceptedSuccess"), "success");
     } catch (error) {
       console.error("Failed to accept proposal:", error);
-      uiStore.showSnackbar(t("chat.failedToAcceptProposal"), "error");
+      uiStore.showSnackbar(t("chat:failedToAcceptProposal"), "error");
     }
   };
 
@@ -114,10 +106,10 @@ const Message = observer(({ message }: MessageProps) => {
         chatId: message.chatId,
       };
       await messageStore.rejectProposal(reject);
-      uiStore.showSnackbar(t("chat.proposalRejectedSuccess"), "success");
+      uiStore.showSnackbar(t("chat:proposalRejectedSuccess"), "success");
     } catch (error) {
       console.error("Failed to reject proposal:", error);
-      uiStore.showSnackbar(t("chat.failedToRejectProposal"), "error");
+      uiStore.showSnackbar(t("chat:failedToRejectProposal"), "error");
     }
   };
 
@@ -129,10 +121,10 @@ const Message = observer(({ message }: MessageProps) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       await messageStore.payProposal(message.id, message.chatId);
-      uiStore.showSnackbar(t("chat.paymentSuccess"), "success");
+      // uiStore.showSnackbar(t("chat:paymentSuccess"), "success");
     } catch (error) {
       console.error("Failed to pay proposal:", error);
-      uiStore.showSnackbar(t("chat.failedToPayProposal"), "error");
+      uiStore.showSnackbar(t("chat:failedToPayProposal"), "error");
     } finally {
       setPaying(false);
     }
@@ -157,13 +149,14 @@ const Message = observer(({ message }: MessageProps) => {
 
     if (message.isPaid) {
       return (
-        <Chip
-          icon={<CheckIcon />}
-          label={t("chat.paid")}
-          color="success"
-          size="small"
-          sx={{ mt: 1 }}
-        />
+        <Box sx={{ mt: 1 }}>
+          <Chip
+            icon={<CheckIcon />}
+            label={`${t("chat:paid")} - $${message.price}`}
+            color="success"
+            size="small"
+          />
+        </Box>
       );
     }
 
@@ -171,7 +164,7 @@ const Message = observer(({ message }: MessageProps) => {
       return (
         <Chip
           icon={<PendingIcon />}
-          label={t("chat.pendingPayment")}
+          label={t("chat:pendingPayment")}
           color="warning"
           size="small"
           sx={{ mt: 1 }}
@@ -183,7 +176,7 @@ const Message = observer(({ message }: MessageProps) => {
       return (
         <Chip
           icon={<CloseIcon />}
-          label={t("chat.proposalRejected")}
+          label={t("chat:proposalRejected")}
           color="error"
           size="small"
           sx={{ mt: 1 }}
@@ -200,7 +193,7 @@ const Message = observer(({ message }: MessageProps) => {
           onClick={handleAcceptProposal}
           startIcon={<CheckIcon />}
         >
-          {t("chat.accept")}
+          {t("chat:accept")}
         </Button>
         <Button
           size="small"
@@ -209,7 +202,7 @@ const Message = observer(({ message }: MessageProps) => {
           onClick={handleRejectProposal}
           startIcon={<CloseIcon />}
         >
-          {t("chat.reject")}
+          {t("chat:reject")}
         </Button>
       </Box>
     );
@@ -220,13 +213,14 @@ const Message = observer(({ message }: MessageProps) => {
 
     if (message.isPaid) {
       return (
-        <Chip
-          icon={<CheckIcon />}
-          label={t("chat.paid")}
-          color="success"
-          size="small"
-          sx={{ mt: 1 }}
-        />
+        <Box sx={{ mt: 1 }}>
+          <Chip
+            icon={<CheckIcon />}
+            label={`${t("chat:paid")} - $${message.price}`}
+            color="success"
+            size="small"
+          />
+        </Box>
       );
     }
 
@@ -241,7 +235,7 @@ const Message = observer(({ message }: MessageProps) => {
           startIcon={paying ? <CircularProgress size={16} /> : <PaymentIcon />}
           sx={{ mt: 1 }}
         >
-          {paying ? t("chat.processing") : t("chat.pay")}
+          {paying ? t("chat:processing") : t("chat:pay")}
         </Button>
       );
     }
@@ -250,7 +244,7 @@ const Message = observer(({ message }: MessageProps) => {
       return (
         <Chip
           icon={<CloseIcon />}
-          label={t("chat.proposalRejected")}
+          label={t("chat:proposalRejected")}
           color="error"
           size="small"
           sx={{ mt: 1 }}
@@ -259,7 +253,7 @@ const Message = observer(({ message }: MessageProps) => {
     }
 
     return (
-      <Chip label={t("chat.proposalPending")} size="small" sx={{ mt: 1 }} />
+      <Chip label={t("chat:proposalPending")} size="small" sx={{ mt: 1 }} />
     );
   };
 
@@ -290,7 +284,7 @@ const Message = observer(({ message }: MessageProps) => {
             }}
           >
             <Typography variant="caption" sx={{ fontWeight: 600 }}>
-              {t("chat.proposal")}
+              {t("chat:proposal")}
             </Typography>
             <Typography variant="h6" sx={{ mt: 0.5 }}>
               ${message.price}
@@ -306,7 +300,7 @@ const Message = observer(({ message }: MessageProps) => {
               <Card 
                 sx={{ 
                   mt: 1, 
-                  bgcolor: alpha(isOwnMessage ? "#fff" : "background.default", 0.7),
+                  bgcolor: alpha("#fff", 0.7),
                   cursor: "default"
                 }}
               >

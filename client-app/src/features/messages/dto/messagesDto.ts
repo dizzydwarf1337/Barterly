@@ -4,6 +4,7 @@ import { Message } from "../types/messagesTypes";
 
 export interface GetChatMessagesRequest {
     chatId: string;
+    lastSentAt?: Date;
     page: number;
     pageSize: number;
 };

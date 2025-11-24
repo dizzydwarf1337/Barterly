@@ -26,7 +26,7 @@ public class RejectPostCommandHandler : IRequestHandler<RejectPostCommand, ApiRe
     {
         await _postSettingsCommandRepository.UpdatePostSettings(request.PostId, cancellationToken, true, false,
             PostStatusType.Rejected, request.Reason);
-        await _mediator.Publish(new PostRejectedEvent { postId = request.PostId, reason = request.Reason });
+        await _mediator.Publish(new PostRejectedEvent { postId = request.PostId, reason = request.Reason }, cancellationToken);
         await _logService.CreateLogAsync($"Post rejected: {request.PostId}", cancellationToken,
             LogType.Information, postId: request.PostId, userId: request.AuthorizeData.UserId);
         return ApiResponse<Unit>.Success(Unit.Value);

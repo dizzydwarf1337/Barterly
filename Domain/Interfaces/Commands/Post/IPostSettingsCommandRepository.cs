@@ -4,6 +4,6 @@ namespace Domain.Interfaces.Commands.Post;
 
 public interface IPostSettingsCommandRepository
 {
-    public Task UpdatePostSettings(Guid postId, CancellationToken token, bool? isHidden = false, bool? isDeleted = false, PostStatusType? postStatusType = PostStatusType.Published,
+    public Task UpdatePostSettings(Guid settingsId, CancellationToken token, bool? isHidden = false, bool? isDeleted = false, PostStatusType? postStatusType = PostStatusType.Published,
         string? rejectionMessage = "");
 }

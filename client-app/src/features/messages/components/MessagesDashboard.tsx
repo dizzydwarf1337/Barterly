@@ -30,6 +30,7 @@ import userApi from "../../users/api/userApi";
 import { PostOwner } from "../../users/types/userTypes";
 import messagesApi from "../api/messagesApi";
 import PostSmallItem from "../../posts/components/PostSmallItem";
+import { runInAction } from "mobx";
 
 interface MessagesDashboardProps {
   chatId: string | null;
@@ -38,7 +39,6 @@ interface MessagesDashboardProps {
 }
 const MessagesDashboard = observer(
   ({ chatId, receiverId, onBack }: MessagesDashboardProps) => {
-    console.log(chatId);
 
     const { messageStore, authStore, uiStore } = useStore();
     const { t } = useTranslation();
@@ -107,24 +107,30 @@ const MessagesDashboard = observer(
       shouldReplace: boolean = false
     ) => {
       if (!chatId || !chat) return;
-
       setLoading(true);
+      const oldestMessage = chat?.messages[chat?.messages.length];
+      const lastSentAt = oldestMessage?.sentAt;
+
       try {
         const res = await messagesApi.getChatMessages({
           chatId: chatId,
+          lastSentAt: new Date(lastSentAt),
           page: pageNum,
           pageSize: 20,
         });
-
         if (res.isSuccess) {
-          if (shouldReplace || pageNum === 1) {
-            chat.messages = res.value.items;
-          } else {
-            const existingIds = new Set(chat.messages.map((m) => m.id));
-            const newMessages = res.value.items.filter(
-              (m) => !existingIds.has(m.id)
-            );
-            chat.messages = [...newMessages, ...chat.messages];
+          if (res.isSuccess) {
+            runInAction(() => {
+              if (shouldReplace || pageNum === 1) {
+                chat.messages = res.value.items;
+              } else {
+                const existingIds = new Set(chat.messages.map((m) => m.id));
+                const newMessages = res.value.items.filter(
+                  (m) => !existingIds.has(m.id)
+                );
+                chat.messages = [...newMessages, ...chat.messages];
+              }
+            })
           }
           setHasMore(res.value.totalPages > pageNum);
         }
@@ -204,7 +210,7 @@ const MessagesDashboard = observer(
         scrollToBottom();
       } catch (error) {
         console.error("Failed to send message:", error);
-        uiStore.showSnackbar(t("chat.failedToSendMessage"), "error");
+        uiStore.showSnackbar(t("chat:failedToSendMessage"), "error");
       }
     };
 
@@ -240,7 +246,7 @@ const MessagesDashboard = observer(
         messageStore.setSelectedChatId(newChatId);
       }
       if (isNaN(price) || price <= 0) {
-        uiStore.showSnackbar(t("chat.invalidPrice"), "error");
+        uiStore.showSnackbar(t("chat:invalidPrice"), "error");
         return;
       }
 
@@ -260,7 +266,7 @@ const MessagesDashboard = observer(
         scrollToBottom();
       } catch (error) {
         console.error("Failed to send proposal:", error);
-        uiStore.showSnackbar(t("chat.failedToSendProposal"), "error");
+        uiStore.showSnackbar(t("chat:failedToSendProposal"), "error");
       }
     };
 
@@ -334,7 +340,7 @@ const MessagesDashboard = observer(
             otherUser && (
               <>
                 <Avatar
-                  src={otherUser.profilePicturePath ?? undefined}
+                  src={otherUser.profilePicturePath ? `${import.meta.env.VITE_API_URL}/${otherUser.profilePicturePath}` : undefined}
                   sx={{ width: 40, height: 40 }}
                 >
                   {!otherUser.profilePicturePath &&
@@ -360,7 +366,7 @@ const MessagesDashboard = observer(
             onClose={handleMenuClose}
           >
             <MenuItem onClick={handleProposalDialogOpen}>
-              {t("chat.sendProposal")}
+              {t("chat:sendProposal")}
             </MenuItem>
           </Menu>
         </Box>
@@ -396,7 +402,7 @@ const MessagesDashboard = observer(
               }}
             >
               <Typography variant="body2" color="text.secondary">
-                {t("chat.startConversation")}
+                {t("chat:startConversation")}
               </Typography>
             </Box>
           )}
@@ -420,7 +426,7 @@ const MessagesDashboard = observer(
           <TextField
             fullWidth
             size="small"
-            placeholder={t("chat.typeMessage")}
+            placeholder={t("chat:typeMessage")}
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -443,13 +449,13 @@ const MessagesDashboard = observer(
           maxWidth="sm"
           fullWidth
         >
-          <DialogTitle>{t("chat.sendProposal")}</DialogTitle>
+          <DialogTitle>{t("chat:sendProposal")}</DialogTitle>
           <DialogContent>
             <FormControl fullWidth margin="normal">
-              <InputLabel>{t("chat.selectPost")}</InputLabel>
+              <InputLabel>{t("chat:selectPost")}</InputLabel>
               <Select
                 value={proposalPostId}
-                label={t("chat.selectPost")}
+                label={t("chat:selectPost")}
                 onChange={(e) => setProposalPostId(e.target.value)}
                 renderValue={(selected) => {
                   const post = otherUser?.posts?.find((p) => p.id === selected);
@@ -466,7 +472,7 @@ const MessagesDashboard = observer(
 
             <TextField
               fullWidth
-              label={t("chat.price")}
+              label={t("chat:price")}
               type="number"
               value={proposalPrice}
               onChange={(e) => setProposalPrice(e.target.value)}
@@ -475,7 +481,7 @@ const MessagesDashboard = observer(
             />
             <TextField
               fullWidth
-              label={t("chat.message")}
+              label={t("chat:message")}
               multiline
               rows={3}
               value={proposalContent}
@@ -485,7 +491,7 @@ const MessagesDashboard = observer(
           </DialogContent>
           <DialogActions>
             <Button onClick={handleProposalDialogClose}>
-              {t("common.cancel")}
+              {t("chat:cancel")}
             </Button>
             <Button
               onClick={handleSendProposal}
@@ -494,7 +500,7 @@ const MessagesDashboard = observer(
                 !proposalContent.trim() || !proposalPrice || !proposalPostId
               }
             >
-              {t("common.send")}
+              {t("chat:send")}
             </Button>
           </DialogActions>
         </Dialog>

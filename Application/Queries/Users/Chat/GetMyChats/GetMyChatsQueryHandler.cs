@@ -38,7 +38,7 @@ public class GetMyChatsQueryHandler : IRequestHandler<GetMyChatsQuery, ApiRespon
             c.CreatedAt,
             new User(userDict[c.User1].Id, userDict[c.User1].FirstName, userDict[c.User1].LastName, userDict[c.User1].ProfilePicturePath),
             new User(userDict[c.User2].Id, userDict[c.User2].FirstName, userDict[c.User2].LastName, userDict[c.User2].ProfilePicturePath),
-            c.Messages.OrderByDescending(m => m.SentAt).Take(1).Select(x => new GetChatMessagesQuery.Message(x.Id, x.ChatId, x.Content, x.Type, x.SenderId, x.ReceiverId, x.ReadBy, x.SentAt, x.ReadAt, x.AcceptedAt, x.Price, x.IsAccepted, x.PostId)).ToList()
+            c.Messages.OrderByDescending(m => m.SentAt).Take(1).Select(x => new GetChatMessagesQuery.Message(x.Id, x.ChatId, x.Content, x.Type, x.SenderId, x.ReceiverId, x.ReadBy, x.SentAt, x.ReadAt, x.AcceptedAt, x.Price, x.IsAccepted, x.IsPaid, x.PostId)).ToList()
         )).ToList();
         return ApiResponse<ICollection<Chat>>.Success(result);
     }

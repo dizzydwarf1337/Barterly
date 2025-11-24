@@ -8,8 +8,9 @@ public class HubDto
         string Content, 
         Guid? ChatId, 
         Guid? PostId = null,
-        Guid? MessageId = null);
-
+        Guid? MessageId = null,
+        DateTime? SentAt = null);  
+    
     public record ProposalMessage(
         Guid SenderId, 
         Guid ReceiverId, 
@@ -17,12 +18,14 @@ public class HubDto
         decimal Price, 
         Guid? PostId, 
         Guid? ChatId,
-        Guid? MessageId = null);
+        Guid? MessageId = null,
+        DateTime? SentAt = null); 
 
     public record AcceptProposal(Guid MessageId, Guid SenderId, Guid ReceiverId, Guid? ChatId);
 
     public record RejectProposal(Guid MessageId, Guid SenderId, Guid ReceiverId, Guid? ChatId);
 
     public record ReadMessage(Guid MessageId, Guid ReadBy, Guid SenderId, Guid? ChatId);
+    
     public record PayProposal(Guid MessageId, Guid ChatId);
 }

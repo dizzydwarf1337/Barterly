@@ -26,14 +26,14 @@ export default observer(function FeedDashboard() {
           response = await userPostApi.getFeed({
             filterBy: {
               pageNumber: 1,
-              pageSize: 10,
+              pageSize: 4,
             },
           });
         } else {
           response = await postApi.getFeed({
             filterBy: {
               pageNumber: 1,
-              pageSize: 10,
+              pageSize: 4,
             },
           });
         }

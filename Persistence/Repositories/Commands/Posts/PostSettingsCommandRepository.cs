@@ -16,8 +16,13 @@ public class PostSettingsCommandRepository : BaseCommandRepository<BarterlyDbCon
     public async Task UpdatePostSettings(Guid settingsId, CancellationToken token, bool? isHidden, bool? isDeleted,
         PostStatusType? postStatusType, string? rejectionMessage)
     {
-        var settings = await _context.PostSettings.FirstOrDefaultAsync(x => x.Id == settingsId, token) ??
-                       throw new EntityNotFoundException("PostSettings");
+        var settings =
+            await _context.PostSettings.FirstOrDefaultAsync(x => x.Id == settingsId, token)
+            ?? await _context.PostSettings.FirstOrDefaultAsync(x => x.PostId == settingsId, token);
+
+        if (settings == null)
+            throw new EntityNotFoundException("PostSettings");
+        
         settings.IsHidden = isHidden ?? settings.IsHidden;
         settings.IsDeleted = isDeleted ?? settings.IsDeleted;
         settings.postStatusType = postStatusType ?? settings.postStatusType;

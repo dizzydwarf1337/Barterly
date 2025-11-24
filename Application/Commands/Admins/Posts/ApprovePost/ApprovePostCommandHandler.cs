@@ -29,15 +29,15 @@ public class ApprovePostCommandHandler : IRequestHandler<ApprovePostCommand, Api
     {
         var settings = await _postSettingsQueryRepository.GetPostSettingsByPostId(request.PostId, cancellationToken);
         await UpdatePostSettings(settings.Id, cancellationToken);
-        await _mediator.Publish(new PostApprovedEvent { postId = request.PostId });
+        await _mediator.Publish(new PostApprovedEvent { postId = request.PostId }, cancellationToken);
         await _logService.CreateLogAsync($"Post approved: {request.PostId}", cancellationToken,
             LogType.Information, postId: request.PostId, userId: request.AuthorizeData.UserId);
         return ApiResponse<Unit>.Success(Unit.Value);
     }
 
-    private async Task UpdatePostSettings(Guid postId, CancellationToken token)
+    private async Task UpdatePostSettings(Guid settingsId, CancellationToken token)
     {
-        await _postSettingsCommandRepository.UpdatePostSettings(postId, token, false, false,
+        await _postSettingsCommandRepository.UpdatePostSettings(settingsId, token, false, false,
             PostStatusType.Published, null);
     }
 }

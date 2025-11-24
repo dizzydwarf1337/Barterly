@@ -14,7 +14,7 @@ interface Store {
 const chatHub = new ChatHub();
 
 export const store: Store = {
-    uiStore: new UiStore(),
+    uiStore: new UiStore(chatHub),
     authStore: new authStore(chatHub),
     messageStore: new MessageStore(chatHub)
 }

@@ -6,6 +6,8 @@ public class PostPreviewDto
 {
     public required string Id { get; set; }
     public required string SubCategoryId { get; set; }
+    
+    public bool IsHidden { get; set; }
     public Guid OwnerId { get; set; }
     public string? Title { get; set; }
     public string? City { get; set; }

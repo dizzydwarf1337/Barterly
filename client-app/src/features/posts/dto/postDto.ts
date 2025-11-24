@@ -3,7 +3,7 @@ import {
   PaginationRequest,
   PaginationResponse,
 } from "../../../app/API/pagination";
-import { PostDetails, PostFormData, PostPreview, PostType, RentObjectType, WorkloadType, WorkLocationType } from "../types/postTypes";
+import { PostDetails, PostFormData, PostPreview, PostPromotionType, PostType, RentObjectType, WorkloadType, WorkLocationType } from "../types/postTypes";
 
 export interface GetPostsResponseDTO extends PaginationResponse<PostPreview> {}
 
@@ -51,3 +51,10 @@ export interface GetFavPostsResponseDTO
   extends PaginationResponse<PostPreview> {}
 
 export interface CreatePostRequestDTO extends PostFormData {}
+
+export interface GetMyPostsResponseDTO extends ApiResponse<PostPreview[]> { }
+
+export interface BuyPromotionRequestDTO {
+  postId: string,
+  postPromotionType: PostPromotionType
+}

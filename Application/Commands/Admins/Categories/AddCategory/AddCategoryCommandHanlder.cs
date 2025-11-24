@@ -12,14 +12,11 @@ public class AddCategoryCommandHanlder : IRequestHandler<AddCategoryCommand, Api
 {
     private readonly ICategoryCommandRepository _categoryCommandRepository;
     private readonly ILogService _logService;
-    private readonly IMapper _mapper;
 
-    public AddCategoryCommandHanlder(ICategoryCommandRepository categoryCommandRepository, ILogService logService,
-        IMapper mapper)
+    public AddCategoryCommandHanlder(ICategoryCommandRepository categoryCommandRepository, ILogService logService)
     {
         _categoryCommandRepository = categoryCommandRepository;
         _logService = logService;
-        _mapper = mapper;
     }
 
     public async Task<ApiResponse<Unit>> Handle(AddCategoryCommand request, CancellationToken cancellationToken)

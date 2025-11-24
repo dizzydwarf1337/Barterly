@@ -5,17 +5,23 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>e6b5a873-d6a6-4861-af69-f57d57b978bf</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
         <Content Remove="wwwroot\profanity_en.txt"/>
         <Content Remove="wwwroot\profanity_pl.txt"/>
+        <Content Include="..\.dockerignore">
+          <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.0.0"/>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0"/>
         <PackageReference Include="Google.Apis.Auth" Version="1.70.0"/>
+        <PackageReference Include="Hangfire" Version="1.8.22" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.22" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.6"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.10" />

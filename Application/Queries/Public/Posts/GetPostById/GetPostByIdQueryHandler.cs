@@ -3,6 +3,7 @@ using Application.DTOs.Posts;
 using AutoMapper;
 using Domain.Interfaces.Queries.Post;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.Public.Posts.GetPostById;
 
@@ -19,8 +20,10 @@ public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, ApiResp
 
     public async Task<ApiResponse<PostDto>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
-        var post = await _postQueryRepository.GetPostById(request.PostId, cancellationToken);
-        if (post.PostSettings.IsDeleted || post.PostSettings.IsHidden)
+        var post = await _postQueryRepository.GetAllPosts()
+            .Where(post => post.Id == request.PostId && !(post.PostSettings.IsDeleted || post.PostSettings.IsHidden))
+            .FirstOrDefaultAsync(cancellationToken);
+        if (post == null)
             return ApiResponse<PostDto>.Failure("Post not found or is hidden/deleted.", 404);
         return ApiResponse<PostDto>.Success(_mapper.Map<PostDto>(post));
     }

@@ -6,6 +6,7 @@ export interface CommonMessage {
   content: string;
   chatId?: string | null;
   postId: string | null;
+  sentAt?: string;
 }
 
 export interface ProposalMessage {
@@ -16,6 +17,7 @@ export interface ProposalMessage {
   price: number;
   chatId?: string | null;
   postId: string | null;
+  sentAt?: string;  
 }
 
 export interface AcceptProposal {

@@ -64,6 +64,7 @@ export default class authStore {
     runInAction(() => {
       this.setUserIsLoggedIn(true);
       localStorage.setItem("brt_login", JSON.stringify(this.isLoggedIn));
+      this.setToken(token);
       apiClient.setToken(token);
       this.chatHub?.connect(token);
     });

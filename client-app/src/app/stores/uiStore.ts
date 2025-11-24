@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 import lightTheme from "../theme/LightTheme";
 import i18n from "../locales/i18n";
 import darkTheme from "../theme/DarkTheme";
+import { ChatHub } from "../signalR/Hub";
 
 export default class UiStore {
 
@@ -16,6 +17,8 @@ export default class UiStore {
 
   menuElement: HTMLElement | undefined;
 
+  chatHub: ChatHub;
+
   snackbarOpen: boolean = false;
   snackbarMessage: string = "";
   snackbarSeverity: "success" | "error" | "warning" | "info" = "info";
@@ -28,14 +31,17 @@ export default class UiStore {
 
   isMessagesWidgetOpen: boolean = false;
 
-  constructor() {
+  constructor(chatHub: ChatHub) {
     makeAutoObservable(this);
+    this.chatHub = chatHub;
     let theme = localStorage.getItem("brt_theme");
     this.setTheme(theme === "dark" ? darkTheme : lightTheme);
     this.setThemeMode(theme === "dark" ? "dark" : "light");
 
     let savedLang = localStorage.getItem("brt_lng") || "pl";
     this.setLanguage(savedLang);
+
+    this.chatHub.setHandler("OrderExistsError", this.handleOrderExistsMessage);
 
     window.addEventListener("resize", this.updateIsMobile);
   }
@@ -106,4 +112,8 @@ export default class UiStore {
   setIsMessagesWidgetOpen = (isOpen: boolean) => {
     this.isMessagesWidgetOpen = isOpen;
   };
+
+  handleOrderExistsMessage = () => {
+    this.showSnackbar("Active order still pending", "error");
+  }
 }

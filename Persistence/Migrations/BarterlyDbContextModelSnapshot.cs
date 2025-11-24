@@ -349,6 +349,44 @@ namespace Persistence.Migrations
                     b.ToTable("Transaction");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Orders.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("SellerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1130,6 +1168,33 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Orders.Order", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.User", "Customer")
+                        .WithMany("MyOrders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Posts.Post", "Post")
+                        .WithMany("Orders")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Users.User", "Seller")
+                        .WithMany("PlacedOrders")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
                 {
                     b.HasOne("Domain.Entities.Users.User", "Owner")
@@ -1396,6 +1461,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Posts.Post", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("PostImages");
 
                     b.Navigation("PostOpinions");
@@ -1423,9 +1490,13 @@ namespace Persistence.Migrations
 
                     b.Navigation("MessagesSent");
 
+                    b.Navigation("MyOrders");
+
                     b.Navigation("Notifications");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("PlacedOrders");
 
                     b.Navigation("Reports");
 

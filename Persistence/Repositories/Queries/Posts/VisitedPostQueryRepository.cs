@@ -35,7 +35,6 @@ public class VisitedPostQueryRepository : BaseQueryRepository<BarterlyDbContext>
 
     public async Task<VisitedPost> GetUserVisitedPost(Guid postId, Guid userId, CancellationToken token)
     {
-        return await _context.VisitedPosts.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId,
-            token) ?? throw new EntityNotFoundException("Visited post");
+        return await _context.VisitedPosts.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId, token);
     }
 }

@@ -120,5 +120,7 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
             yield return p => p.Price >= filter.MinPrice.Value;
         if (filter.MaxPrice.HasValue)
             yield return p => p.Price <= filter.MaxPrice;
+        if (filter.SubCategoryId.HasValue)
+            yield return p => p.SubCategoryId == filter.SubCategoryId.Value;
     }
 }

@@ -53,7 +53,7 @@ export const UserWrapper = observer(() => {
         display="flex"
         flexDirection="column"
         sx={{
-          pt: uiStore.isMobile ? "60px" : "80px",
+          pt: 1,
           pb: "80px",
           minHeight: "calc(100vh - 140px)",
           position: "relative",
