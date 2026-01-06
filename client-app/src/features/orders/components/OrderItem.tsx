@@ -13,19 +13,20 @@ import { useNavigate } from "react-router";
 import { Order, OrderStatus } from "../../orders/types/orderTypes";
 import { PostCurrency } from "../../posts/types/postTypes";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import useStore from "../../../app/stores/store";
 
 interface OrderItemProps {
   order: Order;
-  isSeller: boolean;
   onMarkAsShipped?: (orderId: string) => void;
   onMarkAsDelivered?: (orderId: string) => void;
 }
 
 const OrderItem = observer(
-  ({ order, isSeller, onMarkAsShipped, onMarkAsDelivered }: OrderItemProps) => {
+  ({ order, onMarkAsShipped, onMarkAsDelivered }: OrderItemProps) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-
+    const {authStore} = useStore();
+    const isSeller = authStore.user!.id == order.seller.id;
     const otherUser = isSeller ? order.buyer : order.seller;
     const statusColor = {
       [OrderStatus.Paid]: "warning",
@@ -72,7 +73,6 @@ const OrderItem = observer(
               <ShoppingCartIcon/>
             </Avatar>
 
-            {/* Order Details */}
             <Box flex={1}>
               <Typography 
                 variant="h6" 
@@ -121,7 +121,7 @@ const OrderItem = observer(
                   {order.post.price.toFixed(2)} {PostCurrency[order.post.currency]}
                 </Typography>
                 <Chip
-                  label={t(`orders:Status${order.status}`)}
+                  label={t(`orders:${order.status}`)}
                   color={statusColor}
                   size="small"
                 />

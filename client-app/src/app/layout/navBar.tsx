@@ -118,11 +118,6 @@ export default observer(function NavBar() {
 
   const theme = uiStore.getTheme();
 
-  const handleOpenUserSettings = (element: HTMLElement) => {
-    uiStore.setUserSettingIsOpen(true);
-    uiStore.setMenuElement(element);
-  };
-
   const handleAddPost = () => {
     if (authStore.isLoggedIn) {
       navigate("/posts/create");
@@ -315,7 +310,7 @@ export default observer(function NavBar() {
       {authStore.isLoggedIn ? (
         <Tooltip title={`${t("hello")}, ${authStore.user?.firstName}`}>
           <IconButton
-            onClick={(event) => handleOpenUserSettings(event.currentTarget)}
+            onClick={() => navigate('/profile')}
             sx={{ p: 0.5 }}
           >
             <Badge
@@ -334,7 +329,9 @@ export default observer(function NavBar() {
                   height: 32,
                   border: `2px solid ${theme.palette.primary.main}`,
                 }}
-                src={authStore.user?.profilePicturePath ?? ""}
+                src={authStore.user?.profilePicturePath ?
+                 `${import.meta.env.VITE_API_URL}/${authStore.user?.profilePicturePath}`
+                  : undefined}
                 alt={authStore.user?.firstName}
               >
                 {authStore.user?.firstName?.charAt(0) || <PersonIcon />}

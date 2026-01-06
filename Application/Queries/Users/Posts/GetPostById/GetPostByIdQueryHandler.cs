@@ -40,7 +40,9 @@ public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, ApiResp
                     ||
                     (!post.PostSettings.IsHidden && !post.PostSettings.IsDeleted)
                 )
-            ).FirstOrDefaultAsync(cancellationToken);
+            )
+            .Include(x => x.PostImages)
+            .FirstOrDefaultAsync(cancellationToken);
         if (post == null)
             return ApiResponse<PostDto>.Failure("Post not found or is hidden/deleted.", 404);
         

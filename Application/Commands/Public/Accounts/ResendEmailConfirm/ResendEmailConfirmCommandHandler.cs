@@ -10,14 +10,16 @@ public class ResendEmailConfirmCommandHandler : IRequestHandler<ResendEmailConfi
 {
     private readonly IMailService _mailService;
     private readonly UserManager<User> _userManager;
-    public ResendEmailConfirmCommandHandler(IMailService mailService)
+    public ResendEmailConfirmCommandHandler(IMailService mailService, UserManager<User> userManager)
     {
         _mailService = mailService;
+        _userManager = userManager;
     }
 
     public async Task<ApiResponse<Unit>> Handle(ResendEmailConfirmCommand request,
         CancellationToken cancellationToken)
     {
+
         var user = await _userManager.FindByEmailAsync(request.Email);
         if(user == null) 
             return ApiResponse<Unit>.Failure("Użytkownik nie istnieje.");

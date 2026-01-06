@@ -34,4 +34,5 @@ public class PostPreviewDto
     public int? Floor { get; set; }
     public string? PostType { get; set; }
     public string? OwnerName { get; set; }
+    public string? OwnerProfilePicturePath { get; set; }
 }

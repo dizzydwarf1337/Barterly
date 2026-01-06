@@ -5,14 +5,15 @@ using Application.Commands.Users.Posts.DeletePost;
 using Application.Commands.Users.Posts.UpdatePost;
 using Application.Commands.Users.Posts.UpdatePostImages;
 using Application.Commands.Users.Posts.UpdatePostVisibility;
-using Application.Queries.Public.Posts.GetFeed;
 using Application.Queries.Public.Posts.GetPostImages;
 using Application.Queries.Users.Posts.GetFavPosts;
+using Application.Queries.Users.Posts.GetFeed;
 using Application.Queries.Users.Posts.GetMyPosts;
 using Application.Queries.Users.Posts.GetPopularPosts;
 using Application.Queries.Users.Posts.GetPostById;
 using Application.Queries.Users.Posts.GetPostPreviewById;
 using Application.Queries.Users.Posts.GetPostsFiltredPaginated;
+using Application.Queries.Users.Posts.GetUsersPosts;
 using Domain.Enums.Posts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,13 @@ public class UserPostController : BaseController
             Enum.IsDefined(typeof(PostPriceType), postPriceTypeInt))
         {
             command.PostPriceType = (PostPriceType)postPriceTypeInt;
+        }
+        
+        if (Request.Form.TryGetValue("currency", out var currency) &&
+            int.TryParse(currency, out int currencyType) &&
+            Enum.IsDefined(typeof(PostCurrency), currencyType))
+        {
+            command.Currency = (PostCurrency)currencyType;
         }
 
         if (Request.Form.TryGetValue("workload", out var workloadValue) &&
@@ -162,4 +170,16 @@ public class UserPostController : BaseController
         {
             PostId = id
         }));
+
+    [HttpGet]
+    [Route("user/{id:guid}")]
+    public async Task<IActionResult> GetUserPosts([FromRoute] Guid id)
+    {
+        var command = new GetUsersPostsQuery
+        {
+            UserId = id
+        };
+        return HandleResponse(await Mediator.Send(command));
+    }
+    
 }

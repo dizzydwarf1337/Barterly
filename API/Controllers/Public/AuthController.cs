@@ -37,7 +37,7 @@ public class AuthController : BaseController
 
     [HttpPost]
     [Route("resend-email-confirm")]
-    public async Task<IActionResult> ResendEmailConfirm(ResendEmailConfirmCommand command)
+    public async Task<IActionResult> ResendEmailConfirm([FromBody] ResendEmailConfirmCommand command)
     {
         return HandleResponse(await Mediator.Send(command));
     }

@@ -61,8 +61,8 @@ public class GetPosts
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
         Assert.Equal(15, result.Value.TotalCount);
-        Assert.Equal(3, result.Value.TotalPages);
-        Assert.Equal(7, result.Value.Items.Count);
+        Assert.Equal(2, result.Value.TotalPages);
+        Assert.Equal(10, result.Value.Items.Count);
     }
 
     [Fact]
@@ -345,8 +345,7 @@ public class GetPosts
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(23, result.Value.TotalCount);
-        
-        Assert.Equal(4, result.Value.TotalPages); 
+        Assert.Equal(3, result.Value.TotalPages); 
     }
 
     [Fact]
@@ -383,8 +382,8 @@ public class GetPosts
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(21, result.Value.TotalCount);
-        Assert.Equal(3, result.Value.TotalPages); // 21 / 7 = 3
-        Assert.Equal(7, result.Value.Items.Count); // 7 regular + 3 promoted
+        Assert.Equal(3, result.Value.TotalPages); // 21 / 10 = 3
+        Assert.Equal(10, result.Value.Items.Count); // 7 regular + 3 promoted
     }
 
     [Fact]

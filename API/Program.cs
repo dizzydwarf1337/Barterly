@@ -12,6 +12,8 @@ using API.Core.ServicesConfiguration.Services;
 using Application.Hub;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Persistence.Database;
 using Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,9 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<BarterlyDbContext>();
+    await db.Database.MigrateAsync();
+    
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
     string[] roleNames = { "Admin", "User", "Moderator" };

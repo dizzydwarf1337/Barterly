@@ -46,21 +46,21 @@ const UserPage = () => {
                         <Tab
                             icon={<PersonIcon />}
                             iconPosition="start"
-                            label={t("users:ProfilePage")}
+                            label={t("user:ProfilePage")}
                             value="1"
                             sx={{ justifyContent: "flex-start" }}
                         />
                         <Tab
                             icon={<PostAddIcon />}
                             iconPosition="start"
-                            label={t("users:PostsPage")}
+                            label={t("user:PostsPage")}
                             value="2"
                             sx={{ justifyContent: "flex-start" }}
                         />
                         <Tab
                             icon={<ShoppingCartIcon />}
                             iconPosition="start"
-                            label={t("users:OrdersPage")}
+                            label={t("user:OrdersPage")}
                             value="3"
                             sx={{ justifyContent: "flex-start" }}
                         />

@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities.Categories;
 using Domain.Entities.Posts;
 using Domain.Entities.Posts.PostTypes;
+using Domain.Entities.Users;
 using Domain.Enums.Posts;
 using Domain.Interfaces.Queries.Post;
 using MockQueryable;
@@ -594,6 +595,17 @@ public class GetPostsQueryHandlerTests
                 IsHidden = isHidden,
                 postStatusType = status
             },
+            Promotion = new Promotion()
+            {
+                Type = PostPromotionType.None
+            },
+            Owner = new User
+            {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                Id = Guid.NewGuid(),
+                UserName = "TestUser"
+            },
             SubCategory = new SubCategory
             {
                 Id = Guid.NewGuid(),
@@ -662,6 +674,17 @@ public class GetPostsQueryHandlerTests
                 IsHidden = false,
                 postStatusType = PostStatusType.Published
             },
+            Promotion = new Promotion
+            {
+                Type = PostPromotionType.None
+            },
+            Owner = new User
+            {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                Id = Guid.NewGuid(),
+                UserName = "TestUser"
+            },
             SubCategory = new SubCategory
             {
                 Id = Guid.NewGuid(),
@@ -693,6 +716,17 @@ public class GetPostsQueryHandlerTests
             NumberOfRooms = numberOfRooms,
             Area = area,
             Floor = floor,
+            Promotion = new Promotion
+            {
+                Type = PostPromotionType.None
+            },
+            Owner = new User
+            {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                Id = Guid.NewGuid(),
+                UserName = "TestUser"
+            },
             PostSettings = new PostSettings
             {
                 Id = Guid.NewGuid(),

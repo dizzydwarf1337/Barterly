@@ -28,5 +28,6 @@ export default {
     maxSalary:"Max salary",
     experienceRequired:"Experience required",
     hideAdvancedFilters:"Hide advanced filters",
-    showAdvancedFilters:"Show advanced filters"
+    showAdvancedFilters:"Show advanced filters",
+    noPostsFound:"No posts found"
 }

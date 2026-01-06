@@ -24,24 +24,26 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
     public async Task<ApiResponse<GetPostsQuery.Result>> Handle(GetPostsQuery request,
         CancellationToken cancellationToken)
     {
-        var regularPostsPerPage = request.FilterBy!.PageSize - (int)(request.FilterBy.PageSize / 3.0);
         var promotedPostsPerPage = (int)(request.FilterBy.PageSize / 3.0);
-
-        var regularPosts = await GetRegularPosts(regularPostsPerPage, request.FilterBy.PageNumber, 
-            request.FilterBy, request.SortBy, cancellationToken);
-
+    
         var promotedPosts = await GetPromotedPosts(promotedPostsPerPage, request.FilterBy.PageNumber, 
             cancellationToken);
+    
+        var regularPostsPerPage = request.FilterBy.PageSize - promotedPosts.Count;
+        var regularPosts = await GetRegularPosts(regularPostsPerPage, request.FilterBy.PageNumber, 
+            request.FilterBy, request.SortBy, cancellationToken);
 
         var shuffledPosts = ShufflePosts(regularPosts, promotedPosts);
 
         var totalRegularCount = await GetTotalRegularCount(request.FilterBy, cancellationToken);
-        var totalPages = (int)Math.Ceiling(totalRegularCount / (double)regularPostsPerPage);
+        var totalPromotedCount = await GetTotalPromotedCount(cancellationToken);
+        var totalCount = totalRegularCount + totalPromotedCount;
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.FilterBy.PageSize);
 
         return ApiResponse<GetPostsQuery.Result>.Success(new GetPostsQuery.Result
         {
             Items = shuffledPosts,
-            TotalCount = totalRegularCount,
+            TotalCount = totalCount,
             TotalPages = totalPages
         });
     }
@@ -99,7 +101,8 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
                 x.PostSettings.postStatusType == PostStatusType.Published &&
                 !x.PostSettings.IsDeleted &&
                 !x.PostSettings.IsHidden)
-            .OrderByDescending(x => x.Id)
+            .OrderBy(x => x.ViewsCount)
+            .ThenBy(x => Guid.NewGuid())
             .Skip((pageNumber - 1) * topPostsCount)
             .Take(topPostsCount)
             .ToListAsync(cancellationToken);
@@ -111,7 +114,8 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
                 x.PostSettings.postStatusType == PostStatusType.Published &&
                 !x.PostSettings.IsDeleted &&
                 !x.PostSettings.IsHidden)
-            .OrderByDescending(x => x.ViewsCount)
+            .OrderBy(x => x.ViewsCount)
+            .ThenBy(x => Guid.NewGuid())
             .Skip((pageNumber - 1) * highlightPostsCount)
             .Take(highlightPostsCount)
             .ToListAsync(cancellationToken);
@@ -178,6 +182,17 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
 
         return _mapper.Map<List<PostPreviewDto>>(result);
     }
+    
+    private async Task<int> GetTotalPromotedCount(CancellationToken cancellationToken)
+    {
+        return await _postQueryRepository.GetAllPosts()
+            .Where(x =>
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden &&
+                x.Promotion.Type != PostPromotionType.None)
+            .CountAsync(cancellationToken);
+    }
 
     private IEnumerable<Expression<Func<Post, bool>>> GetFilters(GetPostsQuery.FilterSpecification filter)
     {
@@ -186,6 +201,9 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
 
         if (filter.SubCategoryId.HasValue)
             yield return p => p.SubCategoryId == filter.SubCategoryId.Value;
+        
+        if(filter.CategoryId.HasValue)
+            yield return p => p.SubCategory.CategoryId == filter.CategoryId.Value;
         
         if(!string.IsNullOrWhiteSpace(filter.City))
             yield return p => p.City.ToLower().Contains(filter.City.ToLower());

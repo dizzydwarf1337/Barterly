@@ -49,7 +49,8 @@ public class AutoMapperProfiler : Profile
                 "Common"))
             .ForMember(x => x.IsHidden, opt => opt.MapFrom(x => x.PostSettings.IsHidden))
             .ForMember(x => x.CreatedAt, opt => opt.MapFrom(y => y.CreatedAt))
-            .ForMember(x => x.OwnerName, opt => opt.MapFrom(x => $"{x.Owner.FirstName} {x.Owner.LastName}"));
+            .ForMember(x => x.OwnerName, opt => opt.MapFrom(x => $"{x.Owner.FirstName} {x.Owner.LastName}"))
+            .ForMember(x => x.OwnerProfilePicturePath, opt => opt.MapFrom(x => x.Owner.ProfilePicturePath));
         CreateMap<WorkPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<RentPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();
         CreateMap<CommonPost, PostPreviewDto>().IncludeBase<Post, PostPreviewDto>();

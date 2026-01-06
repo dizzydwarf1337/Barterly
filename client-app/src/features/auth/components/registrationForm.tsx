@@ -126,6 +126,9 @@ export default observer(function RegistrationForm({ onSuccess, onError }: Regist
           render={({ field }) => (
             <TextField
               {...field}
+              sx={{
+                flex:1
+              }}
               label={t('auth.firstName')}
               error={!!errors.firstName}
               helperText={errors.firstName?.message}
@@ -146,6 +149,7 @@ export default observer(function RegistrationForm({ onSuccess, onError }: Regist
           control={control}
           render={({ field }) => (
             <TextField
+              sx={{flex: 1}}
               {...field}
               label={t('auth.lastName')}
               error={!!errors.lastName}

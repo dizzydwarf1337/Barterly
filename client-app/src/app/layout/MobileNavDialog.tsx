@@ -18,7 +18,6 @@ import {
   alpha,
   Switch,
   Chip,
-  Badge,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { forwardRef, useState, ReactElement } from "react";
@@ -30,19 +29,14 @@ import { useNavigate } from "react-router";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import HomeIcon from "@mui/icons-material/Home";
-import CategoryIcon from "@mui/icons-material/Category";
 import AddIcon from "@mui/icons-material/Add";
 import PersonIcon from "@mui/icons-material/Person";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
-import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import LanguageIcon from "@mui/icons-material/Language";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import HelpIcon from "@mui/icons-material/Help";
-import InfoIcon from "@mui/icons-material/Info";
 import useStore from "../stores/store";
 import authApi from "../../features/auth/api/authApi";
 
@@ -119,12 +113,10 @@ export default observer(function MobileNavDialog() {
     handleClose();
   };
 
-  // ✅ ИСПРАВЛЕНО: Теперь используем правильный метод из uiStore
   const handleThemeChange = () => {
     uiStore.changeTheme();
   };
 
-  // ✅ ИСПРАВЛЕНО: Добавлен обработчик смены языка как в основном NavBar
   const handleLanguageChange = () => {
     const newLanguage = i18n.language === "en" ? "pl" : "en";
     i18n.changeLanguage(newLanguage);
@@ -132,17 +124,11 @@ export default observer(function MobileNavDialog() {
     uiStore.setLanguage(newLanguage);
   };
 
-  // Menu items configuration
   const menuItems: MenuItem[] = [
     {
       icon: <HomeIcon />,
       text: t("Home"),
       path: "/",
-    },
-    {
-      icon: <CategoryIcon />,
-      text: t("categories"),
-      path: "/categories",
     },
     {
       icon: <AddIcon />,
@@ -154,27 +140,9 @@ export default observer(function MobileNavDialog() {
     ...(authStore.isLoggedIn
       ? [
           {
-            icon: (
-              <Badge
-                badgeContent={authStore.user?.notificationCount}
-                color="error"
-              >
-                <NotificationsIcon />
-              </Badge>
-            ),
-            text: t("notifications"),
-            badge: authStore.user?.notificationCount,
-            path: "/notifications",
-          },
-          {
             icon: <FavoriteIcon />,
             text: t("favorites"),
-            path: "/favorites",
-          },
-          {
-            icon: <SettingsIcon />,
-            text: t("settings"),
-            path: "/settings",
+            path: "posts/favourite",
           },
           { divider: true } as MenuItem,
           {
@@ -191,17 +159,6 @@ export default observer(function MobileNavDialog() {
           },
         ]),
     { divider: true } as MenuItem,
-    // Help section
-    {
-      icon: <HelpIcon />,
-      text: t("help"),
-      path: "/help",
-    },
-    {
-      icon: <InfoIcon />,
-      text: t("about"),
-      path: "/about",
-    },
   ];
 
   const filteredMenuItems = menuItems.filter((item) => {
@@ -249,7 +206,6 @@ export default observer(function MobileNavDialog() {
           flexDirection: "column",
         }}
       >
-        {/* Header */}
         <Box
           sx={{
             p: 3,
@@ -304,7 +260,6 @@ export default observer(function MobileNavDialog() {
             </Box>
           )}
 
-          {/* Search */}
           <Box
             component="form"
             onSubmit={handleSearch}
@@ -336,7 +291,6 @@ export default observer(function MobileNavDialog() {
           </Box>
         </Box>
 
-        {/* Menu Items */}
         <Box sx={{ flex: 1, overflowY: "auto" }}>
           <List sx={{ p: 1 }}>
             {filteredMenuItems.map((item, index) => {
@@ -401,7 +355,6 @@ export default observer(function MobileNavDialog() {
           </List>
         </Box>
 
-        {/* Settings Footer */}
         <Box
           sx={{
             p: 2,
@@ -418,7 +371,6 @@ export default observer(function MobileNavDialog() {
             {t("settings")}
           </Typography>
 
-          {/* Theme Toggle */}
           <Box
             display="flex"
             justifyContent="space-between"
@@ -445,7 +397,6 @@ export default observer(function MobileNavDialog() {
             />
           </Box>
 
-          {/* Language Toggle */}
           <Box
             display="flex"
             justifyContent="space-between"

@@ -7,6 +7,7 @@ import { UserWrapper } from "../wrappers/userWrapper";
 import { AdminWrapper } from "../wrappers/adminWrapper";
 import { adminRoutes } from "./adminRoutes";
 import { userRoutes } from "../../features/users/routes/userRoutes";
+import OtherUserPage from "../../features/users/pages/OtherUserPage";
 
 const routes: RouteObject[] = [
   {
@@ -23,6 +24,10 @@ const routes: RouteObject[] = [
           },
           ...postRoutes,
           ...authRoutes,
+          {
+            path:'/users/:userId',
+            element: <OtherUserPage />
+          }
         ],
       },
       {
@@ -38,7 +43,7 @@ const routes: RouteObject[] = [
         children:[
           ...userRoutes
         ]
-      }
+      },
     ],
   },
 ];

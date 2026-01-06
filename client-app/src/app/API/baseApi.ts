@@ -4,12 +4,12 @@ import axios from "axios";
 export default class BaseApi {
   private axiosInstance: AxiosInstance;
   private token: string | null = null;
-
+  private onUnauthorized: () => void;
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_API_URL,
     });
-
+    this.onUnauthorized = () => {};
     this.axiosInstance.interceptors.request.use((config) => {
       if (config.headers && !config.headers["NoAuth"]) {
         const token = this.token ?? localStorage.getItem("token");
@@ -19,6 +19,21 @@ export default class BaseApi {
       }
       return config;
     });
+
+     this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401 && this.onUnauthorized) {
+          this.onUnauthorized();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+  }
+
+  public setOnUnauthorized(callback: () => void) {
+    this.onUnauthorized = callback;
   }
 
   public setToken(token: string | null) {

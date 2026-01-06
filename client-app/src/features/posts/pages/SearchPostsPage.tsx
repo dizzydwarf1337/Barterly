@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import postApi from "../api/postApi";
 import { SearchFilters } from "../dto/postDto";
 import userPostApi from "../api/userPostApi";
+import useStore from "../../../app/stores/store";
 
 const SearchPostsPage = () => {
     const { t } = useTranslation();
@@ -20,36 +21,39 @@ const SearchPostsPage = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
 
+    const {authStore} = useStore();
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 setIsLoading(true);
-                const response = await userPostApi.getPosts({
-                    filterBy: {
-                        pageNumber: page,
-                        pageSize: pageSize,
-                        search: searchParams.get('search') || undefined,
-                        categoryId: searchParams.get('categoryId') || undefined,
-                        subCategoryId: searchParams.get('subCategoryId') || undefined,
-                        city: searchParams.get('city') || undefined,
-                        minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
-                        maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
-                        postType: searchParams.get('postType') 
-                        ? PostType[searchParams.get('postType') as keyof typeof PostType] 
+                const filterBy = {
+                    pageNumber: page,
+                    pageSize: pageSize,
+                    search: searchParams.get('search') || undefined,
+                    categoryId: searchParams.get('categoryId') || undefined,
+                    subCategoryId: searchParams.get('subCategoryId') || undefined,
+                    city: searchParams.get('city') || undefined,
+                    minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
+                    maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
+                    postType: searchParams.get('postType')
+                        ? PostType[searchParams.get('postType') as keyof typeof PostType]
                         : undefined,
-                        // Rent filters
-                        rentObjectType: searchParams.get('rentObjectType') ? Number(searchParams.get('rentObjectType')) : undefined,
-                        numberOfRooms: searchParams.get('numberOfRooms') ? Number(searchParams.get('numberOfRooms')) : undefined,
-                        area: searchParams.get('area') ? Number(searchParams.get('area')) : undefined,
-                        floor: searchParams.get('floor') ? Number(searchParams.get('floor')) : undefined,
-                        // Work filters
-                        workload: searchParams.get('workload') ? Number(searchParams.get('workload')) : undefined,
-                        workLocation: searchParams.get('workLocation') ? Number(searchParams.get('workLocation')) : undefined,
-                        minSalary: searchParams.get('minSalary') ? Number(searchParams.get('minSalary')) : undefined,
-                        maxSalary: searchParams.get('maxSalary') ? Number(searchParams.get('maxSalary')) : undefined,
-                        experienceRequired: searchParams.get('experienceRequired') === 'true' ? true : undefined,
-                    }
-                });
+                    // Rent filters
+                    rentObjectType: searchParams.get('rentObjectType') ? Number(searchParams.get('rentObjectType')) : undefined,
+                    numberOfRooms: searchParams.get('numberOfRooms') ? Number(searchParams.get('numberOfRooms')) : undefined,
+                    area: searchParams.get('area') ? Number(searchParams.get('area')) : undefined,
+                    floor: searchParams.get('floor') ? Number(searchParams.get('floor')) : undefined,
+                    // Work filters
+                    workload: searchParams.get('workload') ? Number(searchParams.get('workload')) : undefined,
+                    workLocation: searchParams.get('workLocation') ? Number(searchParams.get('workLocation')) : undefined,
+                    minSalary: searchParams.get('minSalary') ? Number(searchParams.get('minSalary')) : undefined,
+                    maxSalary: searchParams.get('maxSalary') ? Number(searchParams.get('maxSalary')) : undefined,
+                    experienceRequired: searchParams.get('experienceRequired') === 'true' ? true : undefined,
+                    };
+                const response = authStore.isLoggedIn ? 
+                await userPostApi.getPosts({filterBy}) :
+                await postApi.getPosts({filterBy})
                 if (response.isSuccess) {
                     setPosts(response.value.items);
                     setTotalPages(response.value.totalPages || Math.ceil(response.value.totalCount / pageSize));

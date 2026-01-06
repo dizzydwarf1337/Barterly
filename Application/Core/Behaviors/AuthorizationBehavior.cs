@@ -1,10 +1,8 @@
 ﻿using System.Security.Claims;
-using Application.Core.ApiResponse;
 using Application.Core.MediatR.Requests;
 using Domain.Enums.Users;
 using Domain.Exceptions.BusinessExceptions;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

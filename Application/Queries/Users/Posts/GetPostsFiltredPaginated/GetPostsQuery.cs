@@ -11,6 +11,8 @@ public class GetPostsQuery : PublicRequest<GetPostsQuery.Result>
     public class FilterSpecification
     {
         public string? Search { get; set; }
+        
+        public Guid? CategoryId { get; set; }
         public Guid? SubCategoryId { get; set; }
         public Guid? UserId { get; set; }
         

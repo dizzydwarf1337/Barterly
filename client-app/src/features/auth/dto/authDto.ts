@@ -23,17 +23,9 @@ export interface LoginWithGoogleRequestDTO {
   token: string;
 }
 
-export interface ResendEmailConfirmationRequestDTO {
-  email: string;
-}
-
 export interface ConfirmEmailRequestDTO {
   userMail: string;
   token: string;
-}
-
-export interface ResendEmailConfirmationRequestDTO {
-  email: string;
 }
 
 export type GetMeResponse = ApiResponse<User>;

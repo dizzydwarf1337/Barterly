@@ -1,4 +1,5 @@
 using Application.Core.ApiResponse;
+using Domain.Enums.Posts;
 using Domain.Interfaces.Commands.Post;
 using Domain.Interfaces.Queries.Post;
 using MediatR;
@@ -21,10 +22,10 @@ public class UpdatePostVisibilityCommandHandler : IRequestHandler<UpdatePostVisi
     public async Task<ApiResponse<Unit>> Handle(UpdatePostVisibilityCommand request, CancellationToken cancellationToken)
     {
         var post = await _postQueryRepository.GetAllPosts()
-            .Where(x => x.Id == request.PostId && x.OwnerId == request.AuthorizeData!.UserId)
-            .FirstOrDefaultAsync(cancellationToken);
-        if(post == null)
-            return ApiResponse<Unit>.Failure("Post not found", 404);
+            .Include(x => x.PostSettings)
+            .FirstOrDefaultAsync(x => x.Id == request.PostId && x.OwnerId == request.AuthorizeData!.UserId, cancellationToken);
+        if(post == null || post.PostSettings.postStatusType == PostStatusType.UnderReview)
+            return ApiResponse<Unit>.Failure("Post not found or under review", 404);
 
         await _postSettingsCommandRepository.UpdatePostSettings(post.PostSettingsId, cancellationToken,
             !post.PostSettings.IsHidden);

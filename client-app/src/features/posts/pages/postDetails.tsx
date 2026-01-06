@@ -37,7 +37,6 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
-import PostImageCarousel from "../components/postImageCarousel";
 import {
   ContractType,
   PostCurrency,
@@ -66,6 +65,7 @@ export default observer(function PostDetails() {
   const [loading, setLoading] = useState(true);
   const [ownerLoading, setOwnerLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -142,6 +142,93 @@ export default observer(function PostDetails() {
     ].filter(Boolean);
 
     return parts.join(", ");
+  };
+
+  const allImages = currentPost 
+    ? [
+        currentPost.mainImageUrl,
+        ...(currentPost.postImages ?? []).map(img => img.imageUrl!)
+      ].filter(Boolean)
+    : [];
+
+  const renderImageGallery = () => {
+    if (!allImages.length) return null;
+
+    return (
+      <Box mb={4}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '1fr 120px' },
+            gap: 2,
+          }}
+        >
+          <Box
+            component="img"
+            src={`${import.meta.env.VITE_API_URL}/${allImages[selectedImageIndex]}`}
+            alt={currentPost?.title}
+            sx={{
+              width: '100%',
+              height: { xs: 300, md: 500 },
+              objectFit: 'cover',
+              borderRadius: '16px',
+              cursor: 'pointer',
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.02)',
+              }
+            }}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'row', md: 'column' },
+              gap: 1,
+              overflowX: { xs: 'auto', md: 'visible' },
+              overflowY: { xs: 'visible', md: 'auto' },
+              maxHeight: { md: 500 },
+              '&::-webkit-scrollbar': {
+                width: '6px',
+                height: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: alpha('#000', 0.2),
+                borderRadius: '3px',
+              },
+            }}
+          >
+            {allImages.map((img, index) => (
+              <Box
+                key={index}
+                component="img"
+                src={`${import.meta.env.VITE_API_URL}/${img}`}
+                alt={`${currentPost?.title} ${index + 1}`}
+                onClick={() => setSelectedImageIndex(index)}
+                sx={{
+                  width: { xs: 80, md: 100 },
+                  height: { xs: 80, md: 120 },
+                  minWidth: { xs: 60, md: 80 },
+                  objectFit: 'cover',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  border: selectedImageIndex === index 
+                    ? `3px solid ${alpha('#2196F3', 0.8)}`
+                    : `2px solid ${alpha('#000', 0.1)}`,
+                  opacity: selectedImageIndex === index ? 1 : 0.6,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    opacity: 1,
+                    transform: 'scale(1.05)',
+                    border: `3px solid ${alpha('#2196F3', 0.6)}`,
+                  }
+                }}
+              />
+            ))}
+          </Box>
+        </Box>
+      </Box>
+    );
   };
 
   const renderPriceSection = () => {
@@ -298,7 +385,17 @@ export default observer(function PostDetails() {
             {t("postOwner")}
           </Typography>
 
-          <Box display="flex" alignItems="center" gap={2} mb={3}>
+          <Box display="flex" alignItems="center" gap={2} mb={3} onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/users/${owner.id}`)
+                }}
+                sx={{
+                  '&:hover':{
+                    cursor:'pointer'
+                  }
+                }}
+                >
             <Avatar
               src={
                 owner.profilePicturePath
@@ -560,17 +657,8 @@ export default observer(function PostDetails() {
           </Button>
         </Box>
 
-        {currentPost.mainImageUrl && (
-          <Box mb={4}>
-            <PostImageCarousel
-              mainImageUrl={currentPost.mainImageUrl}
-              secondaryImageUrls={(currentPost.postImages ?? []).map(
-                (img) => img.imageUrl!
-              )}
-              title={currentPost.title}
-            />
-          </Box>
-        )}
+        {renderImageGallery()}
+
         <Box
           display="grid"
           gridTemplateColumns={{ xs: "1fr", md: "2fr 1fr" }}
@@ -808,7 +896,6 @@ export default observer(function PostDetails() {
                 >
                   {currentPost.fullDescription}
                 </Typography>
-
               </CardContent>
             </Card>
           </Box>
@@ -827,7 +914,7 @@ export default observer(function PostDetails() {
               flexDirection:'column',
               gap:2
             }}>
-              <Typography  variant="h6" sx={{ color:'primary.main', fontWeight: 700 }}>
+              <Typography variant="h6" sx={{ color:'primary.main', fontWeight: 700 }}>
                 {t('seeAlsoOwnerPosts')}
               </Typography>
               {owner?.posts
@@ -835,7 +922,7 @@ export default observer(function PostDetails() {
               .sort(() => Math.random() - 0.5)
               .slice(0, 3)
               .map(x => (
-                <PostSmallItem post={x} />
+                <PostSmallItem key={x.id} post={x} />
               ))}
             </Box>
           </Box>

@@ -9,8 +9,8 @@ export enum ContractType {
 }
 
 export enum PostCurrency {
-  "$" = 0,
-  "€" = 1,
+  "USD" = 0,
+  "EUR" = 1,
   "Zł" = 2,
 }
 
@@ -90,6 +90,7 @@ export interface PostPreview {
     floor: number | null;
     postType: string | null;
     ownerName: string | null;
+    ownerProfilePicturePath?: string | null;
 }
 
 export interface PostDetails extends PostPreview {

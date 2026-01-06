@@ -32,6 +32,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<Log
         var settings = await _userSettingQueryRepository.GetUserSettingByUserIdAsync(user.Id,cancellationToken);
         if(settings.IsDeleted)
             return ApiResponse<LoginCommand.Result>.Failure("User deleted");
+        if(settings.IsBanned)
+            return ApiResponse<LoginCommand.Result>.Failure("User banned");
         var roles =  (await _userManager.GetRolesAsync(user)).ToList();
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
         var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);

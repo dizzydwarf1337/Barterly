@@ -1,10 +1,10 @@
 import { PostCurrency } from "../../posts/types/postTypes";
 
 export enum OrderStatus {
-  Paid = "paid",
-  Shipped = "shipped",
-  Delivered = "delivered",
-  Canceled = "canceled",
+  Paid = "Paid",
+  Shipped = "Shipped",
+  Delivered = "Delivered",
+  Canceled = "Canceled",
 }
 
 export interface Order {

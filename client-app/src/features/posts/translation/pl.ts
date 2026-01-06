@@ -28,5 +28,6 @@ export default {
     maxSalary: "Maksymalne wynagrodzenie",
     experienceRequired: "Wymagane doświadczenie",
     hideAdvancedFilters: "Ukryj zaawansowane filtry",
-    showAdvancedFilters: "Pokaż zaawansowane filtry"
+    showAdvancedFilters: "Pokaż zaawansowane filtry",
+    noPostsFound:"Nie znaleziono ogłoszeń"
 }

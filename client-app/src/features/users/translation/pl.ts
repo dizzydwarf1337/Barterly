@@ -50,4 +50,11 @@ export default {
   Statusshipped: "Wysłane",
   Statusdelivered: "Dostarczone",
   Statuscanceled: "Anulowane",
+  ProfilePage:"Profil",
+  PostsPage:"Moje ogłoszenia",
+  OrdersPage:"Moje zamówienia",
+  NoBio: "Brak",
+  Location: "Lokalizacja",
+  NoLocation: "Brak",
+  UserPosts:"Ogłoszenia użytkownika"
 };

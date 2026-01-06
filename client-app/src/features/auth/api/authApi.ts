@@ -7,7 +7,6 @@ import type {
   LoginResponseDTO,
   LoginWithGoogleRequestDTO,
   RegisterRequestDTO,
-  ResendEmailConfirmationRequestDTO,
 } from "../dto/authDto";
 
 const authApi = {
@@ -24,7 +23,7 @@ const authApi = {
   confirmEmail: (body: ConfirmEmailRequestDTO) =>
     apiClient.post<ApiResponse<void>>("public/auth/confirm-email", body, true),
 
-  resendEmailConfirm: (body: ResendEmailConfirmationRequestDTO) =>
+  resendEmailConfirm: (body:{Email:string}) =>
     apiClient.post<ApiResponse<void>>(
       "public/auth/resend-email-confirm",
       body,

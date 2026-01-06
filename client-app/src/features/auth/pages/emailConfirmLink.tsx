@@ -67,7 +67,7 @@ export const EmailConfirmLink = () => {
     };
 
     confirmEmail();
-  }, [email, token, navigate, uiStore, t]);
+  }, [email, token]);
 
   const handleGoToLogin = () => {
     navigate("/login");
@@ -97,10 +97,10 @@ export const EmailConfirmLink = () => {
                 }}
               />
               <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-                {t("emailConfirm.verifying")}
+                {t("verifying")}
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={4}>
-                {t("emailConfirm.verifyingDescription")}
+                {t("verifyingDescription")}
               </Typography>
               <CircularProgress size={50} thickness={4} />
               <Box mt={3}>
@@ -134,20 +134,20 @@ export const EmailConfirmLink = () => {
                 }}
               />
               <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="success.main">
-                {t("emailConfirm.success")}
+                {t("success")}
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={3}>
-                {t("emailConfirm.successDescription")}
+                {t("successDescription")}
               </Typography>
               
               <Alert severity="success" sx={{ mb: 3, textAlign: 'left' }}>
                 <Typography variant="body2">
-                  {t("emailConfirm.accountActivated")}
+                  {t("accountActivated")}
                 </Typography>
               </Alert>
 
               <Typography variant="body2" color="text.secondary" mb={3}>
-                {t("emailConfirm.redirecting", { seconds: countdown })}
+                {t("redirecting", { seconds: countdown })}
               </Typography>
 
               <Box display="flex" gap={2} justifyContent="center" flexWrap="wrap">
@@ -157,7 +157,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoToLogin}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.goToLogin")}
+                  {t("goToLogin")}
                 </Button>
                 <Button
                   variant="outlined"
@@ -166,7 +166,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoHome}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.goHome")}
+                  {t("goHome")}
                 </Button>
               </Box>
             </Box>
@@ -191,15 +191,15 @@ export const EmailConfirmLink = () => {
                 }}
               />
               <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="error.main">
-                {t("emailConfirm.failed")}
+                {t("failed")}
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={3}>
-                {t("emailConfirm.failedDescription")}
+                {t("failedDescription")}
               </Typography>
 
               <Alert severity="error" sx={{ mb: 3, textAlign: 'left' }}>
                 <Typography variant="body2">
-                  {t("emailConfirm.possibleReasons")}
+                  {t("possibleReasons")}
                 </Typography>
               </Alert>
 
@@ -210,7 +210,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoToLogin}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.tryLogin")}
+                  {t("tryLogin")}
                 </Button>
                 <Button
                   variant="outlined"
@@ -219,7 +219,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoHome}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.goHome")}
+                  {t("goHome")}
                 </Button>
               </Box>
             </Box>
@@ -238,15 +238,15 @@ export const EmailConfirmLink = () => {
                 }}
               />
               <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="warning.main">
-                {t("emailConfirm.invalidLink")}
+                {t("invalidLink")}
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={3}>
-                {t("emailConfirm.invalidLinkDescription")}
+                {t("invalidLinkDescription")}
               </Typography>
 
               <Alert severity="warning" sx={{ mb: 3, textAlign: 'left' }}>
                 <Typography variant="body2">
-                  {t("emailConfirm.invalidLinkHelp")}
+                  {t("invalidLinkHelp")}
                 </Typography>
               </Alert>
 
@@ -257,7 +257,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoToLogin}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.goToLogin")}
+                  {t("goToLogin")}
                 </Button>
                 <Button
                   variant="outlined"
@@ -266,7 +266,7 @@ export const EmailConfirmLink = () => {
                   onClick={handleGoHome}
                   sx={{ minWidth: 150 }}
                 >
-                  {t("emailConfirm.goHome")}
+                  {t("goHome")}
                 </Button>
               </Box>
             </Box>

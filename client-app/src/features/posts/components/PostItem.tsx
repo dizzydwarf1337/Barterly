@@ -25,12 +25,10 @@ import MoneyIcon from "@mui/icons-material/Money";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import PersonIcon from "@mui/icons-material/Person";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import WorkIcon from "@mui/icons-material/Work";
 import BusinessIcon from "@mui/icons-material/Business";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import postApi from "../api/postApi";
 import useStore from "../../../app/stores/store";
 import userPostApi from "../api/userPostApi";
 
@@ -405,24 +403,26 @@ export default observer(function PostItem({ post }: Props) {
               </Typography>
             </Box>
 
-            <Box display="flex" alignItems="center" gap={0.5}>
+            <Box display="flex" alignItems="center" gap={0.5} onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/users/${post.ownerId}`)
+                }
+              }>
               <Avatar
-                sx={{
-                  width: 24,
-                  height: 24,
-                  backgroundColor: "primary.main",
-                  fontSize: "0.75rem",
-                }}
+                src={post.ownerProfilePicturePath ? `${import.meta.env.VITE_API_URL}/${post.ownerProfilePicturePath}` : undefined}
+                sx={{ width: 25, height: 25 }}
               >
-                <PersonIcon sx={{ fontSize: 14 }} />
+                {!post.ownerProfilePicturePath &&
+                  `${(post.ownerName ?? "")[0]}`}
               </Avatar>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ fontSize: "0.75rem" }}
-              >
-                {post.ownerName || t("anonymous")}
-              </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem" }}
+                >
+                  {post.ownerName || t("anonymous")}
+                </Typography>
             </Box>
           </Box>
         </Box>

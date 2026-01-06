@@ -49,10 +49,15 @@ const UserOrderPage = () => {
 
   const handleMarkAsShipped = async (orderId: string) => {
     try {
-      // TODO: Implement mark as shipped API call
-      console.log("Marking as shipped:", orderId);
-      uiStore.showSnackbar(t("orders:MarkedAsShipped"), "success");
-      loadOrders();
+      var result = await ordersApi.markAsShipped(orderId);
+      if(result.isSuccess){
+        uiStore.showSnackbar(t("user:MarkedAsShipped"), "success");
+        setOrders(prev =>
+          prev.map(o =>
+            o.id === orderId ? { ...o, status: OrderStatus.Shipped } : o
+          )
+        );
+      }
     } catch (err) {
       console.log(err);
       uiStore.showSnackbar(t("common:ErrorOccurred"), "error");
@@ -61,10 +66,15 @@ const UserOrderPage = () => {
 
   const handleMarkAsDelivered = async (orderId: string) => {
     try {
-      // TODO: Implement mark as delivered API call
-      console.log("Marking as delivered:", orderId);
-      uiStore.showSnackbar(t("orders:MarkedAsDelivered"), "success");
-      loadOrders();
+      var result = await ordersApi.markAsDelivered(orderId);
+      if(result.isSuccess){
+        uiStore.showSnackbar(t("user:MarkedAsDelivered"), "success");
+        setOrders(prev =>
+          prev.map(o =>
+            o.id === orderId ? { ...o, status: OrderStatus.Delivered } : o
+          )
+        );
+      }
     } catch (err) {
       console.log(err);
       uiStore.showSnackbar(t("common:ErrorOccurred"), "error");
@@ -117,7 +127,7 @@ const UserOrderPage = () => {
         alignItems="center"
         minHeight="400px"
       >
-        <Typography variant="h6" color="text.secondary">
+        <Typography variant="h5" sx={{color: theme => theme.palette.primary.main }}>
           {t("orders:NoOrders")}
         </Typography>
       </Box>
@@ -133,14 +143,13 @@ const UserOrderPage = () => {
 
     return (
       <Box mb={4}>
-        <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 2, color: (theme) => theme.palette.primary.main }}>
           {t(titleKey)}
         </Typography>
         {sectionOrders.map((order) => (
           <OrderItem
             key={order.id}
             order={order}
-            isSeller={isSeller}
             onMarkAsShipped={isSeller ? handleMarkAsShipped : undefined}
             onMarkAsDelivered={!isSeller ? handleMarkAsDelivered : undefined}
           />
@@ -151,13 +160,13 @@ const UserOrderPage = () => {
 
   return (
     <Box>
-      {renderOrderSection(sellerOrders, "orders:MySales", true)}
+      {renderOrderSection(sellerOrders, "user:MySales", true)}
 
       {sellerOrders.length > 0 && buyerOrders.length > 0 && (
         <Divider sx={{ my: 4 }} />
       )}
 
-      {renderOrderSection(buyerOrders, "orders:MyPurchases", false)}
+      {renderOrderSection(buyerOrders, "user:MyPurchases", false)}
     </Box>
   );
 };

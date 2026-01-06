@@ -22,7 +22,8 @@ public class GetMyPostsQueryHandler : IRequestHandler<GetMyPostsQuery, ApiRespon
     {
         return ApiResponse<ICollection<PostPreviewDto>>.Success(
                 _mapper.Map<ICollection<PostPreviewDto>>(await _postQueryRepository.GetAllPosts()
-                    .Where(x => x.OwnerId == request.AuthorizeData!.UserId && !x.PostSettings.IsDeleted).ToListAsync(cancellationToken)
+                    .Where(x => x.OwnerId == request.AuthorizeData!.UserId && !x.PostSettings.IsDeleted).Include(x=> x.Owner)
+                    .ToListAsync(cancellationToken)
                 )
             );
     }

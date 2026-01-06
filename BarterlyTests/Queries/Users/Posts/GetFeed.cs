@@ -1,6 +1,6 @@
 using Application.Core.MediatR.Requests;
 using Application.DTOs.Posts;
-using Application.Queries.Users.Posts.GetFeed;
+using Application.Queries.Public.Posts.GetFeed;
 using AutoMapper;
 using Domain.Entities.Posts;
 using Domain.Entities.Posts.PostTypes;
@@ -22,10 +22,7 @@ public class GetFeed
     {
         _postQueryRepositoryMock = new Mock<IPostQueryRepository>();
         _mapperMock = new Mock<IMapper>();
-        _handler = new GetFeedQueryHanlder(
-            _postQueryRepositoryMock.Object,
-            _mapperMock.Object
-        );
+        _handler = new GetFeedQueryHanlder(_postQueryRepositoryMock.Object, _mapperMock.Object);
     }
 
     private AuthorizeData CreateAuthorizeData(Guid userId)
@@ -44,9 +41,9 @@ public class GetFeed
         // Arrange
         var posts = new List<Post>
         {
-            CreatePost(viewsCount: 100, visitedPostsCount: 5),
-            CreatePost(viewsCount: 200, visitedPostsCount: 10),
-            CreatePost(viewsCount: 150, visitedPostsCount: 7)
+            CreatePost(viewsCount: 100),
+            CreatePost(viewsCount: 200),
+            CreatePost(viewsCount: 150)
         };
 
         var mockPosts = posts.AsQueryable().BuildMock();
@@ -56,7 +53,7 @@ public class GetFeed
             .Returns(mockPosts);
 
         _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
             .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
             {
                 Id = post.Id.ToString(),
@@ -65,8 +62,11 @@ public class GetFeed
 
         var query = new GetFeedQuery
         {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
         };
 
         // Act
@@ -75,7 +75,9 @@ public class GetFeed
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        Assert.Equal(3, result.Value.Count);
+        Assert.Equal(3, result.Value.Items.Count);
+        Assert.Equal(3, result.Value.TotalCount);
+        Assert.Equal(1, result.Value.TotalPages);
     }
 
     [Fact]
@@ -90,13 +92,16 @@ public class GetFeed
             .Returns(mockPosts);
 
         _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
             .Returns(new List<PostPreviewDto>());
 
         var query = new GetFeedQuery
         {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
         };
 
         // Act
@@ -105,100 +110,8 @@ public class GetFeed
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        Assert.Empty(result.Value);
-    }
-    
-    [Fact]
-    public async Task Handle_SortsByViewsCountDescending()
-    {
-        // Arrange
-        var post1Id = Guid.NewGuid();
-        var post2Id = Guid.NewGuid();
-        var post3Id = Guid.NewGuid();
-
-        var posts = new List<Post>
-        {
-            CreatePost(post1Id, viewsCount: 100, visitedPostsCount: 5),
-            CreatePost(post2Id, viewsCount: 300, visitedPostsCount: 5),
-            CreatePost(post3Id, viewsCount: 200, visitedPostsCount: 5)
-        };
-
-        var mockPosts = posts.AsQueryable().BuildMock();
-
-        _postQueryRepositoryMock
-            .Setup(x => x.GetAllPosts())
-            .Returns(mockPosts);
-
-        _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
-            .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
-            {
-                Id = post.Id.ToString(),
-                SubCategoryId = post.SubCategoryId.ToString()
-            }).ToList());
-
-        var query = new GetFeedQuery
-        {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
-        };
-
-        // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Equal(post2Id.ToString(), result.Value.ElementAt(0).Id); // 300 views
-        Assert.Equal(post3Id.ToString(), result.Value.ElementAt(1).Id); // 200 views
-        Assert.Equal(post1Id.ToString(), result.Value.ElementAt(2).Id); // 100 views
-    }
-
-    [Fact]
-    public async Task Handle_SortsByViewsCount()
-    {
-        // Arrange
-        var post1Id = Guid.NewGuid();
-        var post2Id = Guid.NewGuid();
-        var post3Id = Guid.NewGuid();
-        var post4Id = Guid.NewGuid();
-
-        var posts = new List<Post>
-        {
-            CreatePost(post1Id, viewsCount: 100, visitedPostsCount: 10),
-            CreatePost(post2Id, viewsCount: 200, visitedPostsCount: 10),
-            CreatePost(post3Id, viewsCount: 300, visitedPostsCount: 5),
-            CreatePost(post4Id, viewsCount: 150, visitedPostsCount: 10)
-        };
-
-        var mockPosts = posts.AsQueryable().BuildMock();
-
-        _postQueryRepositoryMock
-            .Setup(x => x.GetAllPosts())
-            .Returns(mockPosts);
-
-        _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
-            .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
-            {
-                Id = post.Id.ToString(),
-                SubCategoryId = post.SubCategoryId.ToString()
-            }).ToList());
-
-        var query = new GetFeedQuery
-        {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
-        };
-
-        // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Equal(post3Id.ToString(), result.Value.ElementAt(0).Id); // 300 views
-        Assert.Equal(post2Id.ToString(), result.Value.ElementAt(1).Id); // 200 views
-        Assert.Equal(post4Id.ToString(), result.Value.ElementAt(2).Id); // 150 views
-        Assert.Equal(post1Id.ToString(), result.Value.ElementAt(3).Id); // 100 vies
+        Assert.Empty(result.Value.Items);
+        Assert.Equal(0, result.Value.TotalCount);
     }
 
     [Fact]
@@ -207,7 +120,7 @@ public class GetFeed
         // Arrange
         var posts = new List<Post>
         {
-            CreatePost(viewsCount: 100, visitedPostsCount: 5)
+            CreatePost(viewsCount: 100)
         };
 
         var mockPosts = posts.AsQueryable().BuildMock();
@@ -217,7 +130,7 @@ public class GetFeed
             .Returns(mockPosts);
 
         _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
             .Returns(new List<PostPreviewDto>
             {
                 new PostPreviewDto { Id = Guid.NewGuid().ToString(), SubCategoryId = Guid.NewGuid().ToString() }
@@ -225,8 +138,11 @@ public class GetFeed
 
         var query = new GetFeedQuery
         {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
         };
 
         // Act
@@ -234,7 +150,7 @@ public class GetFeed
 
         // Assert
         _mapperMock.Verify(
-            x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()),
+            x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()),
             Times.Once);
     }
 
@@ -244,7 +160,7 @@ public class GetFeed
         // Arrange
         var posts = new List<Post>
         {
-            CreatePost(viewsCount: 100, visitedPostsCount: 5)
+            CreatePost(viewsCount: 100)
         };
 
         var mockPosts = posts.AsQueryable().BuildMock();
@@ -254,7 +170,7 @@ public class GetFeed
             .Returns(mockPosts);
 
         _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
             .Returns(new List<PostPreviewDto>
             {
                 new PostPreviewDto { Id = Guid.NewGuid().ToString(), SubCategoryId = Guid.NewGuid().ToString() }
@@ -262,8 +178,11 @@ public class GetFeed
 
         var query = new GetFeedQuery
         {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
         };
 
         // Act
@@ -273,15 +192,95 @@ public class GetFeed
         Assert.True(result.IsSuccess);
         Assert.Null(result.Error);
     }
-    /*
+    
     [Fact]
-    public async Task Handle_WithMultiplePosts_ReturnsAllInCorrectOrder()
+    public async Task Handle_ExcludesDeletedPosts()
+    {
+        // Arrange
+        var activePost = CreatePost(Guid.NewGuid(), viewsCount: 100);
+        var deletedPost = CreatePost(Guid.NewGuid(), viewsCount: 200, isDeleted: true);
+
+        var posts = new List<Post> { activePost, deletedPost };
+        var mockPosts = posts.AsQueryable().BuildMock();
+
+        _postQueryRepositoryMock
+            .Setup(x => x.GetAllPosts())
+            .Returns(mockPosts);
+
+        _mapperMock
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
+            {
+                Id = post.Id.ToString(),
+                SubCategoryId = post.SubCategoryId.ToString()
+            }).ToList());
+
+        var query = new GetFeedQuery
+        {
+           FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
+        };
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Single(result.Value.Items);
+        Assert.Equal(activePost.Id.ToString(), result.Value.Items.First().Id);
+    }
+    
+    [Fact]
+    public async Task Handle_ExcludesHiddenPosts()
+    {
+        // Arrange
+        var visiblePost = CreatePost(Guid.NewGuid(), viewsCount: 100);
+        var hiddenPost = CreatePost(Guid.NewGuid(), viewsCount: 200, isHidden: true);
+
+        var posts = new List<Post> { visiblePost, hiddenPost };
+        var mockPosts = posts.AsQueryable().BuildMock();
+
+        _postQueryRepositoryMock
+            .Setup(x => x.GetAllPosts())
+            .Returns(mockPosts);
+
+        _mapperMock
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
+            {
+                Id = post.Id.ToString(),
+                SubCategoryId = post.SubCategoryId.ToString()
+            }).ToList());
+
+        var query = new GetFeedQuery
+        {
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
+        };
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Single(result.Value.Items);
+        Assert.Equal(visiblePost.Id.ToString(), result.Value.Items.First().Id);
+    }
+    
+    [Fact]
+    public async Task Handle_CalculatesTotalPagesCorrectly()
     {
         // Arrange
         var posts = new List<Post>();
-        for (int i = 1; i <= 10; i++)
+        for (int i = 0; i < 25; i++)
         {
-            posts.Add(CreatePost(viewsCount: i * 100, visitedPostsCount: i));
+            posts.Add(CreatePost(viewsCount: 100));
         }
 
         var mockPosts = posts.AsQueryable().BuildMock();
@@ -291,7 +290,7 @@ public class GetFeed
             .Returns(mockPosts);
 
         _mapperMock
-            .Setup(x => x.Map<List<PostPreviewDto>>(It.IsAny<List<Post>>()))
+            .Setup(x => x.Map<ICollection<PostPreviewDto>>(It.IsAny<List<Post>>()))
             .Returns((List<Post> p) => p.Select(post => new PostPreviewDto
             {
                 Id = post.Id.ToString(),
@@ -300,8 +299,11 @@ public class GetFeed
 
         var query = new GetFeedQuery
         {
-            AuthorizeData = CreateAuthorizeData(Guid.NewGuid()),
-            PageNumber = 10
+            FilterBy = new GetFeedQuery.FilterSpecification
+            {
+                PageSize = 10,
+                PageNumber = 1
+            }
         };
 
         // Act
@@ -309,29 +311,18 @@ public class GetFeed
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(10, result.Value.Count);
+        Assert.Equal(25, result.Value.TotalCount);
+        Assert.Equal(3, result.Value.TotalPages); // 25 posts / 10 per page = 3 pages
     }
-    */
-
-    // Helper method
-    private Post CreatePost(int viewsCount, int visitedPostsCount)
+    
+    // Helper methods
+    private Post CreatePost(int viewsCount, bool isDeleted = false, bool isHidden = false)
     {
-        return CreatePost(Guid.NewGuid(), viewsCount, visitedPostsCount);
+        return CreatePost(Guid.NewGuid(), viewsCount, isDeleted, isHidden);
     }
 
-    private Post CreatePost(Guid postId, int viewsCount, int visitedPostsCount)
+    private Post CreatePost(Guid postId, int viewsCount, bool isDeleted = false, bool isHidden = false)
     {
-        var visitedPosts = new List<VisitedPost>();
-        for (int i = 0; i < visitedPostsCount; i++)
-        {
-            visitedPosts.Add(new VisitedPost
-            {
-                PostId = postId,
-                UserId = Guid.NewGuid(),
-                LastVisitedAt = DateTime.UtcNow
-            });
-        }
-
         return new CommonPost
         {
             Id = postId,
@@ -342,13 +333,18 @@ public class GetFeed
             OwnerId = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow,
             ViewsCount = viewsCount,
-            VisitedPosts = visitedPosts,
+            VisitedPosts = new List<VisitedPost>(),
             PostSettings = new PostSettings
             {
                 Id = Guid.NewGuid(),
-                IsDeleted = false,
-                IsHidden = false,
+                IsDeleted = isDeleted,
+                IsHidden = isHidden,
                 postStatusType = PostStatusType.Published
+            },
+            Promotion = new Promotion()
+            {
+                Id = Guid.NewGuid(),
+                Type = PostPromotionType.None
             }
         };
     }

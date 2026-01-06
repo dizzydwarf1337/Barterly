@@ -9,8 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Remove="wwwroot\profanity_en.txt"/>
-        <Content Remove="wwwroot\profanity_pl.txt"/>
         <Content Include="..\.dockerignore">
           <Link>.dockerignore</Link>
         </Content>

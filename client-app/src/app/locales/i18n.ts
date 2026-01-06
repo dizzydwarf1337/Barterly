@@ -14,6 +14,8 @@ import messagesEn from "../../features/messages/translation/en";
 import messagesPl from "../../features/messages/translation/pl";
 import userEn from "../../features/users/translation/en";
 import userPl from "../../features/users/translation/pl";
+import ordersEn from "../../features/orders/translation/en";
+import ordersPl from "../../features/orders/translation/pl";
 
 import LanguageDetector from "i18next-browser-languagedetector";
 
@@ -54,8 +56,14 @@ i18n
           signInFailed: "Sign in has failed",
           settings: "Settings",
           thankForSignIn: "Thank you for sign in!",
-          favorites:"Favorites",
-          seeAlsoOwnerPosts:"See other posts by this owner",
+          favorites: "Favorites",
+          seeAlsoOwnerPosts: "See other posts by this owner",
+          noCategoriesFound: "Categories not found",
+          pleaseLoginToAddPost: "Please login to add new post",
+          emailConfirm: {
+            instructions:
+              "An email has been sent to the provided email address. Please check your mailbox and click the link.",
+          },
           // Post creation translations
           postType: "Post Type",
           basicInformation: "Basic Information",
@@ -85,6 +93,8 @@ i18n
           creating: "Creating...",
           subCategory: "Subcategory",
           subCategories: "Subcategories",
+          switchToLight: "Switch to light",
+          switchToDark: "Switch to dark",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -94,6 +104,28 @@ i18n
           confirmationMailSuccess: "Email has confirmed successfully",
           confirmationMailFailed: "Email confirmation failed",
           confirmationMailError: "Error while sending mail",
+          noEmailProvided: "Email address not provided",
+          goToLogin: "Go to login",
+          thankYou: "Thank you",
+          registrationComplete: "Registration complete",
+          checkInbox: "Check your inbox",
+          sending: "Sending...",
+          backToLogin: "Back to login",
+          goHome: "Go to homepage",
+          checkSpamTip: "If you don’t see the email, check your spam folder",
+          success: "Success",
+          verifying: "Verifying",
+          verifyingDescription: "We are verifying your account. Please wait.",
+          successDescription: "Your account has been successfully activated.",
+          accountActivated: "Account activated",
+          redirecting: (seconds: number) => `Redirecting in ${seconds} seconds...`,
+          failed: "Verification failed",
+          failedDescription: "We couldn’t activate your account.",
+          possibleReasons: "Possible reasons",
+          tryLogin: "Try logging in",
+          invalidLinkHelp: "Invalid or expired link",
+          invalidLinkDescription: "The activation link is invalid or has expired.",
+          invalidLink: "Invalid link",
           sendAgain: "Send again in",
 
           // General UI translations
@@ -170,7 +202,7 @@ i18n
           // Post types
           work: "Work",
           rent: "Rent",
-          service: "Service",
+          service: "Common",
 
           // Navigation translations
           Home: "Home",
@@ -296,8 +328,8 @@ i18n
           addPost: "Dodaj Ogłoszenie",
           delete: "Usuń",
           category: "Kategoria",
-          favorites:"Ulubione",
-          seeAlsoOwnerPosts:"Zobacz inne posty tego ogłoszeniodawcy",
+          favorites: "Ulubione",
+          seeAlsoOwnerPosts: "Zobacz inne posty tego ogłoszeniodawcy",
           categories: "Kategorie",
           profile: "Profil użytkownika",
           changeLanguage: "Change to EN",
@@ -325,7 +357,8 @@ i18n
           signInFailed: "Nieudana próba rejestracji",
           settings: "Ustawienia",
           thankForSignIn: "Dziękujemy za rejestrację!",
-
+          noCategoriesFound: "Nie znaleziono kategorii",
+          pleaseLoginToAddPost: "Zaloguj się aby utworzyć nowe ogłoszenie",
           // Post creation translations
           postType: "Typ Ogłoszenia",
           basicInformation: "Podstawowe Informacje",
@@ -355,6 +388,8 @@ i18n
           creating: "Tworzenie...",
           subCategory: "Podkategoria",
           subCategories: "Podkategorii",
+          switchToLight: "Tryb jasny",
+          switchToDark: "Tryb ciemny",
 
           // Email confirmation translations
           emailConfirmationPostRegister:
@@ -364,6 +399,28 @@ i18n
           confirmationMailSuccess: "Adres email został potwierdzony",
           confirmationMailFailed: "Nieudana próba potwierdzenia adresu email",
           confirmationMailError: "Nieudana próba wysłania",
+          noEmailProvided: "Nie podano adresu e-mail",
+          goToLogin: "Przejdź do logowania",
+          thankYou: "Dziękujemy",
+          registrationComplete: "Rejestracja zakończona",
+          checkInbox: "Sprawdź swoją skrzynkę e-mail",
+          sending: "Wysyłanie...",
+          backToLogin: "Powrót do logowania",
+          goHome: "Przejdź na stronę główną",
+          checkSpamTip: "Jeśli nie widzisz wiadomości, sprawdź folder spam",
+          success: "Sukces",
+          verifying: "Weryfikacja",
+          verifyingDescription: "Trwa weryfikacja konta. Proszę czekać.",
+          successDescription: "Twoje konto zostało pomyślnie aktywowane.",
+          accountActivated: "Konto aktywowane",
+          redirecting: (seconds: number) => `Przekierowanie za ${seconds} sekund...`,
+          failed: "Weryfikacja nie powiodła się",
+          failedDescription: "Nie udało się aktywować konta.",
+          possibleReasons: "Możliwe przyczyny",
+          tryLogin: "Spróbuj się zalogować",
+          invalidLinkHelp: "Nieprawidłowy lub wygasły link",
+          invalidLinkDescription: "Link aktywacyjny jest nieprawidłowy lub wygasł.",
+          invalidLink: "Nieprawidłowy link",
           sendAgain: "Wyślij ponownie za",
 
           // General UI translations
@@ -441,7 +498,7 @@ i18n
           // Post types
           work: "Praca",
           rent: "Wynajem",
-          service: "Usługa",
+          service: "Zwykłe",
 
           // Navigation translations
           Home: "Strona Główna",
@@ -589,5 +646,7 @@ i18n.addResourceBundle("en", "chat", messagesEn, true, true);
 i18n.addResourceBundle("pl", "chat", messagesPl, true, true);
 i18n.addResourceBundle("en", "user", userEn, true, true);
 i18n.addResourceBundle("pl", "user", userPl, true, true);
+i18n.addResourceBundle("en", "orders", ordersEn, true, true);
+i18n.addResourceBundle("pl", "orders", ordersPl, true, true);
 
 export default i18n;

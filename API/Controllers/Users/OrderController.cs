@@ -1,3 +1,5 @@
+using Application.Commands.Users.Orders.MarkAsDelivered;
+using Application.Commands.Users.Orders.MarkAsShipped;
 using Application.Queries.Users.Orders.GetMyOrders;
 using Application.Queries.Users.Orders.GetMyPlacedOrders;
 using Microsoft.AspNetCore.Authorization;
@@ -18,4 +20,28 @@ public class OrderController : BaseController
     [Route("my-placed")]
     public async Task<IActionResult> GetMyPlacedOrders()
         => HandleResponse(await Mediator.Send(new GetMyPlacedOrdersQuery()));
+
+    [HttpPut]
+    [Route("deliver/{orderId:guid}")]
+    public async Task<IActionResult> MarkAsDelivered([FromRoute] Guid orderId)
+    {
+        var command = new MarkAsDeliveredCommand
+        {
+            OrderId = orderId
+        };
+        
+        return HandleResponse(await Mediator.Send(command));
+    }
+
+    [HttpPut]
+    [Route("ship/{orderId:guid}")]
+    public async Task<IActionResult> MarkAsShipped([FromRoute] Guid orderId)
+    {
+        var command = new MarkAsShippedCommand
+        {
+            OrderId = orderId
+        };
+        
+        return HandleResponse(await Mediator.Send(command));
+    }
 }

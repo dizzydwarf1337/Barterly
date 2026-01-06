@@ -24,10 +24,33 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, A
     public async Task<ApiResponse<Unit>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.UserMail);
-        var confirmResult = await _userManager.ConfirmEmailAsync(user!, request.Token);
-        await _logService.CreateLogAsync($"User {user!.Email} confirmed email", cancellationToken,
-            LogType.Information, userId: user.Id);
-        await _mediator.Publish(new EmailConfirmedEvent { Email = request.UserMail });
+        
+        if (user == null)
+            return ApiResponse<Unit>.Failure("Пользователь не найден");
+        
+        if (await _userManager.IsEmailConfirmedAsync(user))
+        {
+            return ApiResponse<Unit>.Success(Unit.Value); 
+        }
+
+        var confirmResult = await _userManager.ConfirmEmailAsync(user, request.Token);
+        
+        if (!confirmResult.Succeeded)
+        {
+            var errors = string.Join(", ", confirmResult.Errors.Select(e => e.Description));
+            await _logService.CreateLogAsync(
+                $"Failed to confirm email for {user.Email}: {errors}", 
+                cancellationToken, LogType.Error, userId: user.Id);
+            
+            return ApiResponse<Unit>.Failure($"Не удалось подтвердить email: {errors}");
+        }
+
+        await _logService.CreateLogAsync(
+            $"User {user.Email} confirmed email successfully", 
+            cancellationToken, LogType.Information, userId: user.Id);
+        
+        await _mediator.Publish(new EmailConfirmedEvent { Email = request.UserMail }, cancellationToken);
+        
         return ApiResponse<Unit>.Success(Unit.Value);
     }
 }

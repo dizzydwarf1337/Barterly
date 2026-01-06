@@ -5,14 +5,21 @@ import { Outlet } from "react-router";
 import { observer } from "mobx-react-lite";
 import useStore from "./app/stores/store";
 import CustromSnackbar from "./app/layout/CustromSnackbar";
+import apiClient from "./app/API/apiClient";
 
 export default observer(function App() {
-  const { uiStore } = useStore();
+  const { uiStore, authStore } = useStore();
   const theme = uiStore.getTheme();
 
   useEffect(() => {
     document.body.style.backgroundColor = theme.palette.background.default;
   }, [theme]);
+
+  useEffect(() => {
+      apiClient.setOnUnauthorized(() => {
+        authStore.logout();
+    }); 
+  }, [authStore]);
 
   return (
     <ThemeProvider theme={theme}>

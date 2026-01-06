@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Text;
 using Application.Core.ApiResponse;
 using Application.DTOs.Posts;
 using AutoMapper;
@@ -26,41 +25,177 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
     public async Task<ApiResponse<GetPostsQuery.Result>> Handle(GetPostsQuery request,
         CancellationToken cancellationToken)
     {
-        var posts = _postQueryRepository.GetAllPosts().Where(x=> !x.PostSettings.IsDeleted && !x.PostSettings.IsHidden && x.PostSettings.postStatusType == PostStatusType.Published);
         if (request.FilterBy?.PageSize <= 0 || request.FilterBy?.PageNumber <= 0)
             return ApiResponse<GetPostsQuery.Result>.Failure("Invalid pagination parameters.");
 
-        foreach (var filter in GetFilters(request.FilterBy)) posts = posts.Where(filter);
+        var promotedPostsPerPage = (int)(request.FilterBy.PageSize / 3.0);
+        
+        var promotedPosts = await GetPromotedPosts(promotedPostsPerPage, request.FilterBy.PageNumber, 
+            cancellationToken);
+        
+        var regularPostsPerPage = request.FilterBy.PageSize - promotedPosts.Count;
+        var regularPosts = await GetRegularPosts(regularPostsPerPage, request.FilterBy.PageNumber, 
+            request.FilterBy, request.SortBy, cancellationToken);
 
-        if (!string.IsNullOrWhiteSpace(request.SortBy?.SortBy))
-        {
-            var sortField = request.SortBy.SortBy.ToLower();
-            var descending = request.SortBy.IsDescending;
+        var shuffledPosts = ShufflePosts(regularPosts, promotedPosts);
 
-            posts = sortField switch
-            {
-                "title" => descending ? posts.OrderByDescending(p => p.Title) : posts.OrderBy(p => p.Title),
-                "createdat" => descending
-                    ? posts.OrderByDescending(p => p.CreatedAt)
-                    : posts.OrderBy(p => p.CreatedAt),
-                _ => posts
-            };
-        }
-
-        var totalCount = posts.Count();
+        var totalRegularCount = await GetTotalRegularCount(request.FilterBy, cancellationToken);
+        var totalPromotedCount = await GetTotalPromotedCount(cancellationToken);
+        var totalCount = totalRegularCount + totalPromotedCount;
         var totalPages = (int)Math.Ceiling(totalCount / (double)request.FilterBy.PageSize);
-        var items = _mapper.Map<List<PostPreviewDto>>(await posts
-            .Skip((request.FilterBy.PageNumber - 1) * request.FilterBy.PageSize)
-            .Take(request.FilterBy.PageSize)
-            .ToListAsync(cancellationToken));
-
 
         return ApiResponse<GetPostsQuery.Result>.Success(new GetPostsQuery.Result
         {
-            Items = items,
+            Items = shuffledPosts,
             TotalCount = totalCount,
             TotalPages = totalPages
         });
+    }
+
+    private async Task<ICollection<Post>> GetRegularPosts(int pageSize, int pageNumber, 
+        GetPostsQuery.FilterSpecification filter, GetPostsQuery.SortSpecification? sortBy, 
+        CancellationToken cancellationToken)
+    {
+        var query = _postQueryRepository.GetAllPosts()
+            .Include(x => x.Owner)
+            .Where(x =>
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden &&
+                x.Promotion.Type == PostPromotionType.None);
+
+        foreach (var filterExpression in GetFilters(filter))
+        {
+            query = query.Where(filterExpression);
+        }
+
+        if (sortBy != null && !string.IsNullOrWhiteSpace(sortBy.SortBy))
+        {
+            var sortField = sortBy.SortBy.ToLower();
+            query = sortField switch
+            {
+                "title" => sortBy.IsDescending ? query.OrderByDescending(p => p.Title) : query.OrderBy(p => p.Title),
+                "createdat" => sortBy.IsDescending ? query.OrderByDescending(p => p.CreatedAt) : query.OrderBy(p => p.CreatedAt),
+                "viewscount" => sortBy.IsDescending ? query.OrderByDescending(p => p.ViewsCount) : query.OrderBy(p => p.ViewsCount),
+                _ => query.OrderByDescending(p => p.CreatedAt)
+            };
+        }
+        else
+        {
+            query = query.OrderByDescending(p => p.CreatedAt);
+        }
+
+        query = query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    private async Task<ICollection<Post>> GetPromotedPosts(int count, int pageNumber, 
+        CancellationToken cancellationToken)
+    {
+        var topPostsCount = (int)Math.Ceiling(count * 2 / 3.0);
+        var highlightPostsCount = count - topPostsCount;
+
+        var topPosts = await _postQueryRepository.GetAllPosts()
+            .Include(x => x.Owner)
+            .Where(x =>
+                x.Promotion.Type == PostPromotionType.Top &&
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden)
+            .OrderBy(x => x.ViewsCount)
+            .ThenBy(x => Guid.NewGuid())
+            .Skip((pageNumber - 1) * topPostsCount)
+            .Take(topPostsCount)
+            .ToListAsync(cancellationToken);
+
+        var highlightPosts = await _postQueryRepository.GetAllPosts()
+            .Include(x => x.Owner)
+            .Where(x =>
+                x.Promotion.Type == PostPromotionType.Highlight &&
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden)
+            .OrderBy(x => x.ViewsCount)
+            .ThenBy(x => Guid.NewGuid())
+            .Skip((pageNumber - 1) * highlightPostsCount)
+            .Take(highlightPostsCount)
+            .ToListAsync(cancellationToken);
+
+        return topPosts.Concat(highlightPosts).ToList();
+    }
+
+    private async Task<int> GetTotalRegularCount(GetPostsQuery.FilterSpecification filter, 
+        CancellationToken cancellationToken)
+    {
+        var query = _postQueryRepository.GetAllPosts()
+            .Where(x =>
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden &&
+                x.Promotion.Type == PostPromotionType.None);
+
+        foreach (var filterExpression in GetFilters(filter))
+        {
+            query = query.Where(filterExpression);
+        }
+
+        return await query.CountAsync(cancellationToken);
+    }
+
+    private async Task<int> GetTotalPromotedCount(CancellationToken cancellationToken)
+    {
+        return await _postQueryRepository.GetAllPosts()
+            .Where(x =>
+                x.PostSettings.postStatusType == PostStatusType.Published &&
+                !x.PostSettings.IsDeleted &&
+                !x.PostSettings.IsHidden &&
+                x.Promotion.Type != PostPromotionType.None)
+            .CountAsync(cancellationToken);
+    }
+
+    private List<PostPreviewDto> ShufflePosts(ICollection<Post> regularPosts, ICollection<Post> promotedPosts)
+    {
+        var rnd = new Random();
+
+        var shuffledRegular = regularPosts.OrderBy(_ => rnd.Next()).ToList();
+        var shuffledPromoted = promotedPosts.OrderBy(_ => rnd.Next()).ToList();
+
+        var total = shuffledRegular.Count + shuffledPromoted.Count;
+        var result = new List<Post>(total);
+
+        var regularIndex = 0;
+        var promotedIndex = 0;
+
+        var regularRatio = shuffledRegular.Count > 0 ? shuffledRegular.Count / (double)total : 0;
+        var promotedRatio = shuffledPromoted.Count > 0 ? shuffledPromoted.Count / (double)total : 0;
+
+        double regularCounter = 0;
+        double promotedCounter = 0;
+
+        for (var i = 0; i < total; i++)
+        {
+            var pickPromoted =
+                promotedIndex < shuffledPromoted.Count &&
+                (regularIndex >= shuffledRegular.Count || promotedCounter <= regularCounter);
+
+            if (pickPromoted)
+            {
+                result.Add(shuffledPromoted[promotedIndex++]);
+                if (promotedRatio > 0)
+                    promotedCounter += 1 / promotedRatio;
+            }
+            else
+            {
+                result.Add(shuffledRegular[regularIndex++]);
+                if (regularRatio > 0)
+                    regularCounter += 1 / regularRatio;
+            }
+        }
+
+        return _mapper.Map<List<PostPreviewDto>>(result);
     }
 
     private IEnumerable<Expression<Func<Post, bool>>> GetFilters(GetPostsQuery.FilterSpecification filter)
@@ -113,7 +248,7 @@ public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, ApiResponse<G
         if (!string.IsNullOrWhiteSpace(filter.City))
         {
             var cityLower = filter.City.ToLower();
-            yield return p => p.City.ToLower().Contains(cityLower);
+            yield return p => (p.City ?? "").ToLower().Contains(cityLower);
         }
         
         if (filter.MinPrice.HasValue)

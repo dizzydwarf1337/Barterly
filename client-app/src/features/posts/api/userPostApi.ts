@@ -63,7 +63,9 @@ const userPostApi = {
   buyPromotion: async (body: BuyPromotionRequestDTO) =>
     apiClient.put<ApiResponse<void>>("user/posts/buy-promotion", body, false),
   getPostPreview: async (id:string) => 
-    apiClient.get<ApiResponse<PostPreview>>(`user/posts/preview/${id}`, false)
+    apiClient.get<ApiResponse<PostPreview>>(`user/posts/preview/${id}`, false),
+  getUserPosts: async (id:string) => 
+    apiClient.get<ApiResponse<PostPreview[]>>(`user/posts/user/${id}`, false)
 };
 
 export default userPostApi;

@@ -50,4 +50,11 @@ export default {
   Statusshipped: "Shipped",
   Statusdelivered: "Delivered",
   Statuscanceled: "Canceled",
+  ProfilePage:"Profile",
+  PostsPage:"My posts",
+  OrdersPage:"My orders",
+  NoBio: "No bio",
+  Location: "Location",
+  NoLocation: "No location",
+  UserPosts:"User posts"
 };

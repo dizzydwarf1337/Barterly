@@ -16,7 +16,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PublishIcon from "@mui/icons-material/Publish";
 import { useNavigate } from "react-router";
 import { DeletionDialog } from "../../../../app/components/deletionDialog";
-import { PostPreview } from "../../../posts/types/postTypes";
+import { PostCurrency, PostPreview } from "../../../posts/types/postTypes";
 
 const columnHelper = createColumnHelper<PostPreview>();
 
@@ -147,7 +147,7 @@ export const postsColumns = (
         );
       }
 
-      const currency = row.currency || "PLN";
+      const currency = PostCurrency[row.currency ?? 1];
       
       return (
         <Typography variant="body2" fontWeight={600} color="success.main">

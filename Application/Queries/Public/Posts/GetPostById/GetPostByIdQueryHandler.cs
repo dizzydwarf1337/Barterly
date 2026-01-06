@@ -22,6 +22,7 @@ public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, ApiResp
     {
         var post = await _postQueryRepository.GetAllPosts()
             .Where(post => post.Id == request.PostId && !(post.PostSettings.IsDeleted || post.PostSettings.IsHidden))
+            .Include(x => x.PostImages)
             .FirstOrDefaultAsync(cancellationToken);
         if (post == null)
             return ApiResponse<PostDto>.Failure("Post not found or is hidden/deleted.", 404);

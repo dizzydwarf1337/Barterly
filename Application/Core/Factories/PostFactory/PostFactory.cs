@@ -109,6 +109,7 @@ public class PostFactory : IPostFactory
             default: throw new InvalidDataProvidedException("PostType", "PostDto", "PostFactory.CreatePost");
         }
 
+        post.Currency = currency;
         post.SubCategoryId = subCategoryId;
         //Promotion 
         var postPromotion = new Promotion

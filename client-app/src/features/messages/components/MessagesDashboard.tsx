@@ -136,7 +136,6 @@ const MessagesDashboard = observer(
         }
       } catch (error) {
         console.error("Failed to load messages:", error);
-        uiStore.showSnackbar("Failed to load messages", "error");
       } finally {
         setLoading(false);
       }
